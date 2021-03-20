@@ -5,6 +5,10 @@ using Random
 import PastaQ: gate
 import PastaQ.ITensors: array
 
+#Use DoMCCLTN to do monte carlo simulation for ML decoding of repetition code
+
+#To compare results, use the function Pfail in PyCLTNQuimb.py which does an
+#exact calculation.
 
 #single qubit gate failure location
 function gate(::GateName"pz"; p::Number)
