@@ -145,7 +145,7 @@ function CLTNRepHWFull(nq::Int,nr::Int,p::Float64,mbits::Array{Int},acc::Number,
     #println(gates)
     N=2*nq-1 #total number of qubits
 
-    T=qubits(N) #all zeros initial state sets initial error configuration to be trivial
+    T=productstate(N) #all zeros initial state sets initial error configuration to be trivial
 
     TOut=runcircuit(T,gates,cutoff=acc,maxdim=bd)
 
@@ -181,8 +181,8 @@ function MLDec(TNin::MPS,nq::Int,nr::Int,dat::Array{Int},l::Int,anc::Array{Int})
 
     stringi=buildstring(nq,nr,pe,0,anc)
     stringz=buildstring(nq,nr,pe,1,anc)
-    mpsi=qubits(siteinds(TNin),stringi)
-    mpsz=qubits(siteinds(TNin),stringz)
+    mpsi=productstate(siteinds(TNin),stringi)
+    mpsz=productstate(siteinds(TNin),stringz)
 
     #compute "probability" that this pure error and meas outcomes occurred, and no logical z
     pli=inner(TNin,mpsi)
@@ -458,7 +458,7 @@ end
 #MPS to overlap with the circuit tensor network in order to retrieve the desired
 #element of the MPS
 
-function buildstring(nq::Int,nr::Int,pe::Array{Int},z::Int,anc::Array{Int})
+function buildstring(nq::Int,nr::Int,pe::Array{Float64},z::Int,anc::Array{Int})
 
     if (pe[1]+z)%2==0
         out=["Z+"]
@@ -617,8 +617,8 @@ function DoMCCLTN(nq::Int,nr::Int,p::Float64,cut::Float64,bd::Int,err::Float64)
             println(stderr)
             println("target is")
             println(err*mu)
-            println("short circuit rate is")
-            println(win/ntr)
+            #println("short circuit rate is")
+            #println(win/ntr)
         end
 
     end
