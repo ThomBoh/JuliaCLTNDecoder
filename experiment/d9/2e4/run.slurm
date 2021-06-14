@@ -1,11 +1,11 @@
 #!/bin/bash
 #
-#SBATCH --job-name=MLdecoderdz9p1e-4
+#SBATCH --job-name=MLdecoderdz9p2e-4
 #SBATCH --output=job_%j.log   # Standard output and error log
 #SBATCH --nodes=1          # Run all processes on a single node
 #SBATCH --ntasks=1
-#SBATCH --cpus-per-task=96
+#SBATCH --cpus-per-task=64
 #SBATCH --time=150:00:00
-#SBATCH --partition=cpu96
+#SBATCH --partition=cpu64
 
 julia mlsurfnc.jl 9 $1 4000 1e-15 10000 $2
