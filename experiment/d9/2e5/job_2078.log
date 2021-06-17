@@ -1,0 +1,465 @@
+ERROR: LoadError: MethodError: no method matching iterate(::Nothing)
+Closest candidates are:
+  iterate(!Matched::Union{LinRange, StepRangeLen}) at range.jl:664
+  iterate(!Matched::Union{LinRange, StepRangeLen}, !Matched::Int64) at range.jl:664
+  iterate(!Matched::T) where T<:Union{Base.KeySet{var"#s79", var"#s78"} where {var"#s79", var"#s78"<:Dict}, Base.ValueIterator{var"#s77"} where var"#s77"<:Dict} at dict.jl:693
+  ...
+Stacktrace:
+  [1] indexed_iterate(I::Nothing, i::Int64)
+    @ Base ./tuple.jl:89
+  [2] MPS(A::ITensor{4}, sites::Vector{IndexSet{1, Index{Int64}, Tuple{Index{Int64}}}}; leftinds::Index{Int64}, orthocenter::Int64, kwargs::Base.Iterators.Pairs{Symbol, Any, Tuple{Symbol, Symbol, Symbol}, NamedTuple{(:cutoff, :maxdim, :svd_alg), Tuple{Float64, Int64, String}}})
+    @ ITensors ~/.julia/packages/ITensors/Ligbx/src/mps/abstractmps.jl:1388
+  [3] setindex!(ψ::MPS, A::ITensor{4}, r::UnitRange{Int64}; orthocenter::Int64, perm::Nothing, kwargs::Base.Iterators.Pairs{Symbol, Any, Tuple{Symbol, Symbol, Symbol}, NamedTuple{(:cutoff, :maxdim, :svd_alg), Tuple{Float64, Int64, String}}})
+    @ ITensors ~/.julia/packages/ITensors/Ligbx/src/mps/abstractmps.jl:1328
+  [4] setindex!(::MPS, ::ITensor{4}, ::UnitRange{Int64}, ::Pair{Symbol, Any}, ::Vararg{Pair{Symbol, Any}, N} where N; kwargs::Base.Iterators.Pairs{Union{}, Union{}, Tuple{}, NamedTuple{(), Tuple{}}})
+    @ ITensors ~/.julia/packages/ITensors/Ligbx/src/mps/abstractmps.jl:1340
+  [5] setindex!(::MPS, ::ITensor{4}, ::UnitRange{Int64}, ::Pair{Symbol, Any}, ::Pair{Symbol, Any}, ::Pair{Symbol, Any})
+    @ ITensors ~/.julia/packages/ITensors/Ligbx/src/mps/abstractmps.jl:1340
+  [6] product(o::ITensor{4}, ψ::MPS, ns::Vector{Int64}; move_sites_back::Bool, apply_dag::Bool, kwargs::Base.Iterators.Pairs{Symbol, Any, Tuple{Symbol, Symbol, Symbol}, NamedTuple{(:cutoff, :maxdim, :svd_alg), Tuple{Float64, Int64, String}}})
+    @ ITensors ~/.julia/packages/ITensors/Ligbx/src/mps/abstractmps.jl:1555
+  [7] product(As::Vector{ITensor}, ψ::MPS; move_sites_back::Bool, kwargs::Base.Iterators.Pairs{Symbol, Any, Tuple{Symbol, Symbol, Symbol}, NamedTuple{(:cutoff, :maxdim, :svd_alg), Tuple{Float64, Int64, String}}})
+    @ ITensors ~/.julia/packages/ITensors/Ligbx/src/mps/abstractmps.jl:1650
+  [8] runcircuit(M::MPS, circuit_tensors::Vector{ITensor}; apply_dag::Nothing, cutoff::Float64, maxdim::Int64, svd_alg::String, move_sites_back::Bool, kwargs::Base.Iterators.Pairs{Union{}, Union{}, Tuple{}, NamedTuple{(), Tuple{}}})
+    @ PastaQ ~/.julia/packages/PastaQ/9VxGO/src/circuits/runcircuit.jl:86
+  [9] #runcircuit#99
+    @ ~/.julia/packages/PastaQ/9VxGO/src/circuits/runcircuit.jl:188 [inlined]
+ [10] SurfCirc(dz::Int64, dx::Int64, nr::Int64, PEZ::Matrix{Int64}, PEX::Matrix{Int64}, Synz::Matrix{Int64}, Synx::Matrix{Int64}, zsch::Vector{Any}, xsch::Vector{Any}, bsch::Array{Int64, 3}, layout::Vector{Any}, ql::Matrix{Int64}, zl::Vector{Int64}, xl::Vector{Int64}, p::Float64, al2::Int64, tmeas::Float64, k2::Float64, nth::Int64, pmz::Float64, pmx::Float64, acc::Float64, bd::Int64)
+    @ Main /shared/JuliaCLTNDecoder/experiment/d9/2e5/mlsurfnc.jl:1337
+ [11] macro expansion
+    @ /shared/JuliaCLTNDecoder/experiment/d9/2e5/mlsurfnc.jl:1432 [inlined]
+ [12] macro expansion
+    @ ./timing.jl:287 [inlined]
+ [13] SurfMC(dz::Int64, dx::Int64, nr::Int64, p::Float64, al2::Int64, tmeas::Float64, k2::Float64, nth::Int64, acc::Float64, bd::Int64, err::Float64, nt::Int64; sim_id::Int64)
+    @ Main /shared/JuliaCLTNDecoder/experiment/d9/2e5/mlsurfnc.jl:1431
+ [14] top-level scope
+    @ /shared/JuliaCLTNDecoder/experiment/d9/2e5/mlsurfnc.jl:1514
+in expression starting at /shared/JuliaCLTNDecoder/experiment/d9/2e5/mlsurfnc.jl:1512
+mu is
+0.0
+number of trials is
+200
+number of Z or Y failures is
+0
+number of X failures is
+0
+average trial time
+2.45458583871
+mu is
+0.0
+number of trials is
+400
+number of Z or Y failures is
+0
+number of X failures is
+0
+average trial time
+4.720792534499999
+mu is
+0.0
+number of trials is
+600
+number of Z or Y failures is
+0
+number of X failures is
+0
+average trial time
+6.992982844099995
+mu is
+0.0
+number of trials is
+800
+number of Z or Y failures is
+0
+number of X failures is
+0
+average trial time
+9.267388838125
+mu is
+0.0
+number of trials is
+1000
+number of Z or Y failures is
+0
+number of X failures is
+0
+average trial time
+11.615767030124985
+mu is
+0.0
+number of trials is
+1200
+number of Z or Y failures is
+0
+number of X failures is
+0
+average trial time
+13.991358160585003
+mu is
+0.0
+number of trials is
+1400
+number of Z or Y failures is
+0
+number of X failures is
+0
+average trial time
+16.451463389539995
+mu is
+0.0
+number of trials is
+1600
+number of Z or Y failures is
+0
+number of X failures is
+0
+average trial time
+18.965798879060014
+mu is
+0.0
+number of trials is
+1800
+number of Z or Y failures is
+0
+number of X failures is
+0
+average trial time
+21.54079292375002
+mu is
+0.0
+number of trials is
+2000
+number of Z or Y failures is
+0
+number of X failures is
+0
+average trial time
+24.200837568965024
+mu is
+0.0
+number of trials is
+2200
+number of Z or Y failures is
+0
+number of X failures is
+0
+average trial time
+26.889016516040048
+mu is
+0.0
+number of trials is
+2400
+number of Z or Y failures is
+0
+number of X failures is
+0
+average trial time
+29.620119955700023
+mu is
+0.0
+number of trials is
+2600
+number of Z or Y failures is
+0
+number of X failures is
+0
+average trial time
+32.33709355429002
+mu is
+0.0
+number of trials is
+2800
+number of Z or Y failures is
+0
+number of X failures is
+0
+average trial time
+35.07559179858004
+mu is
+0.0
+number of trials is
+3000
+number of Z or Y failures is
+0
+number of X failures is
+0
+average trial time
+37.850983009885056
+mu is
+0.0
+number of trials is
+3200
+number of Z or Y failures is
+0
+number of X failures is
+0
+average trial time
+40.63801932876502
+mu is
+0.0
+number of trials is
+3400
+number of Z or Y failures is
+0
+number of X failures is
+0
+average trial time
+43.39037725452505
+mu is
+0.0
+number of trials is
+3600
+number of Z or Y failures is
+0
+number of X failures is
+0
+average trial time
+46.14979376144011
+mu is
+0.0
+number of trials is
+3800
+number of Z or Y failures is
+0
+number of X failures is
+0
+average trial time
+48.91467289960013
+mu is
+0.0
+number of trials is
+4000
+number of Z or Y failures is
+0
+number of X failures is
+0
+average trial time
+51.68871990874514
+mu is
+0.0
+number of trials is
+4200
+number of Z or Y failures is
+0
+number of X failures is
+0
+average trial time
+54.440385301165136
+mu is
+0.0
+number of trials is
+4400
+number of Z or Y failures is
+0
+number of X failures is
+0
+average trial time
+57.18700743378012
+mu is
+0.0
+number of trials is
+4600
+number of Z or Y failures is
+0
+number of X failures is
+0
+average trial time
+59.90718600053512
+mu is
+0.0
+number of trials is
+4800
+number of Z or Y failures is
+0
+number of X failures is
+0
+average trial time
+62.627293484220125
+mu is
+0.0
+number of trials is
+5000
+number of Z or Y failures is
+0
+number of X failures is
+0
+average trial time
+65.36920098950013
+mu is
+0.0
+number of trials is
+5200
+number of Z or Y failures is
+0
+number of X failures is
+0
+average trial time
+68.09059591743518
+mu is
+0.0
+number of trials is
+5400
+number of Z or Y failures is
+0
+number of X failures is
+0
+average trial time
+70.7797933826902
+mu is
+0.00017857142857142857
+number of trials is
+5600
+number of Z or Y failures is
+1
+number of X failures is
+0
+average trial time
+73.50464535084018
+mu is
+0.00017241379310344826
+number of trials is
+5800
+number of Z or Y failures is
+1
+number of X failures is
+0
+average trial time
+76.19058019438516
+mu is
+0.00016666666666666666
+number of trials is
+6000
+number of Z or Y failures is
+1
+number of X failures is
+0
+average trial time
+78.91438749920512
+mu is
+0.00016129032258064516
+number of trials is
+6200
+number of Z or Y failures is
+1
+number of X failures is
+0
+average trial time
+81.63893184310017
+mu is
+0.00015625
+number of trials is
+6400
+number of Z or Y failures is
+1
+number of X failures is
+0
+average trial time
+84.3391048213301
+mu is
+0.00015151515151515152
+number of trials is
+6600
+number of Z or Y failures is
+1
+number of X failures is
+0
+average trial time
+86.99563550204513
+mu is
+0.00014705882352941175
+number of trials is
+6800
+number of Z or Y failures is
+1
+number of X failures is
+0
+average trial time
+89.66498434542005
+mu is
+0.00014285714285714287
+number of trials is
+7000
+number of Z or Y failures is
+1
+number of X failures is
+0
+average trial time
+92.31223954625516
+mu is
+0.0001388888888888889
+number of trials is
+7200
+number of Z or Y failures is
+1
+number of X failures is
+0
+average trial time
+94.97421239547022
+mu is
+0.00013513513513513514
+number of trials is
+7400
+number of Z or Y failures is
+1
+number of X failures is
+0
+average trial time
+97.66777947207018
+mu is
+0.00013157894736842105
+number of trials is
+7600
+number of Z or Y failures is
+1
+number of X failures is
+0
+average trial time
+100.29735594184517
+mu is
+0.0001282051282051282
+number of trials is
+7800
+number of Z or Y failures is
+1
+number of X failures is
+0
+average trial time
+102.99288764320012
+mu is
+0.000125
+number of trials is
+8000
+number of Z or Y failures is
+1
+number of X failures is
+0
+average trial time
+105.65504671247015
+The SVD algorithm `"divide_and_conquer"` has thrown an error,
+likely because of a convergance failure. You can try
+other SVD algorithms that may converge better using the
+`alg` (or `svd_alg` if called through `factorize` or MPS/MPO functionality) keyword argument:
+
+ - "divide_and_conquer" is a divide-and-conquer algorithm
+   (LAPACK's `gesdd`). It is fast, but may lead to some innacurate
+   singular values for very ill-conditioned matrices.
+   It also may sometimes fail to converge, leading to errors
+   (in which case `"qr_iteration"` or `"recursive"` can be tried).
+
+ - `"qr_iteration"` (LAPACK's `gesvd`) is typically slower 
+   than "divide_and_conquer", especially for large matrices,
+   but is more accurate for very ill-conditioned matrices 
+   compared to `"divide_and_conquer"`.
+
+ - `"recursive"` is ITensor's custom SVD algorithm. It is very
+   reliable, but may be slow if high precision is needed.
+   To get an `svd` of a matrix `A`, an eigendecomposition of
+   ``A^{\dagger} A`` is used to compute `U` and then a `qr` of
+   ``A^{\dagger} U`` is used to compute `V`. This is performed
+   recursively to compute small singular values.
+
+Returning `nothing`. For an output `F = svd(A, ...)` you can check if
+`isnothing(F)` in your code and try a different algorithm.
+
+To suppress this message in the future, you can wrap the `svd` call in the
+`@suppress` macro from the `Suppressor` package.
+
