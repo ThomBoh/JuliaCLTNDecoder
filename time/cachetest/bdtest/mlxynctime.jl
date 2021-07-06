@@ -722,10 +722,10 @@ function CYfail(r,p,al2,tmeas,k2,nth,pmz,pmx)
     elseif (r>(CYpz1+CYpz2+CYpz1z2+CYpx1+CYpx2+CYpx1x2+CYpz1x2+CYpy1+CYpy1x2+CYpy2+CYpy1z2+CYpx1z2+CYpz1y2+CYpy1y2)) && (r<(CYpz1+CYpz2+CYpz1z2+CYpx1+CYpx2+CYpx1x2+CYpz1x2+CYpy1+CYpy1x2+CYpy2+CYpy1z2+CYpx1z2+CYpz1y2+CYpy1y2+CYpx1y2))
         zout=[0,1]
         xout=[1,1]
-    else 
+    else
         zout=[0,0]
         xout=[0,0]
-    end  
+    end
     return zout,xout
 end
 
@@ -785,7 +785,7 @@ function SurfMCError(dy,dx,nr,zsched,xsched,bsch,p,al2,tmeas,k2,nth,pmz,pmx)
             #elseif (r>pzip) && (r<(pzip+pxip))
                 #z check ancilla gets x error
             #    zancx[zc]=(zancx[zc]+1)%2
-            
+
             #elseif (r>(pzip)) && (r<(pzip+pxip))
                 #y check ancilla gets y error
                 #yancz[yc]=(yancz[yc]+1)%2
@@ -1223,7 +1223,7 @@ function YStabs(dy,dx)
     stabgens=[]
     #stabgens = Array{Array{Int,(dy,dx)}}(dy+1)
     for i in [0:dy;]
-    
+
          stab=zeros(Int,dy,dx)
          if i==0
              stab[1,2]=1
@@ -1509,7 +1509,7 @@ function SurfCirc(dz,dx,nr,PEZ,PEX,Synz,Synx,zsch,xsch,bsch,layout,ql,zl,xl,p,al
 end
 
 function SurfMC(dz,dx,nr,p,al2,tmeas,k2,nth,acc,bd,err,nt; sim_id::Int=-1)
-    
+
     if sim_id < 0
       fname = "experiment_dz$(dz)_dx$(dx)_p$(p).txt"
     else
@@ -1674,7 +1674,7 @@ function SurfMC(dz,dx,nr,p,al2,tmeas,k2,nth,acc,bd,err,nt; sim_id::Int=-1)
     println(fx)
     println(n)
     println((f+fx)/n)
-    
+
     return
 end
 
@@ -1686,9 +1686,9 @@ cutin=parse(Float64,ARGS[4])
 bdin=parse(Int64,ARGS[5])
 if length(ARGS)==6
     sidin=parse(Int64,ARGS[6])
-    SurfMC(dzin,3,dzin,pin,8,500e-9,1e7,0,cutin,bdin,0.1,ntin,sim_id = sidin)
+    SurfMC(dzin,3,dzin,pin,8,500e-9,1e7,0,cutin,10,0.1,ntin,sim_id = sidin)
 else
-    SurfMC(dzin,3,dzin,pin,8,500e-9,1e7,0,cutin,bdin,0.1,ntin)
+    SurfMC(dzin,3,dzin,pin,8,500e-9,1e7,0,cutin,10,0.1,ntin)
 end
 
 #@show YStabs(3,3)

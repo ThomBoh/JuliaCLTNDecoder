@@ -1852,7 +1852,7 @@ cutin=parse(Float64,ARGS[4])
 bdin=parse(Int64,ARGS[5])
 if length(ARGS)==6
     sidin=parse(Int64,ARGS[6])
-    SurfMC(dzin,3,dzin,pin,8,500e-9,1e7,0,cutin,bdin,0.1,ntin,sim_id = sidin)
+    SurfMC(dzin,3,dzin,pin,8,500e-9,1e7,0,cutin,10,0.1,ntin,sim_id = sidin)
 else
-    SurfMC(dzin,3,dzin,pin,8,500e-9,1e7,0,cutin,bdin,0.1,ntin)
+    SurfMC(dzin,3,dzin,pin,8,500e-9,1e7,0,cutin,10,0.1,ntin)
 end
