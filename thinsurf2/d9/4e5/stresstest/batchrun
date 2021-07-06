@@ -1,0 +1,12 @@
+#!/bin/bash
+
+a=$2
+b=$3
+
+for bias in $1 ; do
+	for m in $(seq $a $b) ; do
+		echo "run $m"
+		sbatch run.slurm $bias $m
+	done
+done
+

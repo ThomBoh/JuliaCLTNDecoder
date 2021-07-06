@@ -1,0 +1,700 @@
+mu is
+0.02
+number of trials is
+200
+number of Z or Y failures is
+4
+number of X failures is
+0
+average trial time
+0.4008467289449999
+mu is
+0.015
+number of trials is
+400
+number of Z or Y failures is
+6
+number of X failures is
+0
+average trial time
+0.6287362921199999
+stderr is
+0.006085234193354429
+target is
+0.0015
+mu is
+0.016666666666666666
+number of trials is
+600
+number of Z or Y failures is
+10
+number of X failures is
+0
+average trial time
+0.8558937001399995
+stderr is
+0.0052307184503973285
+target is
+0.0016666666666666668
+mu is
+0.02
+number of trials is
+800
+number of Z or Y failures is
+16
+number of X failures is
+0
+average trial time
+1.0774318654499981
+stderr is
+0.004952843963740575
+target is
+0.002
+mu is
+0.02
+number of trials is
+1000
+number of Z or Y failures is
+20
+number of X failures is
+0
+average trial time
+1.301662480149999
+stderr is
+0.004429403980178329
+target is
+0.002
+mu is
+0.02
+number of trials is
+1200
+number of Z or Y failures is
+24
+number of X failures is
+0
+average trial time
+1.5227462995099978
+stderr is
+0.004043136875805354
+target is
+0.002
+mu is
+0.025
+number of trials is
+1400
+number of Z or Y failures is
+35
+number of X failures is
+0
+average trial time
+1.7453160764549989
+stderr is
+0.004174105820360945
+target is
+0.0025000000000000005
+mu is
+0.025625
+number of trials is
+1600
+number of Z or Y failures is
+41
+number of X failures is
+0
+average trial time
+1.968591196414999
+stderr is
+0.003951579933945279
+target is
+0.0025625
+mu is
+0.023333333333333334
+number of trials is
+1800
+number of Z or Y failures is
+42
+number of X failures is
+0
+average trial time
+2.190676054339999
+stderr is
+0.003559147558696344
+target is
+0.0023333333333333335
+mu is
+0.022
+number of trials is
+2000
+number of Z or Y failures is
+44
+number of X failures is
+0
+average trial time
+2.4148441796399984
+stderr is
+0.0032807593162018788
+target is
+0.0022
+mu is
+0.023181818181818182
+number of trials is
+2200
+number of Z or Y failures is
+51
+number of X failures is
+0
+average trial time
+2.63755796121
+stderr is
+0.0032089873145722514
+target is
+0.002318181818181818
+mu is
+0.022916666666666665
+number of trials is
+2400
+number of Z or Y failures is
+55
+number of X failures is
+0
+average trial time
+2.8624183852849994
+stderr is
+0.0030551068402867904
+target is
+0.0022916666666666667
+mu is
+0.022692307692307692
+number of trials is
+2600
+number of Z or Y failures is
+59
+number of X failures is
+0
+average trial time
+3.086428830445002
+stderr is
+0.0029211364952656366
+target is
+0.0022692307692307695
+mu is
+0.02214285714285714
+number of trials is
+2800
+number of Z or Y failures is
+62
+number of X failures is
+0
+average trial time
+3.310874361910004
+stderr is
+0.0027813336239200914
+target is
+0.002214285714285714
+mu is
+0.023
+number of trials is
+3000
+number of Z or Y failures is
+69
+number of X failures is
+0
+average trial time
+3.5356647772400027
+stderr is
+0.0027373035899673024
+target is
+0.0023
+mu is
+0.023125
+number of trials is
+3200
+number of Z or Y failures is
+74
+number of X failures is
+0
+average trial time
+3.7593691451350013
+stderr is
+0.002657377468365744
+target is
+0.0023125
+mu is
+0.02323529411764706
+number of trials is
+3400
+number of Z or Y failures is
+79
+number of X failures is
+0
+average trial time
+3.9855281388750012
+stderr is
+0.0025840057998755303
+target is
+0.002323529411764706
+mu is
+0.02361111111111111
+number of trials is
+3600
+number of Z or Y failures is
+85
+number of X failures is
+0
+average trial time
+4.207763948815003
+stderr is
+0.0025309216649980954
+target is
+0.002361111111111111
+mu is
+0.02368421052631579
+number of trials is
+3800
+number of Z or Y failures is
+90
+number of X failures is
+0
+average trial time
+4.433772128000006
+stderr is
+0.0024671182513061924
+target is
+0.002368421052631579
+mu is
+0.0235
+number of trials is
+4000
+number of Z or Y failures is
+94
+number of X failures is
+0
+average trial time
+4.6538217664050086
+stderr is
+0.0023954899484287667
+target is
+0.00235
+mu is
+0.024285714285714285
+number of trials is
+4200
+number of Z or Y failures is
+102
+number of X failures is
+0
+average trial time
+4.878583092205004
+stderr is
+0.0023755481370621875
+target is
+0.002428571428571429
+mu is
+0.023863636363636365
+number of trials is
+4400
+number of Z or Y failures is
+105
+number of X failures is
+0
+average trial time
+5.101492651320002
+stderr is
+0.002301158727617171
+target is
+0.0023863636363636366
+mu is
+0.024130434782608696
+number of trials is
+4600
+number of Z or Y failures is
+111
+number of X failures is
+0
+average trial time
+5.324788870065001
+stderr is
+0.002262803050924567
+target is
+0.00241304347826087
+mu is
+0.02375
+number of trials is
+4800
+number of Z or Y failures is
+114
+number of X failures is
+0
+average trial time
+5.546344420329999
+stderr is
+0.0021980469034174038
+target is
+0.0023750000000000004
+mu is
+0.024
+number of trials is
+5000
+number of Z or Y failures is
+120
+number of X failures is
+0
+average trial time
+5.7666525042849965
+stderr is
+0.0021646563578151348
+target is
+0.0024000000000000002
+mu is
+0.023846153846153847
+number of trials is
+5200
+number of Z or Y failures is
+124
+number of X failures is
+0
+average trial time
+5.989380472799992
+stderr is
+0.002115964596324457
+target is
+0.0023846153846153848
+mu is
+0.02462962962962963
+number of trials is
+5400
+number of Z or Y failures is
+133
+number of X failures is
+0
+average trial time
+6.211524580659991
+stderr is
+0.0021093908416649487
+target is
+0.0024629629629629632
+mu is
+0.024285714285714285
+number of trials is
+5600
+number of Z or Y failures is
+136
+number of X failures is
+0
+average trial time
+6.431983582899988
+stderr is
+0.0020572237940402363
+target is
+0.002428571428571429
+mu is
+0.024655172413793103
+number of trials is
+5800
+number of Z or Y failures is
+143
+number of X failures is
+0
+average trial time
+6.653931014654993
+stderr is
+0.0020363693896046937
+target is
+0.0024655172413793106
+mu is
+0.024166666666666666
+number of trials is
+6000
+number of Z or Y failures is
+145
+number of X failures is
+0
+average trial time
+6.87420604613499
+stderr is
+0.0019826989174643655
+target is
+0.002416666666666667
+mu is
+0.024193548387096774
+number of trials is
+6200
+number of Z or Y failures is
+150
+number of X failures is
+0
+average trial time
+7.095612851004989
+stderr is
+0.0019515101263988682
+target is
+0.0024193548387096775
+mu is
+0.0246875
+number of trials is
+6400
+number of Z or Y failures is
+158
+number of X failures is
+0
+average trial time
+7.318184587374992
+stderr is
+0.0019397885727032531
+target is
+0.0024687500000000005
+mu is
+0.025
+number of trials is
+6600
+number of Z or Y failures is
+165
+number of X failures is
+0
+average trial time
+7.540790609819997
+stderr is
+0.0019219108917900459
+target is
+0.0025000000000000005
+mu is
+0.02514705882352941
+number of trials is
+6800
+number of Z or Y failures is
+171
+number of X failures is
+0
+average trial time
+7.762706069889999
+stderr is
+0.0018988498797229045
+target is
+0.0025147058823529415
+mu is
+0.024857142857142855
+number of trials is
+7000
+number of Z or Y failures is
+174
+number of X failures is
+0
+average trial time
+7.987078430704997
+stderr is
+0.0018609801009552003
+target is
+0.0024857142857142855
+mu is
+0.024722222222222222
+number of trials is
+7200
+number of Z or Y failures is
+178
+number of X failures is
+0
+average trial time
+8.21020600231499
+stderr is
+0.0018300873981293775
+target is
+0.0024722222222222224
+mu is
+0.025
+number of trials is
+7400
+number of Z or Y failures is
+185
+number of X failures is
+0
+average trial time
+8.433090342999991
+stderr is
+0.0018150383200520029
+target is
+0.0025000000000000005
+mu is
+0.024605263157894738
+number of trials is
+7600
+number of Z or Y failures is
+187
+number of X failures is
+0
+average trial time
+8.65421740583499
+stderr is
+0.001777157786756579
+target is
+0.0024605263157894738
+mu is
+0.024102564102564103
+number of trials is
+7800
+number of Z or Y failures is
+188
+number of X failures is
+0
+average trial time
+8.874444473144989
+stderr is
+0.0017366578012925704
+target is
+0.0024102564102564104
+mu is
+0.02375
+number of trials is
+8000
+number of Z or Y failures is
+190
+number of X failures is
+0
+average trial time
+9.096711925404986
+stderr is
+0.0017025288582177198
+target is
+0.0023750000000000004
+mu is
+0.02378048780487805
+number of trials is
+8200
+number of Z or Y failures is
+195
+number of X failures is
+0
+average trial time
+9.319164218049984
+stderr is
+0.001682688312391258
+target is
+0.0023780487804878053
+mu is
+0.024166666666666666
+number of trials is
+8400
+number of Z or Y failures is
+203
+number of X failures is
+0
+average trial time
+9.541624527204982
+stderr is
+0.001675646523419441
+target is
+0.002416666666666667
+mu is
+0.0236046511627907
+number of trials is
+8600
+number of Z or Y failures is
+203
+number of X failures is
+0
+average trial time
+9.76175663790998
+stderr is
+0.001637146974425594
+target is
+0.00236046511627907
+mu is
+0.02340909090909091
+number of trials is
+8800
+number of Z or Y failures is
+206
+number of X failures is
+0
+average trial time
+9.981159139939978
+stderr is
+0.0016118772060166125
+target is
+0.002340909090909091
+mu is
+0.023777777777777776
+number of trials is
+9000
+number of Z or Y failures is
+214
+number of X failures is
+0
+average trial time
+10.205440715379977
+stderr is
+0.0016060640122617183
+target is
+0.0023777777777777777
+mu is
+0.02402173913043478
+number of trials is
+9200
+number of Z or Y failures is
+221
+number of X failures is
+0
+average trial time
+10.430580229814986
+stderr is
+0.001596437739395184
+target is
+0.002402173913043478
+mu is
+0.02425531914893617
+number of trials is
+9400
+number of Z or Y failures is
+228
+number of X failures is
+0
+average trial time
+10.655585950820006
+stderr is
+0.0015868313359946296
+target is
+0.0024255319148936173
+mu is
+0.024270833333333332
+number of trials is
+9600
+number of Z or Y failures is
+233
+number of X failures is
+0
+average trial time
+10.879393981
+stderr is
+0.0015707027053210464
+target is
+0.002427083333333333
+mu is
+0.024285714285714285
+number of trials is
+9800
+number of Z or Y failures is
+238
+number of X failures is
+0
+average trial time
+11.101492188199998
+stderr is
+0.0015550555001892824
+target is
+0.002428571428571429
+mu is
+0.0244
+number of trials is
+10000
+number of Z or Y failures is
+244
+number of X failures is
+0
+average trial time
+11.319314971805007
+stderr is
+0.0015429523875372891
+target is
+0.0024400000000000003
+244
+0
+10000
+0.0244

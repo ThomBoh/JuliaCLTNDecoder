@@ -1,0 +1,963 @@
+ERROR: LoadError: MethodError: no method matching iterate(::Nothing)
+Closest candidates are:
+  iterate(!Matched::Union{LinRange, StepRangeLen}) at range.jl:664
+  iterate(!Matched::Union{LinRange, StepRangeLen}, !Matched::Int64) at range.jl:664
+  iterate(!Matched::T) where T<:Union{Base.KeySet{var"#s79", var"#s78"} where {var"#s79", var"#s78"<:Dict}, Base.ValueIterator{var"#s77"} where var"#s77"<:Dict} at dict.jl:693
+  ...
+Stacktrace:
+  [1] indexed_iterate(I::Nothing, i::Int64)
+    @ Base ./tuple.jl:89
+  [2] MPS(A::ITensor{4}, sites::Vector{IndexSet{1, Index{Int64}, Tuple{Index{Int64}}}}; leftinds::Index{Int64}, orthocenter::Int64, kwargs::Base.Iterators.Pairs{Symbol, Any, NTuple{4, Symbol}, NamedTuple{(:ortho, :cutoff, :maxdim, :svd_alg), Tuple{String, Float64, Int64, String}}})
+    @ ITensors ~/.julia/packages/ITensors/Ligbx/src/mps/abstractmps.jl:1388
+  [3] setindex!(ψ::MPS, A::ITensor{4}, r::UnitRange{Int64}; orthocenter::Int64, perm::Vector{Int64}, kwargs::Base.Iterators.Pairs{Symbol, Any, NTuple{4, Symbol}, NamedTuple{(:ortho, :cutoff, :maxdim, :svd_alg), Tuple{String, Float64, Int64, String}}})
+    @ ITensors ~/.julia/packages/ITensors/Ligbx/src/mps/abstractmps.jl:1328
+  [4] setindex!(::MPS, ::ITensor{4}, ::UnitRange{Int64}, ::Pair{Symbol, Any}, ::Vararg{Pair{Symbol, Any}, N} where N; kwargs::Base.Iterators.Pairs{Symbol, Any, Tuple{Symbol, Symbol}, NamedTuple{(:orthocenter, :perm), Tuple{Int64, Vector{Int64}}}})
+    @ ITensors ~/.julia/packages/ITensors/Ligbx/src/mps/abstractmps.jl:1340
+  [5] swapbondsites(ψ::MPS, b::Int64; kwargs::Base.Iterators.Pairs{Symbol, Any, NTuple{4, Symbol}, NamedTuple{(:ortho, :cutoff, :maxdim, :svd_alg), Tuple{String, Float64, Int64, String}}})
+    @ ITensors ~/.julia/packages/ITensors/Ligbx/src/mps/abstractmps.jl:1419
+  [6] movesite(ψ::MPS, n1n2::Pair{Int64, Int64}; orthocenter::Int64, kwargs::Base.Iterators.Pairs{Symbol, Any, Tuple{Symbol, Symbol, Symbol}, NamedTuple{(:cutoff, :maxdim, :svd_alg), Tuple{Float64, Int64, String}}})
+    @ ITensors ~/.julia/packages/ITensors/Ligbx/src/mps/abstractmps.jl:1447
+  [7] _movesites(ψ::MPS, ns::Vector{Int64}, ns′::Vector{Int64}; kwargs::Base.Iterators.Pairs{Symbol, Any, Tuple{Symbol, Symbol, Symbol}, NamedTuple{(:cutoff, :maxdim, :svd_alg), Tuple{Float64, Int64, String}}})
+    @ ITensors ~/.julia/packages/ITensors/Ligbx/src/mps/abstractmps.jl:1474
+  [8] movesites(ψ::MPS, nsns′::Vector{Pair{Int64, Int64}}; kwargs::Base.Iterators.Pairs{Symbol, Any, Tuple{Symbol, Symbol, Symbol}, NamedTuple{(:cutoff, :maxdim, :svd_alg), Tuple{Float64, Int64, String}}})
+    @ ITensors ~/.julia/packages/ITensors/Ligbx/src/mps/abstractmps.jl:1495
+  [9] product(o::ITensor{4}, ψ::MPS, ns::Vector{Int64}; move_sites_back::Bool, apply_dag::Bool, kwargs::Base.Iterators.Pairs{Symbol, Any, Tuple{Symbol, Symbol, Symbol}, NamedTuple{(:cutoff, :maxdim, :svd_alg), Tuple{Float64, Int64, String}}})
+    @ ITensors ~/.julia/packages/ITensors/Ligbx/src/mps/abstractmps.jl:1548
+ [10] product(As::Vector{ITensor}, ψ::MPS; move_sites_back::Bool, kwargs::Base.Iterators.Pairs{Symbol, Any, Tuple{Symbol, Symbol, Symbol}, NamedTuple{(:cutoff, :maxdim, :svd_alg), Tuple{Float64, Int64, String}}})
+    @ ITensors ~/.julia/packages/ITensors/Ligbx/src/mps/abstractmps.jl:1650
+ [11] runcircuit(M::MPS, circuit_tensors::Vector{ITensor}; apply_dag::Nothing, cutoff::Float64, maxdim::Int64, svd_alg::String, move_sites_back::Bool, kwargs::Base.Iterators.Pairs{Union{}, Union{}, Tuple{}, NamedTuple{(), Tuple{}}})
+    @ PastaQ ~/.julia/packages/PastaQ/9VxGO/src/circuits/runcircuit.jl:86
+ [12] #runcircuit#99
+    @ ~/.julia/packages/PastaQ/9VxGO/src/circuits/runcircuit.jl:188 [inlined]
+ [13] SurfCirc(dz::Int64, dx::Int64, nr::Int64, PEZ::Matrix{Int64}, PEX::Matrix{Int64}, Synz::Matrix{Int64}, Synx::Matrix{Int64}, zsch::Vector{Any}, xsch::Vector{Any}, bsch::Array{Int64, 3}, layout::Vector{Any}, ql::Matrix{Int64}, zl::Vector{Int64}, xl::Vector{Int64}, p::Float64, al2::Int64, tmeas::Float64, k2::Float64, nth::Int64, pmz::Float64, pmx::Float64, acc::Float64, bd::Int64)
+    @ Main /shared/MLSurface/JuliaCLTNDecoder/experiment/d9/4e5/supp/more/mlsurfnc.jl:1337
+ [14] macro expansion
+    @ /shared/MLSurface/JuliaCLTNDecoder/experiment/d9/4e5/supp/more/mlsurfnc.jl:1432 [inlined]
+ [15] macro expansion
+    @ ./timing.jl:287 [inlined]
+ [16] SurfMC(dz::Int64, dx::Int64, nr::Int64, p::Float64, al2::Int64, tmeas::Float64, k2::Float64, nth::Int64, acc::Float64, bd::Int64, err::Float64, nt::Int64; sim_id::Int64)
+    @ Main /shared/MLSurface/JuliaCLTNDecoder/experiment/d9/4e5/supp/more/mlsurfnc.jl:1431
+ [17] top-level scope
+    @ /shared/MLSurface/JuliaCLTNDecoder/experiment/d9/4e5/supp/more/mlsurfnc.jl:1514
+in expression starting at /shared/MLSurface/JuliaCLTNDecoder/experiment/d9/4e5/supp/more/mlsurfnc.jl:1512
+mu is
+0.0
+number of trials is
+200
+number of Z or Y failures is
+0
+number of X failures is
+0
+average trial time
+2.971754688029999
+mu is
+0.0
+number of trials is
+400
+number of Z or Y failures is
+0
+number of X failures is
+0
+average trial time
+5.720416890139998
+mu is
+0.0
+number of trials is
+600
+number of Z or Y failures is
+0
+number of X failures is
+0
+average trial time
+8.570481557994999
+mu is
+0.0
+number of trials is
+800
+number of Z or Y failures is
+0
+number of X failures is
+0
+average trial time
+11.609449240719991
+mu is
+0.0
+number of trials is
+1000
+number of Z or Y failures is
+0
+number of X failures is
+0
+average trial time
+14.787231411919972
+mu is
+0.0
+number of trials is
+1200
+number of Z or Y failures is
+0
+number of X failures is
+0
+average trial time
+18.05648025830498
+mu is
+0.0
+number of trials is
+1400
+number of Z or Y failures is
+0
+number of X failures is
+0
+average trial time
+21.432374043454978
+mu is
+0.0
+number of trials is
+1600
+number of Z or Y failures is
+0
+number of X failures is
+0
+average trial time
+24.717631222634985
+mu is
+0.0
+number of trials is
+1800
+number of Z or Y failures is
+0
+number of X failures is
+0
+average trial time
+27.993937037724987
+mu is
+0.0
+number of trials is
+2000
+number of Z or Y failures is
+0
+number of X failures is
+0
+average trial time
+31.28387772810494
+mu is
+0.0
+number of trials is
+2200
+number of Z or Y failures is
+0
+number of X failures is
+0
+average trial time
+34.56302473814996
+mu is
+0.0
+number of trials is
+2400
+number of Z or Y failures is
+0
+number of X failures is
+0
+average trial time
+37.860993505620016
+mu is
+0.0
+number of trials is
+2600
+number of Z or Y failures is
+0
+number of X failures is
+0
+average trial time
+41.11775332874001
+mu is
+0.0
+number of trials is
+2800
+number of Z or Y failures is
+0
+number of X failures is
+0
+average trial time
+44.37837998515998
+mu is
+0.0
+number of trials is
+3000
+number of Z or Y failures is
+0
+number of X failures is
+0
+average trial time
+47.609129095850015
+mu is
+0.0
+number of trials is
+3200
+number of Z or Y failures is
+0
+number of X failures is
+0
+average trial time
+50.74343144419502
+mu is
+0.0
+number of trials is
+3400
+number of Z or Y failures is
+0
+number of X failures is
+0
+average trial time
+53.96540378302507
+mu is
+0.0002777777777777778
+number of trials is
+3600
+number of Z or Y failures is
+1
+number of X failures is
+0
+average trial time
+57.10907474456504
+mu is
+0.0002631578947368421
+number of trials is
+3800
+number of Z or Y failures is
+1
+number of X failures is
+0
+average trial time
+60.27653340650495
+mu is
+0.00025
+number of trials is
+4000
+number of Z or Y failures is
+1
+number of X failures is
+0
+average trial time
+63.37923776291498
+mu is
+0.0002380952380952381
+number of trials is
+4200
+number of Z or Y failures is
+1
+number of X failures is
+0
+average trial time
+66.52502330572996
+mu is
+0.00022727272727272727
+number of trials is
+4400
+number of Z or Y failures is
+1
+number of X failures is
+0
+average trial time
+69.60584272640995
+mu is
+0.0002173913043478261
+number of trials is
+4600
+number of Z or Y failures is
+1
+number of X failures is
+0
+average trial time
+72.67880943430495
+mu is
+0.00020833333333333335
+number of trials is
+4800
+number of Z or Y failures is
+1
+number of X failures is
+0
+average trial time
+75.71072339991001
+mu is
+0.0002
+number of trials is
+5000
+number of Z or Y failures is
+1
+number of X failures is
+0
+average trial time
+78.77132613027999
+mu is
+0.0001923076923076923
+number of trials is
+5200
+number of Z or Y failures is
+1
+number of X failures is
+0
+average trial time
+81.89732487969502
+mu is
+0.00018518518518518518
+number of trials is
+5400
+number of Z or Y failures is
+1
+number of X failures is
+0
+average trial time
+84.94025715226509
+mu is
+0.00017857142857142857
+number of trials is
+5600
+number of Z or Y failures is
+1
+number of X failures is
+0
+average trial time
+87.9629746259801
+mu is
+0.0003448275862068965
+number of trials is
+5800
+number of Z or Y failures is
+2
+number of X failures is
+0
+average trial time
+91.069436011085
+mu is
+0.0003333333333333333
+number of trials is
+6000
+number of Z or Y failures is
+2
+number of X failures is
+0
+average trial time
+94.16287209262002
+mu is
+0.0003225806451612903
+number of trials is
+6200
+number of Z or Y failures is
+2
+number of X failures is
+0
+average trial time
+97.20801265264994
+mu is
+0.0003125
+number of trials is
+6400
+number of Z or Y failures is
+2
+number of X failures is
+0
+average trial time
+100.22806347475503
+mu is
+0.00030303030303030303
+number of trials is
+6600
+number of Z or Y failures is
+2
+number of X failures is
+0
+average trial time
+103.29469702909515
+mu is
+0.0004411764705882353
+number of trials is
+6800
+number of Z or Y failures is
+3
+number of X failures is
+0
+average trial time
+106.38934696835013
+mu is
+0.00042857142857142855
+number of trials is
+7000
+number of Z or Y failures is
+3
+number of X failures is
+0
+average trial time
+109.4254277977351
+mu is
+0.0005555555555555556
+number of trials is
+7200
+number of Z or Y failures is
+4
+number of X failures is
+0
+average trial time
+112.38701976691013
+mu is
+0.0006756756756756757
+number of trials is
+7400
+number of Z or Y failures is
+5
+number of X failures is
+0
+average trial time
+115.37037753358014
+stderr is
+0.00030208965829893247
+target is
+6.756756756756757e-5
+mu is
+0.0007894736842105263
+number of trials is
+7600
+number of Z or Y failures is
+6
+number of X failures is
+0
+average trial time
+118.32486993469516
+stderr is
+0.0003221952303869073
+target is
+7.894736842105263e-5
+mu is
+0.0007692307692307692
+number of trials is
+7800
+number of Z or Y failures is
+6
+number of X failures is
+0
+average trial time
+121.4107902922752
+stderr is
+0.0003139364645336251
+target is
+7.692307692307693e-5
+mu is
+0.00075
+number of trials is
+8000
+number of Z or Y failures is
+6
+number of X failures is
+0
+average trial time
+124.49630600294496
+stderr is
+0.00030609050773401257
+target is
+7.500000000000001e-5
+mu is
+0.0007317073170731707
+number of trials is
+8200
+number of Z or Y failures is
+6
+number of X failures is
+0
+average trial time
+127.57143107100507
+stderr is
+0.0002986271636759557
+target is
+7.317073170731707e-5
+mu is
+0.0008333333333333334
+number of trials is
+8400
+number of Z or Y failures is
+7
+number of X failures is
+0
+average trial time
+130.57840602547506
+stderr is
+0.00031485787125531137
+target is
+8.333333333333334e-5
+mu is
+0.0008139534883720931
+number of trials is
+8600
+number of Z or Y failures is
+7
+number of X failures is
+0
+average trial time
+133.59197318913024
+stderr is
+0.00030753815187896665
+target is
+8.139534883720931e-5
+mu is
+0.0007954545454545455
+number of trials is
+8800
+number of Z or Y failures is
+7
+number of X failures is
+0
+average trial time
+136.63787774078028
+stderr is
+0.00030055103341505537
+target is
+7.954545454545455e-5
+mu is
+0.0007777777777777777
+number of trials is
+9000
+number of Z or Y failures is
+7
+number of X failures is
+0
+average trial time
+139.63258204257534
+stderr is
+0.00029387434987681547
+target is
+7.777777777777778e-5
+mu is
+0.0007608695652173913
+number of trials is
+9200
+number of Z or Y failures is
+7
+number of X failures is
+0
+average trial time
+142.70694722873537
+stderr is
+0.00028748786212430403
+target is
+7.608695652173914e-5
+mu is
+0.0007446808510638298
+number of trials is
+9400
+number of Z or Y failures is
+7
+number of X failures is
+0
+average trial time
+145.66886512779533
+stderr is
+0.00028137305294633635
+target is
+7.446808510638299e-5
+mu is
+0.0007291666666666667
+number of trials is
+9600
+number of Z or Y failures is
+7
+number of X failures is
+0
+average trial time
+148.63254870550543
+stderr is
+0.0002755129477491459
+target is
+7.291666666666667e-5
+mu is
+0.0008163265306122449
+number of trials is
+9800
+number of Z or Y failures is
+8
+number of X failures is
+0
+average trial time
+151.65168874430546
+stderr is
+0.00028851190700292397
+target is
+8.16326530612245e-5
+mu is
+0.0008
+number of trials is
+10000
+number of Z or Y failures is
+8
+number of X failures is
+0
+average trial time
+154.71838483277554
+stderr is
+0.00028274369029111855
+target is
+8.0e-5
+mu is
+0.0008823529411764706
+number of trials is
+10200
+number of Z or Y failures is
+9
+number of X failures is
+0
+average trial time
+157.90786292532565
+stderr is
+0.00029400227286705124
+target is
+8.823529411764706e-5
+mu is
+0.0008653846153846154
+number of trials is
+10400
+number of Z or Y failures is
+9
+number of X failures is
+0
+average trial time
+160.9612521953607
+stderr is
+0.00028835055969876546
+target is
+8.653846153846155e-5
+mu is
+0.0008490566037735849
+number of trials is
+10600
+number of Z or Y failures is
+9
+number of X failures is
+0
+average trial time
+164.04231859323062
+stderr is
+0.0002829120381130694
+target is
+8.49056603773585e-5
+mu is
+0.0008333333333333334
+number of trials is
+10800
+number of Z or Y failures is
+9
+number of X failures is
+0
+average trial time
+167.15646899796582
+stderr is
+0.0002776748685299086
+target is
+8.333333333333334e-5
+mu is
+0.0008181818181818182
+number of trials is
+11000
+number of Z or Y failures is
+9
+number of X failures is
+0
+average trial time
+170.2362985928309
+stderr is
+0.00027262807211556056
+target is
+8.181818181818182e-5
+mu is
+0.0008035714285714286
+number of trials is
+11200
+number of Z or Y failures is
+9
+number of X failures is
+0
+average trial time
+173.3500474419559
+stderr is
+0.0002677614539578289
+target is
+8.035714285714287e-5
+mu is
+0.0007894736842105263
+number of trials is
+11400
+number of Z or Y failures is
+9
+number of X failures is
+0
+average trial time
+176.3115320583057
+stderr is
+0.0002630655343252102
+target is
+7.894736842105263e-5
+mu is
+0.0007758620689655172
+number of trials is
+11600
+number of Z or Y failures is
+9
+number of X failures is
+0
+average trial time
+179.3821813367257
+stderr is
+0.0002585314870347194
+target is
+7.758620689655173e-5
+mu is
+0.0007627118644067797
+number of trials is
+11800
+number of Z or Y failures is
+9
+number of X failures is
+0
+average trial time
+182.4608924280906
+stderr is
+0.0002541510840852604
+target is
+7.627118644067798e-5
+mu is
+0.0008333333333333334
+number of trials is
+12000
+number of Z or Y failures is
+10
+number of X failures is
+0
+average trial time
+185.51501808743535
+stderr is
+0.0002634242903956877
+target is
+8.333333333333334e-5
+mu is
+0.000819672131147541
+number of trials is
+12200
+number of Z or Y failures is
+10
+number of X failures is
+0
+average trial time
+188.50738858400535
+stderr is
+0.0002591074537237551
+target is
+8.19672131147541e-5
+mu is
+0.0008064516129032258
+number of trials is
+12400
+number of Z or Y failures is
+10
+number of X failures is
+0
+average trial time
+191.62228960484015
+stderr is
+0.0002549298192343125
+target is
+8.064516129032258e-5
+mu is
+0.0007936507936507937
+number of trials is
+12600
+number of Z or Y failures is
+10
+number of X failures is
+0
+average trial time
+194.7301975661251
+stderr is
+0.0002508847606245198
+target is
+7.936507936507937e-5
+mu is
+0.00078125
+number of trials is
+12800
+number of Z or Y failures is
+10
+number of X failures is
+0
+average trial time
+197.8045814515151
+stderr is
+0.0002469660655894621
+target is
+7.812500000000002e-5
+mu is
+0.0008461538461538462
+number of trials is
+13000
+number of Z or Y failures is
+11
+number of X failures is
+0
+average trial time
+200.8539603505051
+stderr is
+0.0002550268324506802
+target is
+8.461538461538463e-5
+mu is
+0.000984848484848485
+number of trials is
+13200
+number of Z or Y failures is
+13
+number of X failures is
+0
+average trial time
+203.94889532785498
+stderr is
+0.0002730236281555227
+target is
+9.848484848484849e-5
+mu is
+0.0009701492537313432
+number of trials is
+13400
+number of Z or Y failures is
+13
+number of X failures is
+0
+average trial time
+206.9987472935552
+stderr is
+0.000268950475177362
+target is
+9.701492537313432e-5
+mu is
+0.0009558823529411765
+number of trials is
+13600
+number of Z or Y failures is
+13
+number of X failures is
+0
+average trial time
+210.05521532964525
+stderr is
+0.0002649970678686968
+target is
+9.558823529411765e-5
+mu is
+0.0009420289855072464
+number of trials is
+13800
+number of Z or Y failures is
+13
+number of X failures is
+0
+average trial time
+213.12120556390047
+stderr is
+0.0002611582021654314
+target is
+9.420289855072465e-5
+mu is
+0.0009285714285714286
+number of trials is
+14000
+number of Z or Y failures is
+13
+number of X failures is
+0
+average trial time
+216.14998050531028
+stderr is
+0.0002574289712506995
+target is
+9.285714285714286e-5
+mu is
+0.0009154929577464789
+number of trials is
+14200
+number of Z or Y failures is
+13
+number of X failures is
+0
+average trial time
+219.1747359252203
+stderr is
+0.00025380474463084066
+target is
+9.15492957746479e-5
+mu is
+0.0009027777777777777
+number of trials is
+14400
+number of Z or Y failures is
+13
+number of X failures is
+0
+average trial time
+222.22527695276037
+stderr is
+0.0002502811489543157
+target is
+9.027777777777777e-5
+mu is
+0.0008904109589041096
+number of trials is
+14600
+number of Z or Y failures is
+13
+number of X failures is
+0
+average trial time
+225.26514892676028
+stderr is
+0.0002468540504064987
+target is
+8.904109589041096e-5
+mu is
+0.0009459459459459459
+number of trials is
+14800
+number of Z or Y failures is
+14
+number of X failures is
+0
+average trial time
+228.3111839406602
+stderr is
+0.0002527036229184366
+target is
+9.45945945945946e-5
+The SVD algorithm `"divide_and_conquer"` has thrown an error,
+likely because of a convergance failure. You can try
+other SVD algorithms that may converge better using the
+`alg` (or `svd_alg` if called through `factorize` or MPS/MPO functionality) keyword argument:
+
+ - "divide_and_conquer" is a divide-and-conquer algorithm
+   (LAPACK's `gesdd`). It is fast, but may lead to some innacurate
+   singular values for very ill-conditioned matrices.
+   It also may sometimes fail to converge, leading to errors
+   (in which case `"qr_iteration"` or `"recursive"` can be tried).
+
+ - `"qr_iteration"` (LAPACK's `gesvd`) is typically slower 
+   than "divide_and_conquer", especially for large matrices,
+   but is more accurate for very ill-conditioned matrices 
+   compared to `"divide_and_conquer"`.
+
+ - `"recursive"` is ITensor's custom SVD algorithm. It is very
+   reliable, but may be slow if high precision is needed.
+   To get an `svd` of a matrix `A`, an eigendecomposition of
+   ``A^{\dagger} A`` is used to compute `U` and then a `qr` of
+   ``A^{\dagger} U`` is used to compute `V`. This is performed
+   recursively to compute small singular values.
+
+Returning `nothing`. For an output `F = svd(A, ...)` you can check if
+`isnothing(F)` in your code and try a different algorithm.
+
+To suppress this message in the future, you can wrap the `svd` call in the
+`@suppress` macro from the `Suppressor` package.
+

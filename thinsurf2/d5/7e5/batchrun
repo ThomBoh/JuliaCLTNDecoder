@@ -1,0 +1,7 @@
+#!/bin/bash
+for bias in 0.00007 ; do
+	for m in {1..4} ; do
+		sbatch run.slurm $bias $m
+	done
+done
+

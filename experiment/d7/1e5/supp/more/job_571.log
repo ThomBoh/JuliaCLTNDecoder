@@ -1,0 +1,2235 @@
+mu is
+0.0
+number of trials is
+200
+number of Z or Y failures is
+0
+number of X failures is
+0
+average trial time
+1.3882360751249996
+mu is
+0.0
+number of trials is
+400
+number of Z or Y failures is
+0
+number of X failures is
+0
+average trial time
+2.590657333154998
+mu is
+0.0
+number of trials is
+600
+number of Z or Y failures is
+0
+number of X failures is
+0
+average trial time
+3.789384333589995
+mu is
+0.0
+number of trials is
+800
+number of Z or Y failures is
+0
+number of X failures is
+0
+average trial time
+5.002420020714994
+mu is
+0.0
+number of trials is
+1000
+number of Z or Y failures is
+0
+number of X failures is
+0
+average trial time
+6.230345565684996
+mu is
+0.0
+number of trials is
+1200
+number of Z or Y failures is
+0
+number of X failures is
+0
+average trial time
+7.450709215929996
+mu is
+0.0
+number of trials is
+1400
+number of Z or Y failures is
+0
+number of X failures is
+0
+average trial time
+8.670551330465004
+mu is
+0.0
+number of trials is
+1600
+number of Z or Y failures is
+0
+number of X failures is
+0
+average trial time
+9.884753111140006
+mu is
+0.0
+number of trials is
+1800
+number of Z or Y failures is
+0
+number of X failures is
+0
+average trial time
+11.08402779983001
+mu is
+0.0
+number of trials is
+2000
+number of Z or Y failures is
+0
+number of X failures is
+0
+average trial time
+12.312764102140012
+mu is
+0.0
+number of trials is
+2200
+number of Z or Y failures is
+0
+number of X failures is
+0
+average trial time
+13.53851937001501
+mu is
+0.0
+number of trials is
+2400
+number of Z or Y failures is
+0
+number of X failures is
+0
+average trial time
+14.759920645050013
+mu is
+0.0
+number of trials is
+2600
+number of Z or Y failures is
+0
+number of X failures is
+0
+average trial time
+15.99981398564502
+mu is
+0.0
+number of trials is
+2800
+number of Z or Y failures is
+0
+number of X failures is
+0
+average trial time
+17.22978154616503
+mu is
+0.0003333333333333333
+number of trials is
+3000
+number of Z or Y failures is
+1
+number of X failures is
+0
+average trial time
+18.45669537397003
+mu is
+0.0003125
+number of trials is
+3200
+number of Z or Y failures is
+1
+number of X failures is
+0
+average trial time
+19.715446360445025
+mu is
+0.0002941176470588235
+number of trials is
+3400
+number of Z or Y failures is
+1
+number of X failures is
+0
+average trial time
+20.967610100325047
+mu is
+0.0002777777777777778
+number of trials is
+3600
+number of Z or Y failures is
+1
+number of X failures is
+0
+average trial time
+22.233549325925033
+mu is
+0.0002631578947368421
+number of trials is
+3800
+number of Z or Y failures is
+1
+number of X failures is
+0
+average trial time
+23.487228438940054
+mu is
+0.00025
+number of trials is
+4000
+number of Z or Y failures is
+1
+number of X failures is
+0
+average trial time
+24.77008522900506
+mu is
+0.0002380952380952381
+number of trials is
+4200
+number of Z or Y failures is
+1
+number of X failures is
+0
+average trial time
+26.022957650475064
+mu is
+0.00022727272727272727
+number of trials is
+4400
+number of Z or Y failures is
+1
+number of X failures is
+0
+average trial time
+27.338979748210058
+mu is
+0.0002173913043478261
+number of trials is
+4600
+number of Z or Y failures is
+1
+number of X failures is
+0
+average trial time
+28.64704723901506
+mu is
+0.00020833333333333335
+number of trials is
+4800
+number of Z or Y failures is
+1
+number of X failures is
+0
+average trial time
+29.94031527819506
+mu is
+0.0002
+number of trials is
+5000
+number of Z or Y failures is
+1
+number of X failures is
+0
+average trial time
+31.25549662824504
+mu is
+0.0001923076923076923
+number of trials is
+5200
+number of Z or Y failures is
+1
+number of X failures is
+0
+average trial time
+32.58860131831005
+mu is
+0.00018518518518518518
+number of trials is
+5400
+number of Z or Y failures is
+1
+number of X failures is
+0
+average trial time
+33.901650492100046
+mu is
+0.00017857142857142857
+number of trials is
+5600
+number of Z or Y failures is
+1
+number of X failures is
+0
+average trial time
+35.225779306015035
+mu is
+0.0003448275862068965
+number of trials is
+5800
+number of Z or Y failures is
+2
+number of X failures is
+0
+average trial time
+36.586613933940015
+mu is
+0.0003333333333333333
+number of trials is
+6000
+number of Z or Y failures is
+2
+number of X failures is
+0
+average trial time
+37.94233968457004
+mu is
+0.0003225806451612903
+number of trials is
+6200
+number of Z or Y failures is
+2
+number of X failures is
+0
+average trial time
+39.312812576240034
+mu is
+0.0003125
+number of trials is
+6400
+number of Z or Y failures is
+2
+number of X failures is
+0
+average trial time
+40.69925535359503
+mu is
+0.00030303030303030303
+number of trials is
+6600
+number of Z or Y failures is
+2
+number of X failures is
+0
+average trial time
+42.07581271252004
+mu is
+0.0002941176470588235
+number of trials is
+6800
+number of Z or Y failures is
+2
+number of X failures is
+0
+average trial time
+43.46228490153508
+mu is
+0.00028571428571428574
+number of trials is
+7000
+number of Z or Y failures is
+2
+number of X failures is
+0
+average trial time
+44.852013704280104
+mu is
+0.0002777777777777778
+number of trials is
+7200
+number of Z or Y failures is
+2
+number of X failures is
+0
+average trial time
+46.25033333408522
+mu is
+0.0002702702702702703
+number of trials is
+7400
+number of Z or Y failures is
+2
+number of X failures is
+0
+average trial time
+47.65971201875029
+mu is
+0.0002631578947368421
+number of trials is
+7600
+number of Z or Y failures is
+2
+number of X failures is
+0
+average trial time
+49.069329568290286
+mu is
+0.0002564102564102564
+number of trials is
+7800
+number of Z or Y failures is
+2
+number of X failures is
+0
+average trial time
+50.474633201850345
+mu is
+0.00025
+number of trials is
+8000
+number of Z or Y failures is
+2
+number of X failures is
+0
+average trial time
+51.890753081025366
+mu is
+0.00036585365853658537
+number of trials is
+8200
+number of Z or Y failures is
+3
+number of X failures is
+0
+average trial time
+53.33087881691533
+mu is
+0.00035714285714285714
+number of trials is
+8400
+number of Z or Y failures is
+3
+number of X failures is
+0
+average trial time
+54.757905115835335
+mu is
+0.0003488372093023256
+number of trials is
+8600
+number of Z or Y failures is
+3
+number of X failures is
+0
+average trial time
+56.18555266516533
+mu is
+0.00034090909090909094
+number of trials is
+8800
+number of Z or Y failures is
+3
+number of X failures is
+0
+average trial time
+57.6394901340753
+mu is
+0.0003333333333333333
+number of trials is
+9000
+number of Z or Y failures is
+3
+number of X failures is
+0
+average trial time
+59.06098085047533
+mu is
+0.00032608695652173916
+number of trials is
+9200
+number of Z or Y failures is
+3
+number of X failures is
+0
+average trial time
+60.525387654105344
+mu is
+0.00031914893617021275
+number of trials is
+9400
+number of Z or Y failures is
+3
+number of X failures is
+0
+average trial time
+61.96556163391535
+mu is
+0.0004166666666666667
+number of trials is
+9600
+number of Z or Y failures is
+4
+number of X failures is
+0
+average trial time
+63.40766742218041
+mu is
+0.00040816326530612246
+number of trials is
+9800
+number of Z or Y failures is
+4
+number of X failures is
+0
+average trial time
+64.85425930794044
+mu is
+0.0004
+number of trials is
+10000
+number of Z or Y failures is
+4
+number of X failures is
+0
+average trial time
+66.31051821936545
+mu is
+0.000392156862745098
+number of trials is
+10200
+number of Z or Y failures is
+4
+number of X failures is
+0
+average trial time
+67.77560697599544
+mu is
+0.0003846153846153846
+number of trials is
+10400
+number of Z or Y failures is
+4
+number of X failures is
+0
+average trial time
+69.22089094151544
+mu is
+0.0003773584905660377
+number of trials is
+10600
+number of Z or Y failures is
+4
+number of X failures is
+0
+average trial time
+70.68008247081544
+mu is
+0.00037037037037037035
+number of trials is
+10800
+number of Z or Y failures is
+4
+number of X failures is
+0
+average trial time
+72.15526412360047
+mu is
+0.0003636363636363636
+number of trials is
+11000
+number of Z or Y failures is
+4
+number of X failures is
+0
+average trial time
+73.60625484368047
+mu is
+0.00035714285714285714
+number of trials is
+11200
+number of Z or Y failures is
+4
+number of X failures is
+0
+average trial time
+75.05636467988542
+mu is
+0.0003508771929824561
+number of trials is
+11400
+number of Z or Y failures is
+4
+number of X failures is
+0
+average trial time
+76.5093008341104
+mu is
+0.0003448275862068965
+number of trials is
+11600
+number of Z or Y failures is
+4
+number of X failures is
+0
+average trial time
+77.97933911785043
+mu is
+0.00033898305084745765
+number of trials is
+11800
+number of Z or Y failures is
+4
+number of X failures is
+0
+average trial time
+79.44558011428545
+mu is
+0.0003333333333333333
+number of trials is
+12000
+number of Z or Y failures is
+4
+number of X failures is
+0
+average trial time
+80.90331945692044
+mu is
+0.0003278688524590164
+number of trials is
+12200
+number of Z or Y failures is
+4
+number of X failures is
+0
+average trial time
+82.35028666513531
+mu is
+0.0003225806451612903
+number of trials is
+12400
+number of Z or Y failures is
+4
+number of X failures is
+0
+average trial time
+83.79400224391527
+mu is
+0.00031746031746031746
+number of trials is
+12600
+number of Z or Y failures is
+4
+number of X failures is
+0
+average trial time
+85.2472237866053
+mu is
+0.0003125
+number of trials is
+12800
+number of Z or Y failures is
+4
+number of X failures is
+0
+average trial time
+86.69942973174035
+mu is
+0.0003076923076923077
+number of trials is
+13000
+number of Z or Y failures is
+4
+number of X failures is
+0
+average trial time
+88.14562610640533
+mu is
+0.00030303030303030303
+number of trials is
+13200
+number of Z or Y failures is
+4
+number of X failures is
+0
+average trial time
+89.58034718700529
+mu is
+0.00029850746268656717
+number of trials is
+13400
+number of Z or Y failures is
+4
+number of X failures is
+0
+average trial time
+91.03366352857529
+mu is
+0.0002941176470588235
+number of trials is
+13600
+number of Z or Y failures is
+4
+number of X failures is
+0
+average trial time
+92.49211801827522
+mu is
+0.0002898550724637681
+number of trials is
+13800
+number of Z or Y failures is
+4
+number of X failures is
+0
+average trial time
+93.93185311714018
+mu is
+0.00028571428571428574
+number of trials is
+14000
+number of Z or Y failures is
+4
+number of X failures is
+0
+average trial time
+95.40128210863018
+mu is
+0.00028169014084507044
+number of trials is
+14200
+number of Z or Y failures is
+4
+number of X failures is
+0
+average trial time
+96.84701440017528
+mu is
+0.0002777777777777778
+number of trials is
+14400
+number of Z or Y failures is
+4
+number of X failures is
+0
+average trial time
+98.31375021675532
+mu is
+0.000273972602739726
+number of trials is
+14600
+number of Z or Y failures is
+4
+number of X failures is
+0
+average trial time
+99.75845529437034
+mu is
+0.0002702702702702703
+number of trials is
+14800
+number of Z or Y failures is
+4
+number of X failures is
+0
+average trial time
+101.2066474359054
+mu is
+0.0002666666666666667
+number of trials is
+15000
+number of Z or Y failures is
+4
+number of X failures is
+0
+average trial time
+102.63786047691048
+mu is
+0.0002631578947368421
+number of trials is
+15200
+number of Z or Y failures is
+4
+number of X failures is
+0
+average trial time
+104.09786493783037
+mu is
+0.00025974025974025974
+number of trials is
+15400
+number of Z or Y failures is
+4
+number of X failures is
+0
+average trial time
+105.53109782978535
+mu is
+0.0002564102564102564
+number of trials is
+15600
+number of Z or Y failures is
+4
+number of X failures is
+0
+average trial time
+106.97957543202024
+mu is
+0.00025316455696202533
+number of trials is
+15800
+number of Z or Y failures is
+4
+number of X failures is
+0
+average trial time
+108.42427622711037
+mu is
+0.00025
+number of trials is
+16000
+number of Z or Y failures is
+4
+number of X failures is
+0
+average trial time
+109.8521001092954
+mu is
+0.0002469135802469136
+number of trials is
+16200
+number of Z or Y failures is
+4
+number of X failures is
+0
+average trial time
+111.27986179579545
+mu is
+0.00024390243902439024
+number of trials is
+16400
+number of Z or Y failures is
+4
+number of X failures is
+0
+average trial time
+112.68000068022036
+mu is
+0.00024096385542168674
+number of trials is
+16600
+number of Z or Y failures is
+4
+number of X failures is
+0
+average trial time
+114.1188792973804
+mu is
+0.0002380952380952381
+number of trials is
+16800
+number of Z or Y failures is
+4
+number of X failures is
+0
+average trial time
+115.52616002630542
+mu is
+0.00023529411764705883
+number of trials is
+17000
+number of Z or Y failures is
+4
+number of X failures is
+0
+average trial time
+116.95116037008549
+mu is
+0.00023255813953488373
+number of trials is
+17200
+number of Z or Y failures is
+4
+number of X failures is
+0
+average trial time
+118.35522984565036
+mu is
+0.00022988505747126436
+number of trials is
+17400
+number of Z or Y failures is
+4
+number of X failures is
+0
+average trial time
+119.81128050643038
+mu is
+0.00022727272727272727
+number of trials is
+17600
+number of Z or Y failures is
+4
+number of X failures is
+0
+average trial time
+121.23419273148038
+mu is
+0.00022471910112359551
+number of trials is
+17800
+number of Z or Y failures is
+4
+number of X failures is
+0
+average trial time
+122.67101398135543
+mu is
+0.00022222222222222223
+number of trials is
+18000
+number of Z or Y failures is
+4
+number of X failures is
+0
+average trial time
+124.07339288343039
+mu is
+0.00021978021978021978
+number of trials is
+18200
+number of Z or Y failures is
+4
+number of X failures is
+0
+average trial time
+125.49617748333036
+mu is
+0.0002173913043478261
+number of trials is
+18400
+number of Z or Y failures is
+4
+number of X failures is
+0
+average trial time
+126.90881519614535
+mu is
+0.00021505376344086021
+number of trials is
+18600
+number of Z or Y failures is
+4
+number of X failures is
+0
+average trial time
+128.35478653413543
+mu is
+0.0002127659574468085
+number of trials is
+18800
+number of Z or Y failures is
+4
+number of X failures is
+0
+average trial time
+129.75212028840042
+mu is
+0.0002105263157894737
+number of trials is
+19000
+number of Z or Y failures is
+4
+number of X failures is
+0
+average trial time
+131.15999430466545
+mu is
+0.00020833333333333335
+number of trials is
+19200
+number of Z or Y failures is
+4
+number of X failures is
+0
+average trial time
+132.5829543776004
+mu is
+0.0002061855670103093
+number of trials is
+19400
+number of Z or Y failures is
+4
+number of X failures is
+0
+average trial time
+133.98799327555034
+mu is
+0.00020408163265306123
+number of trials is
+19600
+number of Z or Y failures is
+4
+number of X failures is
+0
+average trial time
+135.4303538010903
+mu is
+0.00020202020202020202
+number of trials is
+19800
+number of Z or Y failures is
+4
+number of X failures is
+0
+average trial time
+136.82252829317514
+mu is
+0.0002
+number of trials is
+20000
+number of Z or Y failures is
+4
+number of X failures is
+0
+average trial time
+138.24574993113004
+mu is
+0.00019801980198019803
+number of trials is
+20200
+number of Z or Y failures is
+4
+number of X failures is
+0
+average trial time
+139.65319955317503
+mu is
+0.000196078431372549
+number of trials is
+20400
+number of Z or Y failures is
+4
+number of X failures is
+0
+average trial time
+141.06800541471506
+mu is
+0.0001941747572815534
+number of trials is
+20600
+number of Z or Y failures is
+4
+number of X failures is
+0
+average trial time
+142.50601805046506
+mu is
+0.0001923076923076923
+number of trials is
+20800
+number of Z or Y failures is
+4
+number of X failures is
+0
+average trial time
+143.90130498691514
+mu is
+0.00019047619047619048
+number of trials is
+21000
+number of Z or Y failures is
+4
+number of X failures is
+0
+average trial time
+145.31252647250508
+mu is
+0.00018867924528301886
+number of trials is
+21200
+number of Z or Y failures is
+4
+number of X failures is
+0
+average trial time
+146.70523272790015
+mu is
+0.00018691588785046728
+number of trials is
+21400
+number of Z or Y failures is
+4
+number of X failures is
+0
+average trial time
+148.0902641236903
+mu is
+0.00018518518518518518
+number of trials is
+21600
+number of Z or Y failures is
+4
+number of X failures is
+0
+average trial time
+149.49676388649527
+mu is
+0.0001834862385321101
+number of trials is
+21800
+number of Z or Y failures is
+4
+number of X failures is
+0
+average trial time
+150.90348186146514
+mu is
+0.0001818181818181818
+number of trials is
+22000
+number of Z or Y failures is
+4
+number of X failures is
+0
+average trial time
+152.30390981694012
+mu is
+0.00018018018018018018
+number of trials is
+22200
+number of Z or Y failures is
+4
+number of X failures is
+0
+average trial time
+153.7374056275902
+mu is
+0.00017857142857142857
+number of trials is
+22400
+number of Z or Y failures is
+4
+number of X failures is
+0
+average trial time
+155.12263184732012
+mu is
+0.00017699115044247788
+number of trials is
+22600
+number of Z or Y failures is
+4
+number of X failures is
+0
+average trial time
+156.4983979602551
+mu is
+0.00017543859649122806
+number of trials is
+22800
+number of Z or Y failures is
+4
+number of X failures is
+0
+average trial time
+157.89939881809514
+mu is
+0.00017391304347826088
+number of trials is
+23000
+number of Z or Y failures is
+4
+number of X failures is
+0
+average trial time
+159.2829609682051
+mu is
+0.00017241379310344826
+number of trials is
+23200
+number of Z or Y failures is
+4
+number of X failures is
+0
+average trial time
+160.65248480132502
+mu is
+0.00017094017094017094
+number of trials is
+23400
+number of Z or Y failures is
+4
+number of X failures is
+0
+average trial time
+162.080156514055
+mu is
+0.00016949152542372882
+number of trials is
+23600
+number of Z or Y failures is
+4
+number of X failures is
+0
+average trial time
+163.47742431046993
+mu is
+0.0001680672268907563
+number of trials is
+23800
+number of Z or Y failures is
+4
+number of X failures is
+0
+average trial time
+164.8706267747398
+mu is
+0.00016666666666666666
+number of trials is
+24000
+number of Z or Y failures is
+4
+number of X failures is
+0
+average trial time
+166.26855176566482
+mu is
+0.00016528925619834712
+number of trials is
+24200
+number of Z or Y failures is
+4
+number of X failures is
+0
+average trial time
+167.66335106115494
+mu is
+0.0001639344262295082
+number of trials is
+24400
+number of Z or Y failures is
+4
+number of X failures is
+0
+average trial time
+169.04310405852473
+mu is
+0.00016260162601626016
+number of trials is
+24600
+number of Z or Y failures is
+4
+number of X failures is
+0
+average trial time
+170.4145615123997
+mu is
+0.00016129032258064516
+number of trials is
+24800
+number of Z or Y failures is
+4
+number of X failures is
+0
+average trial time
+171.80123073187002
+mu is
+0.00016
+number of trials is
+25000
+number of Z or Y failures is
+4
+number of X failures is
+0
+average trial time
+173.22569344417494
+mu is
+0.00015873015873015873
+number of trials is
+25200
+number of Z or Y failures is
+4
+number of X failures is
+0
+average trial time
+174.5998681264299
+mu is
+0.00015748031496062991
+number of trials is
+25400
+number of Z or Y failures is
+4
+number of X failures is
+0
+average trial time
+175.98527900910986
+mu is
+0.00015625
+number of trials is
+25600
+number of Z or Y failures is
+4
+number of X failures is
+0
+average trial time
+177.35806757356494
+mu is
+0.0001550387596899225
+number of trials is
+25800
+number of Z or Y failures is
+4
+number of X failures is
+0
+average trial time
+178.7552078026048
+mu is
+0.00015384615384615385
+number of trials is
+26000
+number of Z or Y failures is
+4
+number of X failures is
+0
+average trial time
+180.14098835240986
+mu is
+0.00015267175572519084
+number of trials is
+26200
+number of Z or Y failures is
+4
+number of X failures is
+0
+average trial time
+181.5228804327997
+mu is
+0.00015151515151515152
+number of trials is
+26400
+number of Z or Y failures is
+4
+number of X failures is
+0
+average trial time
+182.88391592545958
+mu is
+0.00015037593984962405
+number of trials is
+26600
+number of Z or Y failures is
+4
+number of X failures is
+0
+average trial time
+184.24255917806946
+mu is
+0.00014925373134328358
+number of trials is
+26800
+number of Z or Y failures is
+4
+number of X failures is
+0
+average trial time
+185.5908478719241
+mu is
+0.00014814814814814815
+number of trials is
+27000
+number of Z or Y failures is
+4
+number of X failures is
+0
+average trial time
+186.96818640697902
+mu is
+0.00014705882352941175
+number of trials is
+27200
+number of Z or Y failures is
+4
+number of X failures is
+0
+average trial time
+188.35404921398901
+mu is
+0.00014598540145985403
+number of trials is
+27400
+number of Z or Y failures is
+4
+number of X failures is
+0
+average trial time
+189.75403356713392
+mu is
+0.00014492753623188405
+number of trials is
+27600
+number of Z or Y failures is
+4
+number of X failures is
+0
+average trial time
+191.111336211254
+mu is
+0.00014388489208633093
+number of trials is
+27800
+number of Z or Y failures is
+4
+number of X failures is
+0
+average trial time
+192.46732223273906
+mu is
+0.00014285714285714287
+number of trials is
+28000
+number of Z or Y failures is
+4
+number of X failures is
+0
+average trial time
+193.83124095929907
+mu is
+0.00014184397163120567
+number of trials is
+28200
+number of Z or Y failures is
+4
+number of X failures is
+0
+average trial time
+195.204760004439
+mu is
+0.00014084507042253522
+number of trials is
+28400
+number of Z or Y failures is
+4
+number of X failures is
+0
+average trial time
+196.55183678746909
+mu is
+0.00013986013986013986
+number of trials is
+28600
+number of Z or Y failures is
+4
+number of X failures is
+0
+average trial time
+197.905757841289
+mu is
+0.0001388888888888889
+number of trials is
+28800
+number of Z or Y failures is
+4
+number of X failures is
+0
+average trial time
+199.28768233985375
+mu is
+0.00013793103448275863
+number of trials is
+29000
+number of Z or Y failures is
+4
+number of X failures is
+0
+average trial time
+200.69066753516884
+mu is
+0.000136986301369863
+number of trials is
+29200
+number of Z or Y failures is
+4
+number of X failures is
+0
+average trial time
+202.0811239616687
+mu is
+0.00013605442176870748
+number of trials is
+29400
+number of Z or Y failures is
+4
+number of X failures is
+0
+average trial time
+203.4462154190236
+mu is
+0.00013513513513513514
+number of trials is
+29600
+number of Z or Y failures is
+4
+number of X failures is
+0
+average trial time
+204.80750281413341
+mu is
+0.00013422818791946307
+number of trials is
+29800
+number of Z or Y failures is
+4
+number of X failures is
+0
+average trial time
+206.15955083785354
+mu is
+0.00013333333333333334
+number of trials is
+30000
+number of Z or Y failures is
+4
+number of X failures is
+0
+average trial time
+207.51641362880844
+mu is
+0.00013245033112582781
+number of trials is
+30200
+number of Z or Y failures is
+4
+number of X failures is
+0
+average trial time
+208.87472263958344
+mu is
+0.00013157894736842105
+number of trials is
+30400
+number of Z or Y failures is
+4
+number of X failures is
+0
+average trial time
+210.2221216030035
+mu is
+0.00013071895424836603
+number of trials is
+30600
+number of Z or Y failures is
+4
+number of X failures is
+0
+average trial time
+211.57547802524326
+mu is
+0.00012987012987012987
+number of trials is
+30800
+number of Z or Y failures is
+4
+number of X failures is
+0
+average trial time
+212.93736981282822
+mu is
+0.00012903225806451613
+number of trials is
+31000
+number of Z or Y failures is
+4
+number of X failures is
+0
+average trial time
+214.2858351813533
+mu is
+0.0001282051282051282
+number of trials is
+31200
+number of Z or Y failures is
+4
+number of X failures is
+0
+average trial time
+215.6520052018536
+mu is
+0.00012738853503184712
+number of trials is
+31400
+number of Z or Y failures is
+4
+number of X failures is
+0
+average trial time
+217.02559432151847
+mu is
+0.00012658227848101267
+number of trials is
+31600
+number of Z or Y failures is
+4
+number of X failures is
+0
+average trial time
+218.38794261895856
+mu is
+0.00012578616352201257
+number of trials is
+31800
+number of Z or Y failures is
+4
+number of X failures is
+0
+average trial time
+219.76541045154875
+mu is
+0.000125
+number of trials is
+32000
+number of Z or Y failures is
+4
+number of X failures is
+0
+average trial time
+221.1530031395289
+mu is
+0.00012422360248447205
+number of trials is
+32200
+number of Z or Y failures is
+4
+number of X failures is
+0
+average trial time
+222.52222351028388
+mu is
+0.0001234567901234568
+number of trials is
+32400
+number of Z or Y failures is
+4
+number of X failures is
+0
+average trial time
+223.88046603219402
+mu is
+0.0001226993865030675
+number of trials is
+32600
+number of Z or Y failures is
+4
+number of X failures is
+0
+average trial time
+225.2322738411041
+mu is
+0.00012195121951219512
+number of trials is
+32800
+number of Z or Y failures is
+4
+number of X failures is
+0
+average trial time
+226.584913810529
+mu is
+0.00012121212121212121
+number of trials is
+33000
+number of Z or Y failures is
+4
+number of X failures is
+0
+average trial time
+227.95903217730913
+mu is
+0.00012048192771084337
+number of trials is
+33200
+number of Z or Y failures is
+4
+number of X failures is
+0
+average trial time
+229.3314992694342
+mu is
+0.00011976047904191617
+number of trials is
+33400
+number of Z or Y failures is
+4
+number of X failures is
+0
+average trial time
+230.6890423452643
+mu is
+0.00011904761904761905
+number of trials is
+33600
+number of Z or Y failures is
+4
+number of X failures is
+0
+average trial time
+232.06454114476426
+mu is
+0.00011834319526627219
+number of trials is
+33800
+number of Z or Y failures is
+4
+number of X failures is
+0
+average trial time
+233.41643761225924
+mu is
+0.00011764705882352942
+number of trials is
+34000
+number of Z or Y failures is
+4
+number of X failures is
+0
+average trial time
+234.76878423860427
+mu is
+0.00011695906432748539
+number of trials is
+34200
+number of Z or Y failures is
+4
+number of X failures is
+0
+average trial time
+236.12447952944925
+mu is
+0.00011627906976744187
+number of trials is
+34400
+number of Z or Y failures is
+4
+number of X failures is
+0
+average trial time
+237.48218346953396
+mu is
+0.00011560693641618497
+number of trials is
+34600
+number of Z or Y failures is
+4
+number of X failures is
+0
+average trial time
+238.82450748729906
+mu is
+0.00011494252873563218
+number of trials is
+34800
+number of Z or Y failures is
+4
+number of X failures is
+0
+average trial time
+240.17644541943912
+mu is
+0.00011428571428571428
+number of trials is
+35000
+number of Z or Y failures is
+4
+number of X failures is
+0
+average trial time
+241.55194506849418
+mu is
+0.00011363636363636364
+number of trials is
+35200
+number of Z or Y failures is
+4
+number of X failures is
+0
+average trial time
+242.90246720447422
+mu is
+0.00011299435028248587
+number of trials is
+35400
+number of Z or Y failures is
+4
+number of X failures is
+0
+average trial time
+244.24747844945415
+mu is
+0.00011235955056179776
+number of trials is
+35600
+number of Z or Y failures is
+4
+number of X failures is
+0
+average trial time
+245.59548940714384
+mu is
+0.000111731843575419
+number of trials is
+35800
+number of Z or Y failures is
+4
+number of X failures is
+0
+average trial time
+246.96461378126372
+mu is
+0.00011111111111111112
+number of trials is
+36000
+number of Z or Y failures is
+4
+number of X failures is
+0
+average trial time
+248.31698023986363
+mu is
+0.00011049723756906077
+number of trials is
+36200
+number of Z or Y failures is
+4
+number of X failures is
+0
+average trial time
+249.67512598085384
+mu is
+0.00010989010989010989
+number of trials is
+36400
+number of Z or Y failures is
+4
+number of X failures is
+0
+average trial time
+251.0149491435842
+mu is
+0.0001092896174863388
+number of trials is
+36600
+number of Z or Y failures is
+4
+number of X failures is
+0
+average trial time
+252.3662072913591
+mu is
+0.00010869565217391305
+number of trials is
+36800
+number of Z or Y failures is
+4
+number of X failures is
+0
+average trial time
+253.6985361697391
+mu is
+0.00010810810810810811
+number of trials is
+37000
+number of Z or Y failures is
+4
+number of X failures is
+0
+average trial time
+255.07154446576402
+mu is
+0.00010752688172043011
+number of trials is
+37200
+number of Z or Y failures is
+4
+number of X failures is
+0
+average trial time
+256.4425036436241
+mu is
+0.000106951871657754
+number of trials is
+37400
+number of Z or Y failures is
+4
+number of X failures is
+0
+average trial time
+257.80798256731396
+mu is
+0.00010638297872340425
+number of trials is
+37600
+number of Z or Y failures is
+4
+number of X failures is
+0
+average trial time
+259.16930923169383
+mu is
+0.00010582010582010582
+number of trials is
+37800
+number of Z or Y failures is
+4
+number of X failures is
+0
+average trial time
+260.52018388224377
+mu is
+0.00010526315789473685
+number of trials is
+38000
+number of Z or Y failures is
+4
+number of X failures is
+0
+average trial time
+261.8856937876888
+mu is
+0.00010471204188481675
+number of trials is
+38200
+number of Z or Y failures is
+4
+number of X failures is
+0
+average trial time
+263.246545916914
+mu is
+0.00010416666666666667
+number of trials is
+38400
+number of Z or Y failures is
+4
+number of X failures is
+0
+average trial time
+264.6183069207941
+mu is
+0.00010362694300518135
+number of trials is
+38600
+number of Z or Y failures is
+4
+number of X failures is
+0
+average trial time
+266.0059677665943
+mu is
+0.00010309278350515464
+number of trials is
+38800
+number of Z or Y failures is
+4
+number of X failures is
+0
+average trial time
+267.38419422689935
+mu is
+0.00010256410256410256
+number of trials is
+39000
+number of Z or Y failures is
+4
+number of X failures is
+0
+average trial time
+268.7662913350143
+mu is
+0.00010204081632653062
+number of trials is
+39200
+number of Z or Y failures is
+4
+number of X failures is
+0
+average trial time
+270.1526779049992
+mu is
+0.0001015228426395939
+number of trials is
+39400
+number of Z or Y failures is
+4
+number of X failures is
+0
+average trial time
+271.53292194568917
+mu is
+0.00010101010101010101
+number of trials is
+39600
+number of Z or Y failures is
+4
+number of X failures is
+0
+average trial time
+272.92579888950416
+mu is
+0.00010050251256281407
+number of trials is
+39800
+number of Z or Y failures is
+4
+number of X failures is
+0
+average trial time
+274.2997800731992
+mu is
+0.0001
+number of trials is
+40000
+number of Z or Y failures is
+4
+number of X failures is
+0
+average trial time
+275.666659430349
+mu is
+9.950248756218905e-5
+number of trials is
+40200
+number of Z or Y failures is
+4
+number of X failures is
+0
+average trial time
+277.01247175116913
+mu is
+9.900990099009902e-5
+number of trials is
+40400
+number of Z or Y failures is
+4
+number of X failures is
+0
+average trial time
+278.3912655789993
+mu is
+9.852216748768474e-5
+number of trials is
+40600
+number of Z or Y failures is
+4
+number of X failures is
+0
+average trial time
+279.7534289248542
+mu is
+9.80392156862745e-5
+number of trials is
+40800
+number of Z or Y failures is
+4
+number of X failures is
+0
+average trial time
+281.12446217043413
+mu is
+9.75609756097561e-5
+number of trials is
+41000
+number of Z or Y failures is
+4
+number of X failures is
+0
+average trial time
+282.4890103854891
+mu is
+9.70873786407767e-5
+number of trials is
+41200
+number of Z or Y failures is
+4
+number of X failures is
+0
+average trial time
+283.8746945065344
+mu is
+9.66183574879227e-5
+number of trials is
+41400
+number of Z or Y failures is
+4
+number of X failures is
+0
+average trial time
+285.26504529110446
+mu is
+9.615384615384615e-5
+number of trials is
+41600
+number of Z or Y failures is
+4
+number of X failures is
+0
+average trial time
+286.6369467440197
+mu is
+9.569377990430622e-5
+number of trials is
+41800
+number of Z or Y failures is
+4
+number of X failures is
+0
+average trial time
+288.0064182339447
+mu is
+9.523809523809524e-5
+number of trials is
+42000
+number of Z or Y failures is
+4
+number of X failures is
+0
+average trial time
+289.3647705784649
+mu is
+9.47867298578199e-5
+number of trials is
+42200
+number of Z or Y failures is
+4
+number of X failures is
+0
+average trial time
+290.7384921087198
+mu is
+9.433962264150943e-5
+number of trials is
+42400
+number of Z or Y failures is
+4
+number of X failures is
+0
+average trial time
+292.1021485230699
+mu is
+9.389671361502347e-5
+number of trials is
+42600
+number of Z or Y failures is
+4
+number of X failures is
+0
+average trial time
+293.47646965501485
+mu is
+9.345794392523364e-5
+number of trials is
+42800
+number of Z or Y failures is
+4
+number of X failures is
+0
+average trial time
+294.8548092117247
+mu is
+9.302325581395348e-5
+number of trials is
+43000
+number of Z or Y failures is
+4
+number of X failures is
+0
+average trial time
+296.2226183808947
+mu is
+9.259259259259259e-5
+number of trials is
+43200
+number of Z or Y failures is
+4
+number of X failures is
+0
+average trial time
+297.59053388588956
+mu is
+9.216589861751152e-5
+number of trials is
+43400
+number of Z or Y failures is
+4
+number of X failures is
+0
+average trial time
+298.9540909118695
+mu is
+9.174311926605505e-5
+number of trials is
+43600
+number of Z or Y failures is
+4
+number of X failures is
+0
+average trial time
+300.3174420465993
+mu is
+9.132420091324201e-5
+number of trials is
+43800
+number of Z or Y failures is
+4
+number of X failures is
+0
+average trial time
+301.70715746965413
+mu is
+9.09090909090909e-5
+number of trials is
+44000
+number of Z or Y failures is
+4
+number of X failures is
+0
+average trial time
+303.0808203549991
+mu is
+9.049773755656108e-5
+number of trials is
+44200
+number of Z or Y failures is
+4
+number of X failures is
+0
+average trial time
+304.446233793729
+mu is
+9.009009009009009e-5
+number of trials is
+44400
+number of Z or Y failures is
+4
+number of X failures is
+0
+average trial time
+305.81426062818883
+mu is
+8.968609865470852e-5
+number of trials is
+44600
+number of Z or Y failures is
+4
+number of X failures is
+0
+average trial time
+307.1919868346441
+mu is
+8.928571428571429e-5
+number of trials is
+44800
+slurmstepd: error: *** JOB 571 ON cpu48-dy-c5a12xlarge-57 CANCELLED AT 2021-06-21T17:10:18 ***
