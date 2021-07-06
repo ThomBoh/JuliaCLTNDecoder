@@ -684,31 +684,31 @@ function SurfMCError(dz,dx,nr,zsched,xsched,bsch,p,al2,tmeas,k2,nth,pmz,pmx)
         #t=0
         for zc in [1:nzc;]
             r=rand(Float64)
-            if r<ppaz
-                #z check ancilla gets x error
-                zancx[zc]=(zancx[zc]+1)%2
+            if r<pzip
+                #z check ancilla gets z error
+                zancz[zc]=(zancz[zc]+1)%2
             #elseif (r>pzip) && (r<(pzip+pxip))
                 #z check ancilla gets x error
             #    zancx[zc]=(zancx[zc]+1)%2
-            #elseif (r>(pzip)) && (r<(pzip+pxip))
+            elseif (r>(pzip)) && (r<(pzip+pxip))
                 #z check ancilla gets y error
-            #    zancz[zc]=(zancz[zc]+1)%2
-            #    zancx[zc]=(zancx[zc]+1)%2
+                zancz[zc]=(zancz[zc]+1)%2
+                zancx[zc]=(zancx[zc]+1)%2
             end
         end
 
         for xc in [1:nxc;]
             r=rand(Float64)
-            if r<ppax
+            if r<pzip
                 #x check ancilla gets z error
                 xancz[xc]=(xancz[xc]+1)%2
             #elseif (r>pzip) && (r<(pzip+pxip))
                 #x check ancilla gets x error
             #    xancx[xc]=(xancx[xc]+1)%2
-            #elseif (r>(pzip)) && (r<(pzip+pxip))
+            elseif (r>(pzip)) && (r<(pzip+pxip))
                 #x check ancilla gets y error
-            #    xancz[xc]=(xancz[xc]+1)%2
-            #    xancx[xc]=(xancx[xc]+1)%2
+                xancz[xc]=(xancz[xc]+1)%2
+                xancx[xc]=(xancx[xc]+1)%2
             end
         end
 
@@ -1092,11 +1092,11 @@ function buildinitstring(dz::Int,dx::Int,nr,layout)
             #z check ancilla
 
             if i==1
-                out=["X+"]
+                out=["Z+"]
                 #println("hay2")
                 count=count+1
             else
-                push!(out,"X+")
+                push!(out,"Z+")
                 count=count+1
             end
 
@@ -1125,8 +1125,8 @@ function MLError(TNin,dz,dx,nr,PEZ,PEX,Synz,Synx,zsch,xsch,bsch,layout)
 
     #compute "probability" that this pure error and meas outcomes occurred, as well as logical z
     plz=inner(TNin,mpsz)
-    #println(pli)
-    #println(plz)
+    println(pli)
+    println(plz)
 
     if pli>plz
         #if it was more likely that no logical z occurred, decoder does nothing
@@ -1202,16 +1202,16 @@ function SurfCirc(dz,dx,nr,PEZ,PEX,Synz,Synx,zsch,xsch,bsch,layout,ql,zl,xl,p,al
                     mbit=Synz[rep-1,zc]
                     if mbit==0
                         if rep<nr
-                            push!(gates,("pizres",q,(p=0,)))
+                            push!(gates,("pizres",q,(p=ppaz,)))
                         else
-                            push!(gates,("pz",q,(p=0,)))
+                            push!(gates,("pizresfinal",q,(p=0,)))
                         end
 
                     else
                         if rep<nr
-                            push!(gates,("pizres",q,(p=0,)))
+                            push!(gates,("pizres",q,(p=ppaz,)))
                         else
-                            push!(gates,("pz",q,(p=0,)))
+                            push!(gates,("pizresfinal",q,(p=0,)))
                         end
                     end
 
@@ -1238,7 +1238,7 @@ function SurfCirc(dz,dx,nr,PEZ,PEX,Synz,Synx,zsch,xsch,bsch,layout,ql,zl,xl,p,al
 
                 elseif typ==1
                     #z check ancilla qubit
-                    push!(gates,("pz",q,(p=0,)))
+                    push!(gates,("pz",q,(p=ppaz,)))
 
                 elseif typ==2
                     #x check ancilla qubit
@@ -1419,9 +1419,11 @@ function SurfMC(dz,dx,nr,p,al2,tmeas,k2,nth,acc,bd,err,nt; sim_id::Int=-1)
         #display(Synx)
         #display(Ex)
         #display(Synz)
-
-        PEZ,PEX=getSurfPE(Ez,Ex,dz,dx)
-        #display(PEZ)
+	PEZ,PEX=getSurfPE(Ez,Ex,dz,dx)
+        display(PEZ)
+        #stabadd=[1,1,0;1,0,1;0,1,1;0,0,0;0,0,0]
+        #PEZalt=PEZ+stabadd
+        #display(PEZalt)
         #display(PEX)
         L=LogComp(Ez,Ex,dz,dx)
         LZ=L[1]
@@ -1430,11 +1432,36 @@ function SurfMC(dz,dx,nr,p,al2,tmeas,k2,nth,acc,bd,err,nt; sim_id::Int=-1)
         #println(PEZ)
         elapsed = @elapsed begin
           MPS=SurfCirc(dz,dx,nr,PEZ,PEX,Synz,Synx,zsch,xsch,bsch,layout,ql,zl,xl,p,al2,tmeas,k2,nth,pmz,pmx,acc,bd)
-        end
-	#println(elapsed)
+        end  
+        #println(elapsed)
         totime=totime+elapsed
+        #MPS 
+        MLZ=MLError(MPS,dz,dx,nr,PEZ,PEX,Synz,Synx,zsch,xsch,bsch,layout)#,ystab)
+        #MLZ=MLError(MPS,dz,dx,nr,PEZalt,PEX,Synz,Synx,zsch,xsch,bsch,layout,ystab)
+        PEZ[1,1]=(PEZ[1,1]+1)%2
+        PEZ[1,2]=(PEZ[1,2]+1)%2
+        PEZ[2,1]=(PEZ[2,1]+1)%2
+        PEZ[2,3]=(PEZ[2,3]+1)%2
+        PEZ[3,2]=(PEZ[3,2]+1)%2
+        PEZ[3,3]=(PEZ[3,3]+1)%2
+        println(PEZ)
+        MLZ=MLError(MPS,dz,dx,nr,PEZ,PEX,Synz,Synx,zsch,xsch,bsch,layout)#,ystab) 
+
+        #PEZ,PEX=getSurfPE(Ez,Ex,dz,dx)
+        #display(PEZ)
+        #display(PEX)
+        #L=LogComp(Ez,Ex,dz,dx)
+        #LZ=L[1]
+        #LX=L[2]
+        #display(L)
+        #println(PEZ)
+        #elapsed = @elapsed begin
+        #  MPS=SurfCirc(dz,dx,nr,PEZ,PEX,Synz,Synx,zsch,xsch,bsch,layout,ql,zl,xl,p,al2,tmeas,k2,nth,pmz,pmx,acc,bd)
+        #end
+	#println(elapsed)
+        #totime=totime+elapsed
 	#MPS
-        MLZ=MLError(MPS,dz,dx,nr,PEZ,PEX,Synz,Synx,zsch,xsch,bsch,layout)
+        #MLZ=MLError(MPS,dz,dx,nr,PEZ,PEX,Synz,Synx,zsch,xsch,bsch,layout)
         #PEZ[1,1]=(PEZ[1,1]+1)%2
         #PEZ[1,2]=(PEZ[1,2]+1)%2
         #PEZ[2,1]=(PEZ[2,1]+1)%2

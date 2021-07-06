@@ -636,10 +636,104 @@ function CNOTfail(r,p,al2,tmeas,k2,nth,pmz,pmx)
     return zout,xout
 end
 
+
+function CYfail(r,p,al2,tmeas,k2,nth,pmz,pmx)
+
+    #pz1=0.91*((p)^(0.5))
+    #pz2=0.15*((p)^(0.5))
+    #pz1z2=0.15*((p)^(0.5))
+    #px1=0.93*((p)^(0.5))*exp(-2*al2)
+    #px2=0.93*((p)^(0.5))*exp(-2*al2)
+    #px1x2=0.93*((p)^(0.5))*exp(-2*al2)
+    #pz1x2=0.93*((p)^(0.5))*exp(-2*al2)
+    #py1=0.93*((p)^(0.5))*exp(-2*al2)
+    #py1x2=0.93*((p)^(0.5))*exp(-2*al2)
+    #py2=0.28*p*exp(-2*al2)
+    #py1z2=0.28*p*exp(-2*al2)
+    #px1z2=0.28*p*exp(-2*al2)
+    #pz1y2=0.28*p*exp(-2*al2)
+    #py1y2=0.28*p*exp(-2*al2)
+    #px1y2=0.28*p*exp(-2*al2)
+
+
+    #CYpz1=(1.01 + 0.77/al2)*p
+    #CYpz2=(0.32 + 1.05/al2)*p
+    #CYpz1z2=(0.32 + 1.05/al2)*p
+    CYpz1=(1.01 + 0.77/al2)*(p^(0.5))# +0.42*exp(-2*al2)*p +0.86*exp(-2*al2)*p +1.14*exp(-2*al2)*p
+    CYpz2=(0.32 + 1.05/al2)*(p^(0.5))# +1.67*exp(-2*al2)*p +1.32*exp(-2*al2)*p +exp(-2*al2)*p
+    CYpz1z2=(0.32 + 1.05/al2)*(p^(0.5))# +1.35*exp(-2*al2)*p +1.06*exp(-2*al2)*p +0.76*exp(-2*al2)*p
+
+    CYpx1=1.17*exp(-2*al2)*(p^(0.5))
+    CYpx2=0.35*exp(-2*al2)*(p^(0.5))
+    CYpx1x2=1.13*exp(-2*al2)*(p^(0.5))
+    CYpz1x2=0.42*exp(-2*al2)*(p^(0.5))
+    CYpy1=0.86*exp(-2*al2)*(p^(0.5))
+    CYpy1x2=1.14*exp(-2*al2)*(p^(0.5))
+    CYpy2=1.67*exp(-2*al2)*(p^(0.5))
+    CYpy1z2=1.35*exp(-2*al2)*(p^(0.5))
+    CYpx1z2=1.32*exp(-2*al2)*(p^(0.5))
+    CYpz1y2=1.06*exp(-2*al2)*(p^(0.5))
+    CYpy1y2=0.76*exp(-2*al2)*(p^(0.5))
+    CYpx1y2=exp(-2*al2)*(p^(0.5))
+
+
+    if r < CYpz1
+        zout=[1,0]
+        xout=[0,0]
+    elseif (r>CYpz1) && (r<(CYpz1+CYpz2))
+        zout=[0,1]
+        xout=[0,0]
+    elseif (r>(CYpz1+CYpz2)) && (r<(CYpz1+CYpz2+CYpz1z2))
+        zout=[1,1]
+        xout=[0,0]
+    elseif (r>(CYpz1+CYpz2+CYpz1z2)) && (r<(CYpz1+CYpz2+CYpz1z2+CYpx1))
+        zout=[0,0]
+        xout=[1,0]
+    elseif (r>(CYpz1+CYpz2+CYpz1z2+CYpx1)) && (r<(CYpz1+CYpz2+CYpz1z2+CYpx1+CYpx2))
+        zout=[0,0]
+        xout=[0,1]
+    elseif (r>(CYpz1+CYpz2+CYpz1z2+CYpx1+CYpx2)) && (r<(CYpz1+CYpz2+CYpz1z2+CYpx1+CYpx2+CYpx1x2))
+        zout=[0,0]
+        xout=[1,1]
+    elseif (r>(CYpz1+CYpz2+CYpz1z2+CYpx1+CYpx2+CYpx1x2)) && (r<(CYpz1+CYpz2+CYpz1z2+CYpx1+CYpx2+CYpx1x2+CYpz1x2))
+        zout=[1,0]
+        xout=[0,1]
+    elseif (r>(CYpz1+CYpz2+CYpz1z2+CYpx1+CYpx2+CYpx1x2+CYpz1x2)) && (r<(CYpz1+CYpz2+CYpz1z2+CYpx1+CYpx2+CYpx1x2+CYpz1x2+CYpy1))
+        zout=[1,0]
+        xout=[1,0]
+    elseif (r>(CYpz1+CYpz2+CYpz1z2+CYpx1+CYpx2+CYpx1x2+CYpz1x2+CYpy1)) && (r<(CYpz1+CYpz2+CYpz1z2+CYpx1+CYpx2+CYpx1x2+CYpz1x2+CYpy1+CYpy1x2))
+        zout=[1,0]
+        xout=[1,1]
+    elseif (r>(CYpz1+CYpz2+CYpz1z2+CYpx1+CYpx2+CYpx1x2+CYpz1x2+CYpy1+CYpy1x2)) && (r<(CYpz1+CYpz2+CYpz1z2+CYpx1+CYpx2+CYpx1x2+CYpz1x2+CYpy1+CYpy1x2+CYpy2))
+        zout=[0,1]
+        xout=[0,1]
+    elseif (r>(CYpz1+CYpz2+CYpz1z2+CYpx1+CYpx2+CYpx1x2+CYpz1x2+CYpy1+CYpy1x2+CYpy2)) && (r<(CYpz1+CYpz2+CYpz1z2+CYpx1+CYpx2+CYpx1x2+CYpz1x2+CYpy1+CYpy1x2+CYpy2+CYpy1z2))
+        zout=[1,1]
+        xout=[1,0]
+    elseif (r>(CYpz1+CYpz2+CYpz1z2+CYpx1+CYpx2+CYpx1x2+CYpz1x2+CYpy1+CYpy1x2+CYpy2+CYpy1z2)) && (r<(CYpz1+CYpz2+CYpz1z2+CYpx1+CYpx2+CYpx1x2+CYpz1x2+CYpy1+CYpy1x2+CYpy2+CYpy1z2+CYpx1z2))
+        zout=[0,1]
+        xout=[1,0]
+    elseif (r>(CYpz1+CYpz2+CYpz1z2+CYpx1+CYpx2+CYpx1x2+CYpz1x2+CYpy1+CYpy1x2+CYpy2+CYpy1z2+CYpx1z2)) && (r<(CYpz1+CYpz2+CYpz1z2+CYpx1+CYpx2+CYpx1x2+CYpz1x2+CYpy1+CYpy1x2+CYpy2+CYpy1z2+CYpx1z2+CYpz1y2))
+        zout=[1,1]
+        xout=[0,1]
+    elseif (r>(CYpz1+CYpz2+CYpz1z2+CYpx1+CYpx2+CYpx1x2+CYpz1x2+CYpy1+CYpy1x2+CYpy2+CYpy1z2+CYpx1z2+CYpz1y2)) && (r<(CYpz1+CYpz2+CYpz1z2+CYpx1+CYpx2+CYpx1x2+CYpz1x2+CYpy1+CYpy1x2+CYpy2+CYpy1z2+CYpx1z2+CYpz1y2+CYpy1y2))
+        zout=[1,1]
+        xout=[1,1]
+    elseif (r>(CYpz1+CYpz2+CYpz1z2+CYpx1+CYpx2+CYpx1x2+CYpz1x2+CYpy1+CYpy1x2+CYpy2+CYpy1z2+CYpx1z2+CYpz1y2+CYpy1y2)) && (r<(CYpz1+CYpz2+CYpz1z2+CYpx1+CYpx2+CYpx1x2+CYpz1x2+CYpy1+CYpy1x2+CYpy2+CYpy1z2+CYpx1z2+CYpz1y2+CYpy1y2+CYpx1y2))
+        zout=[0,1]
+        xout=[1,1]
+    else 
+        zout=[0,0]
+        xout=[0,0]
+    end  
+    return zout,xout
+end
+
+
 #obtain a single circuit error sample
 #obtain a single circuit error sample
 
-function SurfMCError(dz,dx,nr,zsched,xsched,bsch,p,al2,tmeas,k2,nth,pmz,pmx)
+function SurfMCError(dy,dx,nr,zsched,xsched,bsch,p,al2,tmeas,k2,nth,pmz,pmx)
 
     ppax=(15/2)*p
     ppaz=0.39*exp(-4*al2)
@@ -665,35 +759,37 @@ function SurfMCError(dz,dx,nr,zsched,xsched,bsch,p,al2,tmeas,k2,nth,pmz,pmx)
     py1y2=0.28*p*exp(-2*al2)
     px1y2=0.28*p*exp(-2*al2)
 
-    nzc=size(zsched)[1]
+
+    nyc=size(zsched)[1]
     nxc=size(xsched)[1]
 
-    zancz=zeros(Int,nzc)
-    zancx=zeros(Int,nzc)
+    yancz=zeros(Int,nyc)
+    yancx=zeros(Int,nyc)
     xancz=zeros(Int,nxc)
     xancx=zeros(Int,nxc)
-    dataz=zeros(Int,dz,dx)
-    datax=zeros(Int,dz,dx)
+    dataz=zeros(Int,dy,dx)
+    datax=zeros(Int,dy,dx)
 
-    zcmeas=zeros(Int,nr,nzc)
+    ycmeas=zeros(Int,nr,nyc)
     xcmeas=zeros(Int,nr,nxc)
 
 
     for rep in [1:nr;]
 
         #t=0
-        for zc in [1:nzc;]
+        for yc in [1:nyc;]
             r=rand(Float64)
             if r<ppaz
                 #z check ancilla gets x error
-                zancx[zc]=(zancx[zc]+1)%2
+                yancx[yc]=(yancx[yc]+1)%2
             #elseif (r>pzip) && (r<(pzip+pxip))
                 #z check ancilla gets x error
             #    zancx[zc]=(zancx[zc]+1)%2
+            
             #elseif (r>(pzip)) && (r<(pzip+pxip))
-                #z check ancilla gets y error
-            #    zancz[zc]=(zancz[zc]+1)%2
-            #    zancx[zc]=(zancx[zc]+1)%2
+                #y check ancilla gets y error
+                #yancz[yc]=(yancz[yc]+1)%2
+                #yancx[yc]=(yancx[yc]+1)%2
             end
         end
 
@@ -707,55 +803,71 @@ function SurfMCError(dz,dx,nr,zsched,xsched,bsch,p,al2,tmeas,k2,nth,pmz,pmx)
             #    xancx[xc]=(xancx[xc]+1)%2
             #elseif (r>(pzip)) && (r<(pzip+pxip))
                 #x check ancilla gets y error
-            #    xancz[xc]=(xancz[xc]+1)%2
-            #    xancx[xc]=(xancx[xc]+1)%2
+                #xancz[xc]=(xancz[xc]+1)%2
+                #xancx[xc]=(xancx[xc]+1)%2
             end
         end
 
-        for zq in [1:dz;]
+        for yq in [1:dy;]
             for xq in [1:dx;]
                 if rep==1
                     r=rand(Float64)
                     if r<pzip
                         #data qubit gets z error
-                        dataz[zq,xq]=(dataz[zq,xq]+1)%2
+                        dataz[yq,xq]=(dataz[yq,xq]+1)%2
                     #elseif (r>pzip) && (r<(pzip+pxip))
                         #data qubit gets x error
                     #    datax[zq,xq]=(datax[zq,xq]+1)%2
                     elseif (r>(pzip)) && (r<(pzip+pxip))
                         #data qubit gets y error
-                        dataz[zq,xq]=(dataz[zq,xq]+1)%2
-                        datax[zq,xq]=(datax[zq,xq]+1)%2
+                        dataz[yq,xq]=(dataz[yq,xq]+1)%2
+                        datax[yq,xq]=(datax[yq,xq]+1)%2
                     end
                 end
             end
         end
 
-        #t=1-4, CNOTs
+        #t=1-4, CNOTs and CYs
 
         for cn in [1:4;]
 
-            for zc in [1:nzc;]
-                #z-type check is to identify x errors on data
-                #data is CNOT control, ancilla is target
-                qub=zsched[zc][cn]
+            for yc in [1:nyc;]
+                #y-type check is to identify x and z errors on data
+                #data is CY target, ancilla is control
+                qub=zsched[yc][cn]
                 if qub[1]>-1
 
                     r=rand(Float64)
 
                     zf,xf=CNOTfail(r,p,al2,tmeas,k2,nth,pmz,pmx)
-
-                    #z error of the data qubit (control) inherits prior z error from ancilla (target)
+		    #z error of the data qubit (control) inherits prior z error from ancilla (target)
                     #as well as the control z error from the CNOT operation
-                    dataz[qub[1],qub[2]]=(zf[1]+dataz[qub[1],qub[2]]+zancz[zc])%2
+                    dataz[qub[1],qub[2]]=(zf[1]+dataz[qub[1],qub[2]]+yancz[yc])%2
                     #z error of the ancilla qubit (target) inherits target z error from CNOT operation
-                    zancz[zc]=(zancz[zc]+zf[2])%2
+                    yancz[yc]=(yancz[yc]+zf[2])%2
 
                     #x error of the ancilla qubit (target) inherits prior x error from data (control)
                     #as well as the target x error from the CNOT operation
-                    zancx[zc]=(zancx[zc]+xf[2]+datax[qub[1],qub[2]])%2
+                    yancx[yc]=(yancx[yc]+xf[2]+datax[qub[1],qub[2]])%2
                     #x error of the data qubit (control) inherits control x error from CNOT operation
                     datax[qub[1],qub[2]]=(datax[qub[1],qub[2]]+xf[1])%2
+
+		    #datazold=dataz[qub[1],qub[2]]
+		    #dataxold=datax[qub[1],qub[2]]
+		    #yancxold=yancx[yc]
+                    #z error of the data qubit (target) inherits the target z error from the CY operation
+		    #it also inherits a Z error if there was an x error on the ancilla (control)
+                    #dataz[qub[1],qub[2]]=(zf[2]+dataz[qub[1],qub[2]]+yancx[yc])%2
+                    #z error of the ancilla qubit (control) inherits control z error from CY operation
+		    #as well as the prior z error from the data (target) qubit and z error from x error on data (target)
+                    #yancz[yc]=(yancz[yc]+zf[1]+datazold+datax[qub[1],qub[2]])%2
+
+                    #x error of the ancilla qubit (control) inherits prior x error from ancilla (control)
+                    #as well as the control x error from the CY operation
+                    #yancx[yc]=(yancx[yc]+xf[1])%2
+                    #x error of the data qubit (target) inherits control x error from CNOT operation
+		    #as well as prior x error from ancilla (control)
+                    #datax[qub[1],qub[2]]=(datax[qub[1],qub[2]]+xf[2]+yancxold)%2
 
                 else
 
@@ -764,12 +876,12 @@ function SurfMCError(dz,dx,nr,zsched,xsched,bsch,p,al2,tmeas,k2,nth,pmz,pmx)
                     r=rand(Float64)
 
                     if r<pzic
-                        zancz[zc]=(zancz[zc]+1)%2
+                        yancz[yc]=(yancz[yc]+1)%2
                     #elseif (r>pzic) && (r<(pzic+pxic))
                     #    zancx[zc]=(zancx[zc]+1)%2
                     elseif (r>(pzic)) && (r<(pzic+pxic))
-                        zancz[zc]=(zancz[zc]+1)%2
-                        zancx[zc]=(zancx[zc]+1)%2
+                        yancz[yc]=(yancz[yc]+1)%2
+                        yancx[yc]=(yancx[yc]+1)%2
                     end
                 end
             end
@@ -816,18 +928,18 @@ function SurfMCError(dz,dx,nr,zsched,xsched,bsch,p,al2,tmeas,k2,nth,pmz,pmx)
 
             #boundary data qubit wait locations
 
-            for zq in [1:dz;]
+            for yq in [1:dy;]
                 for xq in [1:dx;]
 
-                    if bsch[cn,zq,xq]==1
+                    if bsch[cn,yq,xq]==1
                         r=rand(Float64)
                         if r<pzic
-                            dataz[zq,xq]=(dataz[zq,xq]+1)%2
+                            dataz[yq,xq]=(dataz[yq,xq]+1)%2
                         #elseif (r>pzic) && (r<(pzic+pxic))
                         #    datax[zq,xq]=(datax[zq,xq]+1)%2
                         elseif (r>(pzic)) && (r<(pzic+pxic))
-                            dataz[zq,xq]=(dataz[zq,xq]+1)%2
-                            datax[zq,xq]=(datax[zq,xq]+1)%2
+                            dataz[yq,xq]=(dataz[yq,xq]+1)%2
+                            datax[yq,xq]=(datax[yq,xq]+1)%2
                         end
                     end
                 end
@@ -837,27 +949,27 @@ function SurfMCError(dz,dx,nr,zsched,xsched,bsch,p,al2,tmeas,k2,nth,pmz,pmx)
         #t=5
 
         #final data qubit waits
-        for zq in [1:dz;]
+        for yq in [1:dy;]
             for xq in [1:dx;]
 
                 r=rand(Float64)
                 if r<pzim
-                    dataz[zq,xq]=(dataz[zq,xq]+1)%2
+                    dataz[yq,xq]=(dataz[yq,xq]+1)%2
                 #elseif (r>pzim) && (r<(pzim+pxim))
                 #    datax[zq,xq]=(datax[zq,xq]+1)%2
                 elseif (r>(pzim)) && (r<(pzim+pxim))
-                    dataz[zq,xq]=(dataz[zq,xq]+1)%2
-                    datax[zq,xq]=(datax[zq,xq]+1)%2
+                    dataz[yq,xq]=(dataz[yq,xq]+1)%2
+                    datax[yq,xq]=(datax[yq,xq]+1)%2
                 end
             end
         end
 
         #final ancilla qubit measurement failures
-        for zc in [1:nzc;]
+        for yc in [1:nyc;]
 
             r=rand(Float64)
             if r<pmz
-                zancx[zc]=(zancx[zc]+1)%2
+                yancx[yc]=(yancx[yc]+1)%2
             end
         end
 
@@ -871,17 +983,17 @@ function SurfMCError(dz,dx,nr,zsched,xsched,bsch,p,al2,tmeas,k2,nth,pmz,pmx)
 
         #record measurement outcomes and reset ancillas
 
-        zcmeas[rep,:]=zancx
+        ycmeas[rep,:]=yancx
         xcmeas[rep,:]=xancz
 
-        zancx=zeros(Int,nzc)
-        zancz=zeros(Int,nzc)
+        yancx=zeros(Int,nyc)
+        yancz=zeros(Int,nyc)
         xancx=zeros(Int,nxc)
         xancz=zeros(Int,nxc)
     end
 
 
-    return dataz,datax,zcmeas,xcmeas
+    return dataz,datax,ycmeas,xcmeas
 end
 
 #returns the logical Z and X operators
@@ -984,36 +1096,40 @@ function buildstrings(dz::Int,dx::Int,nr,pez,Synz,Synx,layout)
                 #println(pez)
                 #println(qz)
                 #println(qx)
-                e=pez[qz,qx]
+                e=pez[qz,qx]%2
                 #println(e)
                 if e==0
                     push!(outi,"Z+")
                     push!(outz,"Z-")
-                else
+                elseif e==1
                     push!(outi,"Z-")
                     push!(outz,"Z+")
+                else
+                    println("bad news!")
                 end
                 count=count+1
             else
                 #println(pez)
                 #println(qz)
                 #println(qx)
-                e=pez[qz,qx]
+                e=pez[qz,qx]%2
                 #println(e)
                 #e=pez[qz,qx]
                 if e==0
                     push!(outi,"Z+")
                     push!(outz,"Z+")
-                else
+                elseif e==1
                     push!(outi,"Z-")
                     push!(outz,"Z-")
+                else
+                    println("bad news!")
                 end
                 count=count+1
             end
 
         elseif typ==1
             #println("hay1")
-            #z check ancilla
+            #y check ancilla
             zc=layout[i][2][1]
             if i==1
                 #println("hay2")
@@ -1089,7 +1205,7 @@ function buildinitstring(dz::Int,dx::Int,nr,layout)
 
         elseif typ==1
             #println("hay1")
-            #z check ancilla
+            #y check ancilla
 
             if i==1
                 out=["X+"]
@@ -1114,20 +1230,71 @@ function buildinitstring(dz::Int,dx::Int,nr,layout)
 end
 
 
-function MLError(TNin,dz,dx,nr,PEZ,PEX,Synz,Synx,zsch,xsch,bsch,layout)
+function YStabs(dy,dx)
 
+    stabgens=[]
+    #stabgens = Array{Array{Int,(dy,dx)}}(dy+1)
+    for i in [0:dy;]
+    
+         stab=zeros(Int,dy,dx)
+         if i==0
+             stab[1,2]=1
+             stab[1,3]=1
+         elseif i==dy
+             stab[i,1]=1
+             stab[i,2]=1
+         elseif i%2==1
+             stab[i,1]=1
+             stab[i,2]=1
+             stab[i+1,2]=1
+             stab[i+1,1]=1
+         elseif i%2==0
+             stab[i,2]=1
+             stab[i,3]=1
+             stab[i+1,2]=1
+             stab[i+1,3]=1
+         end
+         push!(stabgens,stab)
+    end
+    stabsout=[]
+    #stabsout = Array{Array{Int,(dy,dx)}}(2^(dy+1))
+    for i in [0:(2^(dy+1)-1);]
+        bi=digits(i,base=2,pad=dy+1)
+        stab=zeros(Int,dy,dx)
+        for j in [1:(dy+1);]
+            stab=stab+bi[j]*stabgens[j]
+        end
+        push!(stabsout,stab)
+        #stabsout[i]=stab
+    end
+    return stabsout
+end
+
+function MLError(TNin,dz,dx,nr,PEZ,PEX,Synz,Synx,zsch,xsch,bsch,layout)#,ystab)
+    #plitot=0
+    #plztot=0
+    #for i in [1:2^(dz+1);]
+    #PEZY=PEZ+ystab[i]
+    #@show PEZ
+    #@show ystab[i]
+    #@show PEZY
     stringi,stringz=buildstrings(dz,dx,nr,PEZ,Synz,Synx,layout)
     mpsi=productstate(siteinds(TNin),stringi)
     mpsz=productstate(siteinds(TNin),stringz)
 
     #compute "probability" that this pure error and meas outcomes occurred, and no logical z
     pli=inner(TNin,mpsi)
-
+    #println(pli)
+    #plitot=plitot+pli
+    #println(plitot)
     #compute "probability" that this pure error and meas outcomes occurred, as well as logical z
     plz=inner(TNin,mpsz)
+    #println(plz)
+    #plztot=plztot+plz
+    #println(plztot)
     #println(pli)
     #println(plz)
-
+    #end
     if pli>plz
         #if it was more likely that no logical z occurred, decoder does nothing
         ml=0
@@ -1169,6 +1336,28 @@ function SurfCirc(dz,dx,nr,PEZ,PEX,Synz,Synx,zsch,xsch,bsch,layout,ql,zl,xl,p,al
     py1y2=0.28*p*exp(-2*al2)
     px1y2=0.28*p*exp(-2*al2)
 
+    #CYpz1=(1.01 + 0.77/al2)*p
+    #CYpz2=(0.32 + 1.05/al2)*p
+    #CYpz1z2=(0.32 + 1.05/al2)*p
+    CYpz1=(1.01 + 0.77/al2)*(p^(0.5)) +0.42*exp(-2*al2)*(p^(0.5)) +0.86*exp(-2*al2)*(p^(0.5)) +1.14*exp(-2*al2)*(p^(0.5))
+    CYpz2=(0.32 + 1.05/al2)*(p^(0.5)) +1.67*exp(-2*al2)*(p^(0.5)) +1.32*exp(-2*al2)*(p^(0.5)) +exp(-2*al2)*(p^(0.5))
+    CYpz1z2=(0.32 + 1.05/al2)*(p^(0.5)) +1.35*exp(-2*al2)*(p^(0.5)) +1.06*exp(-2*al2)*(p^(0.5)) +0.76*exp(-2*al2)*(p^(0.5))
+
+    CYpx1=1.17*exp(-2*al2)*(p^(0.5))
+    CYpx2=0.35*exp(-2*al2)*(p^(0.5))
+    CYpx1x2=1.13*exp(-2*al2)*(p^(0.5))
+    CYpz1x2=0.42*exp(-2*al2)*(p^(0.5))
+    CYpy1=0.86*exp(-2*al2)*(p^(0.5))
+    CYpy1x2=1.14*exp(-2*al2)*(p^(0.5))
+    CYpy2=1.67*exp(-2*al2)*(p^(0.5))
+    CYpy1z2=1.35*exp(-2*al2)*(p^(0.5))
+    CYpx1z2=1.32*exp(-2*al2)*(p^(0.5))
+    CYpz1y2=1.06*exp(-2*al2)*(p^(0.5))
+    CYpy1y2=0.76*exp(-2*al2)*(p^(0.5))
+    CYpx1y2=exp(-2*al2)*(p^(0.5))
+
+
+
     gates=Tuple[]
 
     #build the circuit out of gates
@@ -1194,25 +1383,16 @@ function SurfCirc(dz,dx,nr,PEZ,PEX,Synz,Synx,zsch,xsch,bsch,layout,ql,zl,xl,p,al
                     push!(gates,("pz",q,(p=0,)))
 
                 elseif typ==1
-                    #z check ancilla qubit
+                    #y check ancilla qubit
                     zc=layout[q][2][1]
                     #println(zc)
                     #println(rep-1)
                     #println(size(Synz))
                     mbit=Synz[rep-1,zc]
                     if mbit==0
-                        if rep<nr
-                            push!(gates,("pizres",q,(p=0,)))
-                        else
-                            push!(gates,("pz",q,(p=0,)))
-                        end
-
+                        push!(gates,("pizres",q,(p=0,)))
                     else
-                        if rep<nr
-                            push!(gates,("pizres",q,(p=0,)))
-                        else
-                            push!(gates,("pz",q,(p=0,)))
-                        end
+                        push!(gates,("pizres",q,(p=0,)))
                     end
 
 
@@ -1237,7 +1417,7 @@ function SurfCirc(dz,dx,nr,PEZ,PEX,Synz,Synx,zsch,xsch,bsch,layout,ql,zl,xl,p,al
                     push!(gates,("pz",q,(p=pzip,)))
 
                 elseif typ==1
-                    #z check ancilla qubit
+                    #y check ancilla qubit
                     push!(gates,("pz",q,(p=0,)))
 
                 elseif typ==2
@@ -1268,9 +1448,9 @@ function SurfCirc(dz,dx,nr,PEZ,PEX,Synz,Synx,zsch,xsch,bsch,layout,ql,zl,xl,p,al
 
                 elseif typ==1
 
-                    #z check ancilla qubit, identifies x errors, data is control, ancilla is target
+                    #y check ancilla qubit, identifies x errors, data is target, ancilla is control
 
-                    zc=layout[q][2][1] #which z check it is in the list of z check schedules
+                    zc=layout[q][2][1] #which y check it is in the list of y check schedules
                     partner=zsch[zc][cnt]
 
                     if partner==[-1,-1]
@@ -1390,7 +1570,7 @@ function SurfMC(dz,dx,nr,p,al2,tmeas,k2,nth,acc,bd,err,nt; sim_id::Int=-1)
     else
         println("bad mmnt error rate!")
     end
-
+    ystab=YStabs(dz,dx)
     zsch,xsch=schedulemaker(dz,dx)
     xsch=xreorder(xsch,dz,dx)
     bsch=bdrysched(dz,dx)
@@ -1434,7 +1614,7 @@ function SurfMC(dz,dx,nr,p,al2,tmeas,k2,nth,acc,bd,err,nt; sim_id::Int=-1)
 	#println(elapsed)
         totime=totime+elapsed
 	#MPS
-        MLZ=MLError(MPS,dz,dx,nr,PEZ,PEX,Synz,Synx,zsch,xsch,bsch,layout)
+        MLZ=MLError(MPS,dz,dx,nr,PEZ,PEX,Synz,Synx,zsch,xsch,bsch,layout)#,ystab)
         #PEZ[1,1]=(PEZ[1,1]+1)%2
         #PEZ[1,2]=(PEZ[1,2]+1)%2
         #PEZ[2,1]=(PEZ[2,1]+1)%2
@@ -1472,6 +1652,7 @@ function SurfMC(dz,dx,nr,p,al2,tmeas,k2,nth,acc,bd,err,nt; sim_id::Int=-1)
         #end
         if (pct>199)
 	    atime=totime/pct
+	    totime=0
             pct=0
             println("mu is")
             println(mu)
@@ -1511,12 +1692,12 @@ cutin=parse(Float64,ARGS[4])
 bdin=parse(Int64,ARGS[5])
 if length(ARGS)==6
     sidin=parse(Int64,ARGS[6])
-    SurfMC(dzin,3,dzin,pin,8,500e-9,1e7,0,cutin,bdin,0.1,100,sim_id = sidin)
+    SurfMC(dzin,3,dzin,pin,8,500e-9,1e7,0,cutin,bdin,0.1,ntin,sim_id = sidin)
 else
     SurfMC(dzin,3,dzin,pin,8,500e-9,1e7,0,cutin,bdin,0.1,ntin)
 end
 
-
+#@show YStabs(3,3)
 
 
 #SurfMC(3,3,3,1e-5,8,500e-9,1e7,0,1e-15,10000,0.1, sim_id = 1)

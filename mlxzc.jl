@@ -4,7 +4,6 @@ using ITensors
 using Random
 import PastaQ: gate
 import PastaQ.ITensors: array
-using DelimitedFiles
 
 #Use DoMCCLTN to do monte carlo simulation for ML decoding of repetition code
 
@@ -684,31 +683,31 @@ function SurfMCError(dz,dx,nr,zsched,xsched,bsch,p,al2,tmeas,k2,nth,pmz,pmx)
         #t=0
         for zc in [1:nzc;]
             r=rand(Float64)
-            if r<ppaz
-                #z check ancilla gets x error
-                zancx[zc]=(zancx[zc]+1)%2
+            if r<pzip
+                #z check ancilla gets z error
+                zancz[zc]=(zancz[zc]+1)%2
             #elseif (r>pzip) && (r<(pzip+pxip))
                 #z check ancilla gets x error
             #    zancx[zc]=(zancx[zc]+1)%2
-            #elseif (r>(pzip)) && (r<(pzip+pxip))
+            elseif (r>(pzip)) && (r<(pzip+pxip))
                 #z check ancilla gets y error
-            #    zancz[zc]=(zancz[zc]+1)%2
-            #    zancx[zc]=(zancx[zc]+1)%2
+                zancz[zc]=(zancz[zc]+1)%2
+                zancx[zc]=(zancx[zc]+1)%2
             end
         end
 
         for xc in [1:nxc;]
             r=rand(Float64)
-            if r<ppax
+            if r<pzip
                 #x check ancilla gets z error
                 xancz[xc]=(xancz[xc]+1)%2
             #elseif (r>pzip) && (r<(pzip+pxip))
                 #x check ancilla gets x error
             #    xancx[xc]=(xancx[xc]+1)%2
-            #elseif (r>(pzip)) && (r<(pzip+pxip))
+            elseif (r>(pzip)) && (r<(pzip+pxip))
                 #x check ancilla gets y error
-            #    xancz[xc]=(xancz[xc]+1)%2
-            #    xancx[xc]=(xancx[xc]+1)%2
+                xancz[xc]=(xancz[xc]+1)%2
+                xancx[xc]=(xancx[xc]+1)%2
             end
         end
 
@@ -1092,11 +1091,11 @@ function buildinitstring(dz::Int,dx::Int,nr,layout)
             #z check ancilla
 
             if i==1
-                out=["X+"]
+                out=["Z+"]
                 #println("hay2")
                 count=count+1
             else
-                push!(out,"X+")
+                push!(out,"Z+")
                 count=count+1
             end
 
@@ -1114,17 +1113,33 @@ function buildinitstring(dz::Int,dx::Int,nr,layout)
 end
 
 
-function MLError(TNin,dz,dx,nr,PEZ,PEX,Synz,Synx,zsch,xsch,bsch,layout)
+function MLError(B,dz,dx,nr,PEZ,PEX,Synz,Synx,zsch,xsch,bsch,layout,p,al2,tmeas,k2,nth,pmz,pmx,acc,bd)
+
+    psi=productstate(B)
+    #@show psi
+    #println("noprime")
+    MPS=noprime(*(B,psi;cutoff=1e-15))
+    #@show MPS
+
+    for re in [1:(nr-1);]
+        #println("glue")
+        MPS=glue(MPS,dz,dx,nr,re,PEZ,PEX,Synx,zsch,xsch,bsch,layout,p,al2,tmeas,k2,nth,pmz,pmx,acc,bd)
+        #println("noprime")
+        MPS=noprime(*(B,MPS;cutoff=1e-15))
+
+    end
+    #println("glue")
+    MPS=gluefinal(MPS,dz,dx,nr,nr,PEZ,PEX,Synx,zsch,xsch,bsch,layout,p,al2,tmeas,k2,nth,pmz,pmx,acc,bd)
 
     stringi,stringz=buildstrings(dz,dx,nr,PEZ,Synz,Synx,layout)
-    mpsi=productstate(siteinds(TNin),stringi)
-    mpsz=productstate(siteinds(TNin),stringz)
+    mpsi=productstate(siteinds(MPS),stringi)
+    mpsz=productstate(siteinds(MPS),stringz)
 
     #compute "probability" that this pure error and meas outcomes occurred, and no logical z
-    pli=inner(TNin,mpsi)
+    pli=inner(MPS,mpsi)
 
     #compute "probability" that this pure error and meas outcomes occurred, as well as logical z
-    plz=inner(TNin,mpsz)
+    plz=inner(MPS,mpsz)
     #println(pli)
     #println(plz)
 
@@ -1140,6 +1155,327 @@ function MLError(TNin,dz,dx,nr,PEZ,PEX,Synz,Synx,zsch,xsch,bsch,layout)
     return ml
 
 end
+
+
+function glue(psi,dz,dx,nr,re,PEZ,PEX,Synx,zsch,xsch,bsch,layout,p,al2,tmeas,k2,nth,pmz,pmx,acc,bd)
+
+    #First initialize all hardware noise parameters and failure rates. Note that p=k1/k2
+
+    ppax=(15/2)*p
+    ppaz=0.39*exp(-4*al2)
+    pzip=10*p*(1+exp(-4*al2))
+    pxip=10*p*exp(-4*al2)
+    pzic=0.31*((p)^(0.5))*(1+exp(-4*al2))
+    pxic=0.31*((p)^(0.5))*exp(-4*al2)
+    pzim=k2*p*al2*(tmeas+(10/(k2*al2)) )*(1+2*nth)*(1+exp(-4*al2))
+    pxim=k2*p*al2*(tmeas+(10/(k2*al2)) )*exp(-4*al2)
+    pz1=0.91*((p)^(0.5))+3*0.93*((p)^(0.5))*exp(-2*al2)
+    pz2=0.15*((p)^(0.5))+3*0.28*p*exp(-2*al2)
+    pz1z2=0.15*((p)^(0.5))+3*0.28*p*exp(-2*al2)
+    px1=0.93*((p)^(0.5))*exp(-2*al2)
+    px2=0.93*((p)^(0.5))*exp(-2*al2)
+    px1x2=0.93*((p)^(0.5))*exp(-2*al2)
+    pz1x2=0.93*((p)^(0.5))*exp(-2*al2)
+    py1=0.93*((p)^(0.5))*exp(-2*al2)
+    py1x2=0.93*((p)^(0.5))*exp(-2*al2)
+    py2=0.28*p*exp(-2*al2)
+    py1z2=0.28*p*exp(-2*al2)
+    px1z2=0.28*p*exp(-2*al2)
+    pz1y2=0.28*p*exp(-2*al2)
+    py1y2=0.28*p*exp(-2*al2)
+    px1y2=0.28*p*exp(-2*al2)
+
+    gates=Tuple[]
+
+    #build the circuit out of gates
+    #each measurement round consists of four time steps
+
+
+    nzc=size(zsch)[1]
+    nxc=size(xsch)[1]
+
+    nq=size(layout)[1]
+
+
+    for q in [1:nq;]
+
+        #first time step -- initialization/idling
+        typ=layout[q][1]
+
+        if typ==0
+            #data qubit
+            push!(gates,("pz",q,(p=0,)))
+
+        elseif typ==1
+            #z check ancilla qubit
+            if re==(nr-1)
+                push!(gates,("pizresfinal",q,(p=0,)))
+            else
+                push!(gates,("pizres",q,(p=0,)))
+            end
+
+
+        elseif typ==2
+            #x check ancilla qubit
+            xc=layout[q][2][1]
+            bit=Synx[re,xc]
+            if bit==0
+                push!(gates,("pi0",q,(p=0,)))
+            else
+                push!(gates,("pi1",q,(p=0,)))
+            end
+
+        end
+
+    end
+
+    #istr=buildinitstring(dz,dx,nr,layout)
+    #T=productstate(nq) #all zeros initial state sets initial error configuration to be trivial
+    #TI=productstate(siteinds(T),istr)
+    #display(T)
+    psiOut=runcircuit(psi,gates,cutoff=acc,maxdim=bd)
+
+    return psiOut #return the MPS, whose physical indices are as described at top of function
+end
+
+function gluefinal(psi,dz,dx,nr,re,PEZ,PEX,Synx,zsch,xsch,bsch,layout,p,al2,tmeas,k2,nth,pmz,pmx,acc,bd)
+
+    #First initialize all hardware noise parameters and failure rates. Note that p=k1/k2
+
+    ppax=(15/2)*p
+    ppaz=0.39*exp(-4*al2)
+    pzip=10*p*(1+exp(-4*al2))
+    pxip=10*p*exp(-4*al2)
+    pzic=0.31*((p)^(0.5))*(1+exp(-4*al2))
+    pxic=0.31*((p)^(0.5))*exp(-4*al2)
+    pzim=k2*p*al2*(tmeas+(10/(k2*al2)) )*(1+2*nth)*(1+exp(-4*al2))
+    pxim=k2*p*al2*(tmeas+(10/(k2*al2)) )*exp(-4*al2)
+    pz1=0.91*((p)^(0.5))+3*0.93*((p)^(0.5))*exp(-2*al2)
+    pz2=0.15*((p)^(0.5))+3*0.28*p*exp(-2*al2)
+    pz1z2=0.15*((p)^(0.5))+3*0.28*p*exp(-2*al2)
+    px1=0.93*((p)^(0.5))*exp(-2*al2)
+    px2=0.93*((p)^(0.5))*exp(-2*al2)
+    px1x2=0.93*((p)^(0.5))*exp(-2*al2)
+    pz1x2=0.93*((p)^(0.5))*exp(-2*al2)
+    py1=0.93*((p)^(0.5))*exp(-2*al2)
+    py1x2=0.93*((p)^(0.5))*exp(-2*al2)
+    py2=0.28*p*exp(-2*al2)
+    py1z2=0.28*p*exp(-2*al2)
+    px1z2=0.28*p*exp(-2*al2)
+    pz1y2=0.28*p*exp(-2*al2)
+    py1y2=0.28*p*exp(-2*al2)
+    px1y2=0.28*p*exp(-2*al2)
+
+    gates=Tuple[]
+
+    #build the circuit out of gates
+    #each measurement round consists of four time steps
+
+
+    nzc=size(zsch)[1]
+    nxc=size(xsch)[1]
+
+    nq=size(layout)[1]
+
+    for rep in [1:1;]
+        for q in [1:nq;]
+
+
+            #first time step -- initialization/idling
+            typ=layout[q][1]
+
+
+            if typ==0
+                #data qubit
+                push!(gates,("pz",q,(p=pzip,)))
+
+            elseif typ==1
+                #z check ancilla qubit
+                push!(gates,("pizresfinal",q,(p=0,)))
+                #push!(gates,("pz",q,(p=0,)))
+
+            elseif typ==2
+                #x check ancilla qubit
+                push!(gates,("pz",q,(p=0,)))
+                #xc=layout[q][2][1]
+                #bit=Synx[re,xc]
+                #if bit==0
+                #    push!(gates,("pi0",q,(p=0,)))
+                #else
+                #    push!(gates,("pi1",q,(p=0,)))
+                #end
+
+            end
+
+
+        end
+
+
+    end
+
+
+    #istr=buildinitstring(dz,dx,nr,layout)
+    #T=productstate(nq) #all zeros initial state sets initial error configuration to be trivial
+    #TI=productstate(siteinds(T),istr)
+    #display(T)
+    psiOut=runcircuit(psi,gates,cutoff=acc,maxdim=bd)
+
+    return psiOut #return the MPS, whose physical indices are as described at top of function
+end
+
+function buildblock(dz,dx,nr,zsch,xsch,bsch,layout,ql,zl,xl,p,al2,tmeas,k2,nth,pmz,pmx,acc,bd)
+
+    #First initialize all hardware noise parameters and failure rates. Note that p=k1/k2
+
+    ppax=(15/2)*p
+    ppaz=0.39*exp(-4*al2)
+    pzip=10*p*(1+exp(-4*al2))
+    pxip=10*p*exp(-4*al2)
+    pzic=0.31*((p)^(0.5))*(1+exp(-4*al2))
+    pxic=0.31*((p)^(0.5))*exp(-4*al2)
+    pzim=k2*p*al2*(tmeas)*(1+2*nth)*(1+exp(-4*al2))
+    pxim=k2*p*al2*(tmeas)*exp(-4*al2)
+    pz1=0.91*((p)^(0.5))+3*0.93*((p)^(0.5))*exp(-2*al2)
+    pz2=0.15*((p)^(0.5))+3*0.28*p*exp(-2*al2)
+    pz1z2=0.15*((p)^(0.5))+3*0.28*p*exp(-2*al2)
+    px1=0.93*((p)^(0.5))*exp(-2*al2)
+    px2=0.93*((p)^(0.5))*exp(-2*al2)
+    px1x2=0.93*((p)^(0.5))*exp(-2*al2)
+    pz1x2=0.93*((p)^(0.5))*exp(-2*al2)
+    py1=0.93*((p)^(0.5))*exp(-2*al2)
+    py1x2=0.93*((p)^(0.5))*exp(-2*al2)
+    py2=0.28*p*exp(-2*al2)
+    py1z2=0.28*p*exp(-2*al2)
+    px1z2=0.28*p*exp(-2*al2)
+    pz1y2=0.28*p*exp(-2*al2)
+    py1y2=0.28*p*exp(-2*al2)
+    px1y2=0.28*p*exp(-2*al2)
+
+    gates=Tuple[]
+
+    #build the circuit out of gates
+    #each measurement round consists of four time steps
+
+
+    nzc=size(zsch)[1]
+    nxc=size(xsch)[1]
+
+    nq=size(layout)[1]
+
+    for rep in [1:1;]
+        for q in [1:nq;]
+
+
+            #first time step -- initialization/idling
+            typ=layout[q][1]
+
+
+            if typ==0
+                #data qubit
+                push!(gates,("pz",q,(p=pzip,)))
+
+            elseif typ==1
+                #z check ancilla qubit
+                push!(gates,("pz",q,(p=ppaz,)))
+
+            elseif typ==2
+                #x check ancilla qubit
+                push!(gates,("pz",q,(p=ppax,)))
+
+            end
+
+
+        end
+
+        for cnt in [1:4;]
+
+            for q in [1:nq;]
+
+                typ=layout[q][1]
+
+                if typ==0
+                    #data qubit, need to see if this is a wait location
+                    addr=layout[q][2]
+                    wait=bsch[cnt,addr[1],addr[2]]
+                    if wait==1
+
+                        push!(gates,("pz",q,(p=pzic,)))
+
+                    end
+
+                elseif typ==1
+
+                    #z check ancilla qubit, identifies x errors, data is control, ancilla is target
+
+                    zc=layout[q][2][1] #which z check it is in the list of z check schedules
+                    partner=zsch[zc][cnt]
+
+                    if partner==[-1,-1]
+                        #wait location for this ancilla
+                        push!(gates,("pz",q,(p=pzic,)))
+                    else
+                        pzad=partner[1]
+                        pxad=partner[2]
+                        q2=ql[pzad,pxad]
+                        push!(gates,("CNOT",(q2,q),(pz1=pz1,pz2=pz2,pz12=pz1z2,)))
+                    end
+
+                elseif typ==2
+
+                    #x check ancilla qubit, identifies z errors, data is target, ancilla is control
+
+                    xc=layout[q][2][1] #which x check it is in the list of x check schedules
+                    partner=xsch[xc][cnt]
+
+                    if partner[1]==-1
+                        #wait location for this ancilla
+                        push!(gates,("pz",q,(p=pzic,)))
+                    else
+                        pzad=partner[1]
+                        pxad=partner[2]
+                        q2=ql[pzad,pxad]
+                        push!(gates,("CNOT",(q,q2),(pz1=pz1,pz2=pz2,pz12=pz1z2,)))
+                    end
+
+                end
+
+            end
+        end
+
+
+        for q in [1:nq;]
+
+
+            #final time step -- idling/measurement
+            typ=layout[q][1]
+
+            if typ==0
+                #data qubit
+                push!(gates,("pz",q,(p=pzim,)))
+
+            elseif typ==1
+                #z check ancilla qubit
+                push!(gates,("pz",q,(p=0,)))
+
+            elseif typ==2
+                #x check ancilla qubit
+                push!(gates,("pz",q,(p=pmx,)))
+
+            end
+
+        end
+    end
+
+
+    #istr=buildinitstring(dz,dx,nr,layout)
+    #T=productstate(nq) #all zeros initial state sets initial error configuration to be trivial
+    #TI=productstate(siteinds(T),istr)
+    #display(T)
+    TOut=runcircuit(gates,cutoff=acc,maxdim=bd; process =  true)
+
+    return TOut #return the MPS, whose physical indices are as described at top of function
+end
+
 
 function SurfCirc(dz,dx,nr,PEZ,PEX,Synz,Synx,zsch,xsch,bsch,layout,ql,zl,xl,p,al2,tmeas,k2,nth,pmz,pmx,acc,bd)
 
@@ -1202,16 +1538,16 @@ function SurfCirc(dz,dx,nr,PEZ,PEX,Synz,Synx,zsch,xsch,bsch,layout,ql,zl,xl,p,al
                     mbit=Synz[rep-1,zc]
                     if mbit==0
                         if rep<nr
-                            push!(gates,("pizres",q,(p=0,)))
+                            push!(gates,("pizres",q,(p=ppaz,)))
                         else
-                            push!(gates,("pz",q,(p=0,)))
+                            push!(gates,("pizresfinal",q,(p=0,)))
                         end
 
                     else
                         if rep<nr
-                            push!(gates,("pizres",q,(p=0,)))
+                            push!(gates,("pizres",q,(p=ppaz,)))
                         else
-                            push!(gates,("pz",q,(p=0,)))
+                            push!(gates,("pizresfinal",q,(p=0,)))
                         end
                     end
 
@@ -1238,7 +1574,7 @@ function SurfCirc(dz,dx,nr,PEZ,PEX,Synz,Synx,zsch,xsch,bsch,layout,ql,zl,xl,p,al
 
                 elseif typ==1
                     #z check ancilla qubit
-                    push!(gates,("pz",q,(p=0,)))
+                    push!(gates,("pz",q,(p=ppaz,)))
 
                 elseif typ==2
                     #x check ancilla qubit
@@ -1339,14 +1675,8 @@ function SurfCirc(dz,dx,nr,PEZ,PEX,Synz,Synx,zsch,xsch,bsch,layout,ql,zl,xl,p,al
     return TOut #return the MPS, whose physical indices are as described at top of function
 end
 
-function SurfMC(dz,dx,nr,p,al2,tmeas,k2,nth,acc,bd,err,nt; sim_id::Int=-1)
-    
-    if sim_id < 0
-      fname = "experiment_dz$(dz)_dx$(dx)_p$(p).txt"
-    else
-      fname = "experiment_dz$(dz)_dx$(dx)_p$(p)_id$(sim_id).txt"
-    end
-    Random.seed!(1234 * (sim_id+2))
+function SurfMC(dz,dx,nr,p,al2,tmeas,k2,nth,acc,bd,err)
+
 
     pmz=exp(-1.5-0.9*al2)
     if p==1e-5
@@ -1409,9 +1739,9 @@ function SurfMC(dz,dx,nr,p,al2,tmeas,k2,nth,acc,bd,err,nt; sim_id::Int=-1)
     fx=0
     breakflag=0
     pct=0
-    totime=0
-    while n<nt #breakflag==0
-    	#totime=0
+    #println("buildblock")
+    B=buildblock(dz,dx,nr,zsch,xsch,bsch,layout,ql,zl,xl,p,al2,tmeas,k2,nth,pmz,pmx,acc,bd)
+    while breakflag==0
         #breakflag=1
         #println("pspsps")
         Ez,Ex,Synz,Synx=SurfMCError(dz,dx,nr,zsch,xsch,bsch,p,al2,tmeas,k2,nth,pmz,pmx)
@@ -1428,25 +1758,21 @@ function SurfMC(dz,dx,nr,p,al2,tmeas,k2,nth,acc,bd,err,nt; sim_id::Int=-1)
         LX=L[2]
         #display(L)
         #println(PEZ)
-        elapsed = @elapsed begin
-          MPS=SurfCirc(dz,dx,nr,PEZ,PEX,Synz,Synx,zsch,xsch,bsch,layout,ql,zl,xl,p,al2,tmeas,k2,nth,pmz,pmx,acc,bd)
-        end
-	#println(elapsed)
-        totime=totime+elapsed
-	#MPS
-        MLZ=MLError(MPS,dz,dx,nr,PEZ,PEX,Synz,Synx,zsch,xsch,bsch,layout)
+
+        @time MLZ=MLError(B,dz,dx,nr,PEZ,PEX,Synz,Synx,zsch,xsch,bsch,layout,p,al2,tmeas,k2,nth,pmz,pmx,acc,bd)
         #PEZ[1,1]=(PEZ[1,1]+1)%2
         #PEZ[1,2]=(PEZ[1,2]+1)%2
         #PEZ[2,1]=(PEZ[2,1]+1)%2
         #PEZ[2,2]=(PEZ[2,2]+1)%2
+        #MLZ=MLError(B,dz,dx,nr,PEZ,PEX,Synz,Synx,zsch,xsch,bsch,layout,p,al2,tmeas,k2,nth,pmz,pmx)
         #println(PEZ)
         #MPS=SurfCirc(dz,dx,nr,PEZ,PEX,Synz,Synx,zsch,xsch,bsch,layout,ql,zl,xl,p,al2,tmeas,k2,nth,pmz,pmx,acc,bd)
         #MPS
         #MLZ=MLError(MPS,dz,dx,nr,PEZ,PEX,Synz,Synx,zsch,xsch,bsch,layout)
         #display(MLZ)
         #MLZ=MLL[1]
-    #print(L)
-    #print(MLL)
+        #print(L)
+        #print(MLL)
         #println(L)
         #println(MLZ)
         resz=(LZ+MLZ)%2
@@ -1471,7 +1797,6 @@ function SurfMC(dz,dx,nr,p,al2,tmeas,k2,nth,acc,bd,err,nt; sim_id::Int=-1)
         #    breakflag=1
         #end
         if (pct>199)
-	    atime=totime/pct
             pct=0
             println("mu is")
             println(mu)
@@ -1482,8 +1807,6 @@ function SurfMC(dz,dx,nr,p,al2,tmeas,k2,nth,acc,bd,err,nt; sim_id::Int=-1)
             println(f)
             println("number of X failures is")
             println(fx)
-	    println("average trial time")
-	    println(atime)
             if f>4
                 println("stderr is")
                 println(stderr)
@@ -1491,33 +1814,11 @@ function SurfMC(dz,dx,nr,p,al2,tmeas,k2,nth,acc,bd,err,nt; sim_id::Int=-1)
                 println(err*mu)
             end
         end
-        fout = open(fname,"w")
-        writedlm(fout,[n,f])
-        close(fout)
     end
     println(f)
     println(fx)
     println(n)
     println((f+fx)/n)
-    
+
     return
 end
-
-dzin=parse(Int64,ARGS[1])
-pin=parse(Float64,ARGS[2])
-#println(pin)
-ntin=parse(Int64,ARGS[3])
-cutin=parse(Float64,ARGS[4])
-bdin=parse(Int64,ARGS[5])
-if length(ARGS)==6
-    sidin=parse(Int64,ARGS[6])
-    SurfMC(dzin,3,dzin,pin,8,500e-9,1e7,0,cutin,bdin,0.1,100,sim_id = sidin)
-else
-    SurfMC(dzin,3,dzin,pin,8,500e-9,1e7,0,cutin,bdin,0.1,ntin)
-end
-
-
-
-
-#SurfMC(3,3,3,1e-5,8,500e-9,1e7,0,1e-15,10000,0.1, sim_id = 1)
-#SurfMC(3,3,3,1e-5,8,500e-9,1e7,0,1e-15,10000,0.1, sim_id = 2)

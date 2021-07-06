@@ -692,8 +692,8 @@ function SurfMCError(dz,dx,nr,zsched,xsched,bsch,p,al2,tmeas,k2,nth,pmz,pmx)
             #    zancx[zc]=(zancx[zc]+1)%2
             #elseif (r>(pzip)) && (r<(pzip+pxip))
                 #z check ancilla gets y error
-            #    zancz[zc]=(zancz[zc]+1)%2
-            #    zancx[zc]=(zancx[zc]+1)%2
+               # zancz[zc]=(zancz[zc]+1)%2
+               # zancx[zc]=(zancx[zc]+1)%2
             end
         end
 
@@ -707,8 +707,8 @@ function SurfMCError(dz,dx,nr,zsched,xsched,bsch,p,al2,tmeas,k2,nth,pmz,pmx)
             #    xancx[xc]=(xancx[xc]+1)%2
             #elseif (r>(pzip)) && (r<(pzip+pxip))
                 #x check ancilla gets y error
-            #    xancz[xc]=(xancz[xc]+1)%2
-            #    xancx[xc]=(xancx[xc]+1)%2
+             #   xancz[xc]=(xancz[xc]+1)%2
+              #  xancx[xc]=(xancx[xc]+1)%2
             end
         end
 
@@ -1202,16 +1202,16 @@ function SurfCirc(dz,dx,nr,PEZ,PEX,Synz,Synx,zsch,xsch,bsch,layout,ql,zl,xl,p,al
                     mbit=Synz[rep-1,zc]
                     if mbit==0
                         if rep<nr
-                            push!(gates,("pizres",q,(p=0,)))
+                            push!(gates,("pizres",q,(p=ppaz,)))
                         else
-                            push!(gates,("pz",q,(p=0,)))
+                            push!(gates,("pizresfinal",q,(p=0,)))
                         end
 
                     else
                         if rep<nr
-                            push!(gates,("pizres",q,(p=0,)))
+                            push!(gates,("pizres",q,(p=ppaz,)))
                         else
-                            push!(gates,("pz",q,(p=0,)))
+                            push!(gates,("pizresfinal",q,(p=0,)))
                         end
                     end
 
@@ -1238,7 +1238,7 @@ function SurfCirc(dz,dx,nr,PEZ,PEX,Synz,Synx,zsch,xsch,bsch,layout,ql,zl,xl,p,al
 
                 elseif typ==1
                     #z check ancilla qubit
-                    push!(gates,("pz",q,(p=0,)))
+                    push!(gates,("pz",q,(p=ppaz,)))
 
                 elseif typ==2
                     #x check ancilla qubit
