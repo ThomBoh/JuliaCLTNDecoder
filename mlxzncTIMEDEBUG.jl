@@ -636,6 +636,7 @@ function CNOTfail(r,p,al2,tmeas,k2,nth,pmz,pmx)
     return zout,xout
 end
 
+#produce a controlled-Y fault
 
 function CYfail(r,p,al2,tmeas,k2,nth,pmz,pmx)
 
@@ -729,8 +730,6 @@ function CYfail(r,p,al2,tmeas,k2,nth,pmz,pmx)
     return zout,xout
 end
 
-
-#obtain a single circuit error sample
 #obtain a single circuit error sample
 
 function SurfMCError(dy,dx,nr,zsched,xsched,bsch,p,al2,tmeas,k2,nth,pmz,pmx)
@@ -779,9 +778,9 @@ function SurfMCError(dy,dx,nr,zsched,xsched,bsch,p,al2,tmeas,k2,nth,pmz,pmx)
         #t=0
         for yc in [1:nyc;]
             r=rand(Float64)
-            if r<ppax
-                #Y check ancilla gets z error
-                yancz[yc]=(yancz[yc]+1)%2
+            if r<ppaz
+                #z check ancilla gets x error
+                yancx[yc]=(yancx[yc]+1)%2
             #elseif (r>pzip) && (r<(pzip+pxip))
                 #z check ancilla gets x error
             #    zancx[zc]=(zancx[zc]+1)%2
@@ -839,23 +838,35 @@ function SurfMCError(dy,dx,nr,zsched,xsched,bsch,p,al2,tmeas,k2,nth,pmz,pmx)
 
                     r=rand(Float64)
 
-                    zf,xf=CYfail(r,p,al2,tmeas,k2,nth,pmz,pmx)
-		    datazold=dataz[qub[1],qub[2]]
-		    dataxold=datax[qub[1],qub[2]]
-		    yancxold=yancx[yc]
+                    zf,xf=CNOTfail(r,p,al2,tmeas,k2,nth,pmz,pmx)
+		    #z error of the data qubit (control) inherits prior z error from ancilla (target)
+                    #as well as the control z error from the CNOT operation
+                    dataz[qub[1],qub[2]]=(zf[1]+dataz[qub[1],qub[2]]+yancz[yc])%2
+                    #z error of the ancilla qubit (target) inherits target z error from CNOT operation
+                    yancz[yc]=(yancz[yc]+zf[2])%2
+
+                    #x error of the ancilla qubit (target) inherits prior x error from data (control)
+                    #as well as the target x error from the CNOT operation
+                    yancx[yc]=(yancx[yc]+xf[2]+datax[qub[1],qub[2]])%2
+                    #x error of the data qubit (control) inherits control x error from CNOT operation
+                    datax[qub[1],qub[2]]=(datax[qub[1],qub[2]]+xf[1])%2
+
+		    #datazold=dataz[qub[1],qub[2]]
+		    #dataxold=datax[qub[1],qub[2]]
+		    #yancxold=yancx[yc]
                     #z error of the data qubit (target) inherits the target z error from the CY operation
 		    #it also inherits a Z error if there was an x error on the ancilla (control)
-                    dataz[qub[1],qub[2]]=(zf[2]+dataz[qub[1],qub[2]]+yancx[yc])%2
+                    #dataz[qub[1],qub[2]]=(zf[2]+dataz[qub[1],qub[2]]+yancx[yc])%2
                     #z error of the ancilla qubit (control) inherits control z error from CY operation
 		    #as well as the prior z error from the data (target) qubit and z error from x error on data (target)
-                    yancz[yc]=(yancz[yc]+zf[1]+datazold+datax[qub[1],qub[2]])%2
+                    #yancz[yc]=(yancz[yc]+zf[1]+datazold+datax[qub[1],qub[2]])%2
 
                     #x error of the ancilla qubit (control) inherits prior x error from ancilla (control)
                     #as well as the control x error from the CY operation
-                    yancx[yc]=(yancx[yc]+xf[1])%2
+                    #yancx[yc]=(yancx[yc]+xf[1])%2
                     #x error of the data qubit (target) inherits control x error from CNOT operation
 		    #as well as prior x error from ancilla (control)
-                    datax[qub[1],qub[2]]=(datax[qub[1],qub[2]]+xf[2]+yancxold)%2
+                    #datax[qub[1],qub[2]]=(datax[qub[1],qub[2]]+xf[2]+yancxold)%2
 
                 else
 
@@ -956,8 +967,8 @@ function SurfMCError(dy,dx,nr,zsched,xsched,bsch,p,al2,tmeas,k2,nth,pmz,pmx)
         for yc in [1:nyc;]
 
             r=rand(Float64)
-            if r<pmx
-                yancz[yc]=(yancz[yc]+1)%2
+            if r<pmz
+                yancx[yc]=(yancx[yc]+1)%2
             end
         end
 
@@ -971,7 +982,7 @@ function SurfMCError(dy,dx,nr,zsched,xsched,bsch,p,al2,tmeas,k2,nth,pmz,pmx)
 
         #record measurement outcomes and reset ancillas
 
-        ycmeas[rep,:]=yancz
+        ycmeas[rep,:]=yancx
         xcmeas[rep,:]=xancz
 
         yancx=zeros(Int,nyc)
@@ -1007,82 +1018,40 @@ end
 
 #returns the pure error components of the accumulated errors, up to stabilizer
 
-function getSurfPELog(Ez,Ex,dz,dx)
-    Lz=ones(Int,dz,dx)
-    Lzc=Zparity(dz,dx,Ez)
-    Ly,Lx=SurfLogs(dz,dx)
-    Ey=zeros(Int,dz,dx)
+function getSurfPE(Ez,Ex,dz,dx)
 
-    for i in [1:dz;]
-        for j in [1:dx;]
-            if Ez[i,j]==1 && Ex[i,j]==1
-                Ey[i,j]=1
-            end
+    Lz,Lx=SurfLogs(dz,dx)
+    LC=LogComp(Ez,Ex,dz,dx)
 
-        end
-    end
-    #println(Ez)
-    #println(Ey)
-    #println(Ex)
-    LC=LogComp(Ey,Ex,dz,dx)
-
-    PEY=LC[1]*Ly + Ey
+    PEZ=LC[1]*Lz + Ez
     PEX=LC[2]*Lx + Ex
 
     for i in [1:dz;]
         for j in [1:dx;]
 
-            PEY[i,j]=PEY[i,j]%2
+            PEZ[i,j]=PEZ[i,j]%2
             PEX[i,j]=PEX[i,j]%2
 
         end
     end
 
-    if Lzc==1
-
-        PEZ=Ez+Lz
-
-        for i in [1:dz;]
-            for j in [1:dx;]
-
-                PEZ[i,j]=PEZ[i,j]%2
-
-            end
-        end
-
-    else
-
-        PEZ=Ez
-
-    end
-
-    if (Lzc==1) && (LC[1]+LC[2]==2)
-        Lzc=Lzc
-    elseif (Lzc==0) && (LC[1]+LC[2]<2)
-        Lzc=Lzc
-    else
-        println("LOGICAL ERROR INCONSISTENCY")
-        println(Lzc)
-        println(LC)
-    end
-
-    return PEZ,PEX,LC,Lzc
+    return PEZ,PEX
 end
 
 #returns the logical components of the accumulated errors
 
-function LogComp(Ey,Ex,dz,dx)
+function LogComp(Ez,Ex,dz,dx)
 
     LC=[0,0]
 
     if dx%2==0
         println("shouldn't see this!!")
-        LC[1]=Ey[dz,dx]
+        LC[1]=Ez[dz,dx]
         LC[2]=Ex[dz,dx]
 
     else
         for i in [1:dx;]
-            LC[1]=(LC[1]+Ey[1,i])%2
+            LC[1]=(LC[1]+Ez[1,i])%2
         end
         for i in [1:dz;]
             LC[2]=(LC[2]+Ex[i,dx])%2
@@ -1121,7 +1090,7 @@ function buildstrings(dz::Int,dx::Int,nr,pez,Synz,Synx,layout)
             qz=layout[i][2][1]
             qx=layout[i][2][2]
 
-            #if qx==dx
+            if qx==dx
                 #on logical boundary
                 #println(pez)
                 #println(qz)
@@ -1138,24 +1107,24 @@ function buildstrings(dz::Int,dx::Int,nr,pez,Synz,Synx,layout)
                     println("bad news!")
                 end
                 count=count+1
-            #else
+            else
                 #println(pez)
                 #println(qz)
                 #println(qx)
-                #e=pez[qz,qx]%2
+                e=pez[qz,qx]%2
                 #println(e)
                 #e=pez[qz,qx]
-                #if e==0
-                #    push!(outi,"Z+")
-                #    push!(outz,"Z+")
-                #elseif e==1
-                #    push!(outi,"Z-")
-                #    push!(outz,"Z-")
-                #else
-                #    println("bad news!")
-                #end
-                #count=count+1
-            #end
+                if e==0
+                    push!(outi,"Z+")
+                    push!(outz,"Z+")
+                elseif e==1
+                    push!(outi,"Z-")
+                    push!(outz,"Z-")
+                else
+                    println("bad news!")
+                end
+                count=count+1
+            end
 
         elseif typ==1
             #println("hay1")
@@ -1165,21 +1134,21 @@ function buildstrings(dz::Int,dx::Int,nr,pez,Synz,Synx,layout)
                 #println("hay2")
                 if Synz[nr,zc]==0
                     #println("hay3")
-                    outi=["Z+"]
-                    outz=["Z+"]
+                    outi=["X+"]
+                    outz=["X+"]
                 else
                     #println("hay3")
-                    outi=["Z-"]
-                    outz=["Z-"]
+                    outi=["X+"]
+                    outz=["X+"]
                 end
                 count=count+1
             else
                 if Synz[nr,zc]==0
-                    push!(outi,"Z+")
-                    push!(outz,"Z+")
+                    push!(outi,"X+")
+                    push!(outz,"X+")
                 else
-                    push!(outi,"Z-")
-                    push!(outz,"Z-")
+                    push!(outi,"X+")
+                    push!(outz,"X+")
                 end
                 count=count+1
             end
@@ -1235,14 +1204,14 @@ function buildinitstring(dz::Int,dx::Int,nr,layout)
 
         elseif typ==1
             #println("hay1")
-            #y check ancilla
+            #z check ancilla
 
             if i==1
-                out=["Z+"]
+                out=["X+"]
                 #println("hay2")
                 count=count+1
             else
-                push!(out,"Z+")
+                push!(out,"X+")
                 count=count+1
             end
 
@@ -1300,35 +1269,18 @@ function YStabs(dy,dx)
     return stabsout
 end
 
+function MLError(TNin,dz,dx,nr,PEZ,PEX,Synz,Synx,zsch,xsch,bsch,layout)#,ystab)
 
-function MLError(TNin,dz,dx,nr,PEZ,PEX,Synz,Synx,zsch,xsch,bsch,layout,ystab)
-    #plitot=0
-    #plztot=0
-    #for i in [1:2^(dz+1);]
-    PEZY=PEZ
-    #@show PEZ
-    #@show ystab[i]
-    #@show PEZY
-    stringi,stringz=buildstrings(dz,dx,nr,PEZY,Synz,Synx,layout)
+    stringi,stringz=buildstrings(dz,dx,nr,PEZ,Synz,Synx,layout)
     mpsi=productstate(siteinds(TNin),stringi)
     mpsz=productstate(siteinds(TNin),stringz)
 
     #compute "probability" that this pure error and meas outcomes occurred, and no logical z
     pli=inner(TNin,mpsi)
-    #println(pli)
-    #plitot=plitot+pli
-    #println(plitot)
+
     #compute "probability" that this pure error and meas outcomes occurred, as well as logical z
     plz=inner(TNin,mpsz)
-    #println(plz)
-    #plztot=plztot+plz
-    #println(plztot)
-    #println(pli)
-    #println(plz)
-    #end
-    #println("tots are")
-    #println(plitot)
-    #println(plztot)
+
     if pli>plz
         #if it was more likely that no logical z occurred, decoder does nothing
         ml=0
@@ -1336,8 +1288,7 @@ function MLError(TNin,dz,dx,nr,PEZ,PEX,Synz,Synx,zsch,xsch,bsch,layout,ystab)
         #if it was more likely that logical z occurred, decoder applies logical z
         ml=1
     end
-    #println(ml)
-
+    #return the maximum likelihood logical correction
     return ml
 
 end
@@ -1397,109 +1348,149 @@ function SurfCirc(dz,dx,nr,PEZ,PEX,Synz,Synx,zsch,xsch,bsch,layout,ql,zl,xl,p,al
     #build the circuit out of gates
     #each measurement round consists of four time steps
 
-
+    #number of z checks/stabilizers
     nzc=size(zsch)[1]
+
+    #number of x checks/stabilizers
     nxc=size(xsch)[1]
 
+    #total number of data and ancilla circuits in the circuit
     nq=size(layout)[1]
 
+    #loop over number of rounds you repeat stabilizer measurements, nr
     for rep in [1:nr;]
+
+        #loop over the number of qubits in the circuit
         for q in [1:nq;]
 
+            #there are SIX time steps in every measurement round
 
-            #first time step -- initialization/idling
+            #####FIRST time step of a round -- initialization/idling#####
+
+            #determine type of qubit (data, z-ancilla, x-ancilla)
             typ=layout[q][1]
 
-            if rep>1
+            #first round doesn't have ancilla reset gate
+            if rep==1
 
                 if typ==0
-                    #data qubit
-                    push!(gates,("pz",q,(p=0,)))
-
-                elseif typ==1
-                    #y check ancilla qubit
-                    zc=layout[q][2][1]
-                    #println(zc)
-                    #println(rep-1)
-                    #println(size(Synz))
-                    mbit=Synz[rep-1,zc]
-                    if mbit==0
-                        push!(gates,("pi0",q,(p=ppax,)))
-                    else
-                        push!(gates,("pi1",q,(p=ppax,)))
-                    end
-
-
-                elseif typ==2
-                    #x check ancilla qubit
-                    xc=layout[q][2][1]
-                    mbit=Synx[rep-1,xc]
-                    if mbit==0
-
-                        push!(gates,("pi0",q,(p=ppax,)))
-
-                    else
-                        push!(gates,("pi1",q,(p=ppax,)))
-                    end
-
-                end
-
-            else
-
-                if typ==0
-                    #data qubit
+                    #data qubit, model wait fault during preparation of ancillas
                     push!(gates,("pz",q,(p=pzip,)))
 
                 elseif typ==1
-                    #y check ancilla qubit
-                    push!(gates,("pz",q,(p=ppax,)))
+                    #z check ancilla qubit, z errors don't affect z-ancilla, so, no probability of fault
+                    push!(gates,("pz",q,(p=0,)))
 
                 elseif typ==2
-                    #x check ancilla qubit
+                    #x check ancilla qubit, fails (Z or Y error) with probability ppax
                     push!(gates,("pz",q,(p=ppax,)))
 
                 end
+
+            #rounds after the first involve inserting the previous measurement outcomes
+            #on the ancilla qubits and then re-initializing the ancilla qubits
+            else
+
+                if typ==0
+                    #data qubit, no probability of fault (built into previous location)
+                    push!(gates,("pz",q,(p=0,)))
+
+                elseif typ==1
+                    #z check ancilla qubit
+
+                    #since we are only interested in Z errors which don't affect
+                    #Z measurement outcomes, we allow either measurement outcome.
+                    #Also, no probability of fault because Z ancilla preparation.
+                    push!(gates,("pizres",q,(p=0,)))
+
+                elseif typ==2
+                    #x check ancilla qubit
+
+                    #determine which x ancilla qubit it is
+                    xc=layout[q][2][1]
+
+                    #determine previous round's measurement outcome for this ancilla
+                    mbit=Synx[rep-1,xc]
+
+                    #insert measurement outcome from previous round, and re-initialize
+                    #x ancilla which fails with probability ppax
+                    if mbit==0
+
+                        push!(gates,("pi0",q,(p=ppax,)))
+
+                    else
+                        push!(gates,("pi1",q,(p=ppax,)))
+                    end
+
+                end
+
 
             end
 
         end
 
+
+        #next four timesteps of round are applications of CNOTs and wait locations
+
+        #####for CNOT time step 1 through 4#####
         for cnt in [1:4;]
 
+            #each CNOT time step goes as follows
+
+            #loop through each qubit
             for q in [1:nq;]
 
+
+                #determine what type of qubit
                 typ=layout[q][1]
 
                 if typ==0
                     #data qubit, need to see if this is a wait location
-                    addr=layout[q][2]
-                    wait=bsch[cnt,addr[1],addr[2]]
-                    if wait==1
 
+                    #get physical address of data qubit
+                    addr=layout[q][2]
+
+                    #look at the schedule that tells us which boundary qubits
+                    #have wait locations at which rounds
+                    wait=bsch[cnt,addr[1],addr[2]]
+
+                    if wait==1
+                        #if it's a wait location, fault with probability pzic
                         push!(gates,("pz",q,(p=pzic,)))
 
                     end
 
+                    #if it isn't a fault location do nothing -- the CNOT will be accounted for
+                    #via the ancilla qubit
+
                 elseif typ==1
 
-                    #y check ancilla qubit, identifies x errors, data is target, ancilla is control
+                    #z check ancilla qubit, identifies x errors, data is control, ancilla is target
 
-                    zc=layout[q][2][1] #which y check it is in the list of y check schedules
+                    #which z check it is
+                    zc=layout[q][2][1]
+
+                    #determine CNOT partner in this round by looking at schedule
                     partner=zsch[zc][cnt]
 
                     if partner==[-1,-1]
-                        #wait location for this ancilla
+                        #wait location for this ancilla, fault with probability pzic
                         push!(gates,("pz",q,(p=pzic,)))
                     else
+                        #this ancilla has CNOT with data qubit during this timestep
+                        #get z and x address of partner data qubit
                         pzad=partner[1]
                         pxad=partner[2]
                         q2=ql[pzad,pxad]
-                        push!(gates,("CNOT",(q,q2),(pz1=CYpz1,pz2=CYpz2,pz12=CYpz1z2,)))
+                        #apply CNOT
+                        push!(gates,("CNOT",(q2,q),(pz1=pz1,pz2=pz2,pz12=pz1z2,)))
                     end
 
                 elseif typ==2
 
                     #x check ancilla qubit, identifies z errors, data is target, ancilla is control
+
+                    #same deal as z ancilla qubit, above
 
                     xc=layout[q][2][1] #which x check it is in the list of x check schedules
                     partner=xsch[xc][cnt]
@@ -1520,22 +1511,21 @@ function SurfCirc(dz,dx,nr,PEZ,PEX,Synz,Synx,zsch,xsch,bsch,layout,ql,zl,xl,p,al
         end
 
 
+        #####SIXTH/FINAL TIMESTEP OF ROUND -- MEASUREMENT OF ANCILLAS#####
         for q in [1:nq;]
 
-
-            #final time step -- idling/measurement
             typ=layout[q][1]
 
             if typ==0
-                #data qubit
+                #data qubit, idles and fails with probability pzim
                 push!(gates,("pz",q,(p=pzim,)))
 
             elseif typ==1
-                #z check ancilla qubit
-                push!(gates,("pz",q,(p=pmx,)))
+                #z check ancilla qubit, no failure probability
+                push!(gates,("pz",q,(p=0,)))
 
             elseif typ==2
-                #x check ancilla qubit
+                #x check ancilla qubit, fails with probability pmx
                 push!(gates,("pz",q,(p=pmx,)))
 
             end
@@ -1543,28 +1533,16 @@ function SurfCirc(dz,dx,nr,PEZ,PEX,Synz,Synx,zsch,xsch,bsch,layout,ql,zl,xl,p,al
         end
     end
 
-
+    #build string that specifies initial state to circuit
     istr=buildinitstring(dz,dx,nr,layout)
-    T=productstate(nq) #all zeros initial state sets initial error configuration to be trivial
-    TI=productstate(siteinds(T),istr)
-    #display(T)
-    TOut=runcircuit(TI,gates,cutoff=acc,maxdim=bd)
 
-    return TOut #return the MPS, whose physical indices are as described at top of function
+    #build initial state to circuit
+    T=productstate(nq,istr) #all zeros initial state sets initial error configuration to be trivial
+
+    TOut=runcircuit(T,gates,cutoff=acc,maxdim=bd)
+
+    return TOut #return the final MPS
 end
-
-function Zparity(dy,dx,Ez)
-
-    sum=0
-    for i in [1:dy;]
-        for j in [1:dx;]
-            sum=(sum+Ez[i,j])%2
-        end
-    end
-    return sum
-end
-
-
 
 function SurfMC(dz,dx,nr,p,al2,tmeas,k2,nth,acc,bd,err,nt; sim_id::Int=-1)
 
@@ -1617,7 +1595,8 @@ function SurfMC(dz,dx,nr,p,al2,tmeas,k2,nth,acc,bd,err,nt; sim_id::Int=-1)
     else
         println("bad mmnt error rate!")
     end
-    ystab=YStabs(dz,dx)
+
+    #create schedules and linear layouts for rotated XZ surface code
     zsch,xsch=schedulemaker(dz,dx)
     xsch=xreorder(xsch,dz,dx)
     bsch=bdrysched(dz,dx)
@@ -1626,126 +1605,93 @@ function SurfMC(dz,dx,nr,p,al2,tmeas,k2,nth,acc,bd,err,nt; sim_id::Int=-1)
     layout=SurfLayout(dz,dx,zsch,xsch)
     layout=optlayout(layout,dz,dx)
     ql,zl,xl=linemaps(layout,dz,dx,nzc,nxc)
-    #println(zsch)
-    #println(xsch)
-    Ly,Lx=SurfLogs(dz,dx)
-    #display(Lz)
-    #display(Lx)
-    n=0
-    f=0
-    fx=0
-    breakflag=0
-    pct=0
-    totime=0
-    while n<nt #breakflag==0
-    	#totime=0
-        #breakflag=1
-        #println("pspsps")
+
+    #create canonical logical operators
+    Lz,Lx=SurfLogs(dz,dx)
+
+    #draw monte carlo error sample: accumulated Z and X components of data qubit
+    #errors, and measured syndromes for each round
+    Ez,Ex,Synz,Synx=SurfMCError(dz,dx,nr,zsch,xsch,bsch,p,al2,tmeas,k2,nth,pmz,pmx)
+
+    #determine pure error (up to stabilizer) components of Z and X error components
+
+    PEZ,PEX=getSurfPE(Ez,Ex,dz,dx)
+
+    #determine logical error components of data qubit errors
+    L=LogComp(Ez,Ex,dz,dx)
+    LZ=L[1]
+    LX=L[2]
+
+    #create MPS that has measurement outcomes from monte carlo sample inserted
+
+    MPS=SurfCirc(dz,dx,nr,PEZ,PEX,Synz,Synx,zsch,xsch,bsch,layout,ql,zl,xl,p,al2,tmeas,k2,nth,pmz,pmx,acc,bd)
+
+    #use the MPS to determine the maximum likelihood logical error
+
+    MLZ=MLError(MPS,dz,dx,nr,PEZ,PEX,Synz,Synx,zsch,xsch,bsch,layout)
+
+
+    #determine residual error after logical correction is applied
+    #resz=(LZ+MLZ)%2
+
+    #if resz==1
+    #    f=f+1
+    #elseif LX==1
+    #    fx=fx+1
+    #end
+    time=0
+    for i in [1:10;]
+
+        #draw monte carlo error sample: accumulated Z and X components of data qubit
+        #errors, and measured syndromes for each round
         Ez,Ex,Synz,Synx=SurfMCError(dz,dx,nr,zsch,xsch,bsch,p,al2,tmeas,k2,nth,pmz,pmx)
-        #display(Ez)
-        #display(Synx)
-        #display(Ex)
-        #display(Synz)
 
-        PEZ,PEX,L,LZ=getSurfPELog(Ez,Ex,dz,dx)
-        #display(PEZ)
-        #display(PEX)
-        #L=LogComp(Ez,Ex,dz,dx)
-        LY=L[1]
+        #determine pure error (up to stabilizer) components of Z and X error components
+
+        PEZ,PEX=getSurfPE(Ez,Ex,dz,dx)
+
+        #determine logical error components of data qubit errors
+        L=LogComp(Ez,Ex,dz,dx)
+        LZ=L[1]
         LX=L[2]
-        #display(L)
-        #println(PEZ)
-        elapsed = @elapsed begin
-          MPS=SurfCirc(dz,dx,nr,PEZ,PEX,Synz,Synx,zsch,xsch,bsch,layout,ql,zl,xl,p,al2,tmeas,k2,nth,pmz,pmx,acc,bd)
-        end
-	#println(elapsed)
-        totime=totime+elapsed
-	#MPS
-        MLZ=MLError(MPS,dz,dx,nr,PEZ,PEX,Synz,Synx,zsch,xsch,bsch,layout,ystab)
-        #PEZ[1,1]=(PEZ[1,1]+1)%2
-        #PEZ[1,2]=(PEZ[1,2]+1)%2
-        #PEZ[2,1]=(PEZ[2,1]+1)%2
-        #PEZ[2,2]=(PEZ[2,2]+1)%2
-        #println(PEZ)
-        #MPS=SurfCirc(dz,dx,nr,PEZ,PEX,Synz,Synx,zsch,xsch,bsch,layout,ql,zl,xl,p,al2,tmeas,k2,nth,pmz,pmx,acc,bd)
-        #MPS
-        #MLZ=MLError(MPS,dz,dx,nr,PEZ,PEX,Synz,Synx,zsch,xsch,bsch,layout)
-        #display(MLZ)
-        #MLZ=MLL[1]
-    #print(L)
-    #print(MLL)
-        #println(L)
-        #println(MLZ)
-        resz=(LZ+MLZ)%2
-        if resz==1
-            f=f+1
-        elseif LX==1
-            fx=fx+1
-        end
 
-        n=n+1
-        pct=pct+1
-        mu=f/n
-        #println(mu)
-        if (n>1)&&(f>4)
-            stdev=sqrt((f*(1-mu)*(1-mu) + (n-f)*(mu)*(mu))/(n-1))
-            stderr=stdev/sqrt(n)
-            if stderr<(err*mu)
-                breakflag=1
-            end
+        #create MPS that has measurement outcomes from monte carlo sample inserted
+        elapsed = @elapsed begin
+            MPS=SurfCirc(dz,dx,nr,PEZ,PEX,Synz,Synx,zsch,xsch,bsch,layout,ql,zl,xl,p,al2,tmeas,k2,nth,pmz,pmx,acc,bd)
         end
-        #if pct>5
-        #    breakflag=1
-        #end
-        if (pct>199)
-	    atime=totime/pct
-            totime=0
-	    pct=0
-            println("mu is")
-            println(mu)
-            #println(nfail/ntr)
-            println("number of trials is")
-            println(n)
-            println("number of Z or Y failures is")
-            println(f)
-            println("number of X failures is")
-            println(fx)
-	    println("average trial time")
-	    println(atime)
-            if f>4
-                println("stderr is")
-                println(stderr)
-                println("target is")
-                println(err*mu)
-            end
-        end
-        fout = open(fname,"w")
-        writedlm(fout,[n,f])
-        close(fout)
+        println(elapsed)
+
+        time=time+elapsed
+
+        #use the MPS to determine the maximum likelihood logical error
+
+        MLZ=MLError(MPS,dz,dx,nr,PEZ,PEX,Synz,Synx,zsch,xsch,bsch,layout)
+
     end
-    println(f)
-    println(fx)
-    println(n)
-    println((f+fx)/n)
+
+    println("average contraction time:")
+    println(time/10)
 
     return
 end
 
-dzin=parse(Int64,ARGS[1])
-pin=parse(Float64,ARGS[2])
+#SurfMC(3,3,3,7e-5,8,500e-9,1e7,0,1e-15,10,0,0)
+#SurfMC(5,3,5,7e-5,8,500e-9,1e7,0,1e-15,10,0,0)
+#SurfMC(7,3,7,7e-5,8,500e-9,1e7,0,1e-15,10,0,0)
+#SurfMC(9,3,9,7e-5,8,500e-9,1e7,0,1e-15,10,0,0)
+SurfMC(11,3,11,7e-5,8,500e-9,1e7,0,1e-15,10,0,0)
+SurfMC(13,3,13,7e-5,8,500e-9,1e7,0,1e-15,10,0,0)
+SurfMC(15,3,15,7e-5,8,500e-9,1e7,0,1e-15,10,0,0)
+
+#dzin=parse(Int64,ARGS[1])
+#pin=parse(Float64,ARGS[2])
 #println(pin)
-ntin=parse(Int64,ARGS[3])
-cutin=parse(Float64,ARGS[4])
-bdin=parse(Int64,ARGS[5])
-if length(ARGS)==6
-    sidin=parse(Int64,ARGS[6])
-    SurfMC(dzin,3,dzin,pin,8,500e-9,1e7,0,cutin,bdin,0.1,ntin,sim_id = sidin)
-else
-    SurfMC(dzin,3,dzin,pin,8,500e-9,1e7,0,cutin,bdin,0.1,ntin)
-end
-
-#@show YStabs(3,3)
-
-
-#SurfMC(3,3,3,1e-5,8,500e-9,1e7,0,1e-15,10000,0.1, sim_id = 1)
-#SurfMC(3,3,3,1e-5,8,500e-9,1e7,0,1e-15,10000,0.1, sim_id = 2)
+#ntin=parse(Int64,ARGS[3])
+#cutin=parse(Float64,ARGS[4])
+#bdin=parse(Int64,ARGS[5])
+#if length(ARGS)==6
+#    sidin=parse(Int64,ARGS[6])
+#    SurfMC(dzin,3,dzin,pin,8,500e-9,1e7,0,cutin,bdin,0.1,ntin,sim_id = sidin)
+#else
+#    SurfMC(dzin,3,dzin,pin,8,500e-9,1e7,0,cutin,bdin,0.1,ntin)
+#end

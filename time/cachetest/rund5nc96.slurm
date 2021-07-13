@@ -4,9 +4,8 @@
 #SBATCH --output=job_%j.log   # Standard output and error log
 #SBATCH --nodes=1          # Run all processes on a single node
 #SBATCH --ntasks=1
-#SBATCH --cpus-per-task=16
+#SBATCH --cpus-per-task=96
 #SBATCH --time=150:00:00
-#SBATCH --partition=compute
+#SBATCH --partition=cpu96
 
-julia mlxynctime.jl 3 $1 10 1e-15 10000 $2
-
+julia mlxynctime.jl 5 $1 10 1e-15 10000 $2

@@ -5,7 +5,9 @@ using Random
 import PastaQ: gate
 import PastaQ.ITensors: array
 using DelimitedFiles
-
+using Test
+ITensors.disable_warn_order()
+#@set_warn_order 1000
 #Use DoMCCLTN to do monte carlo simulation for ML decoding of repetition code
 
 #To compare results, use the function Pfail in PyCLTNQuimb.py which does an
@@ -24,6 +26,13 @@ function gate(::GateName"CNOT"; pz1::Number, pz2::Number, pz12::Number)
           pz1             pz2             1-pz1-pz2-pz12  pz12
           pz12            1-pz1-pz2-pz12  pz2             pz1]
 end
+
+#function gate(::GateName"CNOT"; pz1::Number, pz2::Number, pz12::Number)
+#  return [1-pz1-pz2-pz12  pz2             pz1             pz12
+#          pz12            pz1             pz2             1-pz1-pz2-pz12
+#          pz1             pz12            1-pz1-pz2-pz12  pz2
+#          pz2             1-pz1-pz2-pz12  pz12            pz1]
+#end
 
 #X-type stabilizer ancilla measurement and re-initialization gate -- use pi0 or pi1 depending on
 #measurement outcome obtained for that ancilla. The probability of a Z-failure
@@ -560,7 +569,7 @@ function linemaps(layout,dz,dx,nzc,nxc)
         end
 
     end
-
+    println(qlinemap)
     return qlinemap,zlinemap,xlinemap
 end
 
@@ -840,9 +849,9 @@ function SurfMCError(dy,dx,nr,zsched,xsched,bsch,p,al2,tmeas,k2,nth,pmz,pmx)
                     r=rand(Float64)
 
                     zf,xf=CYfail(r,p,al2,tmeas,k2,nth,pmz,pmx)
-		    datazold=dataz[qub[1],qub[2]]
-		    dataxold=datax[qub[1],qub[2]]
-		    yancxold=yancx[yc]
+		            datazold=dataz[qub[1],qub[2]]
+		            dataxold=datax[qub[1],qub[2]]
+		            yancxold=yancx[yc]
                     #z error of the data qubit (target) inherits the target z error from the CY operation
 		    #it also inherits a Z error if there was an x error on the ancilla (control)
                     dataz[qub[1],qub[2]]=(zf[2]+dataz[qub[1],qub[2]]+yancx[yc])%2
@@ -1007,82 +1016,40 @@ end
 
 #returns the pure error components of the accumulated errors, up to stabilizer
 
-function getSurfPELog(Ez,Ex,dz,dx)
-    Lz=ones(Int,dz,dx)
-    Lzc=Zparity(dz,dx,Ez)
-    Ly,Lx=SurfLogs(dz,dx)
-    Ey=zeros(Int,dz,dx)
+function getSurfPE(Ez,Ex,dz,dx)
 
-    for i in [1:dz;]
-        for j in [1:dx;]
-            if Ez[i,j]==1 && Ex[i,j]==1
-                Ey[i,j]=1
-            end
+    Lz,Lx=SurfLogs(dz,dx)
+    LC=LogComp(Ez,Ex,dz,dx)
 
-        end
-    end
-    #println(Ez)
-    #println(Ey)
-    #println(Ex)
-    LC=LogComp(Ey,Ex,dz,dx)
-
-    PEY=LC[1]*Ly + Ey
+    PEZ=LC[1]*Lz + Ez
     PEX=LC[2]*Lx + Ex
 
     for i in [1:dz;]
         for j in [1:dx;]
 
-            PEY[i,j]=PEY[i,j]%2
+            PEZ[i,j]=PEZ[i,j]%2
             PEX[i,j]=PEX[i,j]%2
 
         end
     end
 
-    if Lzc==1
-
-        PEZ=Ez+Lz
-
-        for i in [1:dz;]
-            for j in [1:dx;]
-
-                PEZ[i,j]=PEZ[i,j]%2
-
-            end
-        end
-
-    else
-
-        PEZ=Ez
-
-    end
-
-    if (Lzc==1) && (LC[1]+LC[2]==2)
-        Lzc=Lzc
-    elseif (Lzc==0) && (LC[1]+LC[2]<2)
-        Lzc=Lzc
-    else
-        println("LOGICAL ERROR INCONSISTENCY")
-        println(Lzc)
-        println(LC)
-    end
-
-    return PEZ,PEX,LC,Lzc
+    return PEZ,PEX
 end
 
 #returns the logical components of the accumulated errors
 
-function LogComp(Ey,Ex,dz,dx)
+function LogComp(Ez,Ex,dz,dx)
 
     LC=[0,0]
 
     if dx%2==0
         println("shouldn't see this!!")
-        LC[1]=Ey[dz,dx]
+        LC[1]=Ez[dz,dx]
         LC[2]=Ex[dz,dx]
 
     else
         for i in [1:dx;]
-            LC[1]=(LC[1]+Ey[1,i])%2
+            LC[1]=(LC[1]+Ez[1,i])%2
         end
         for i in [1:dz;]
             LC[2]=(LC[2]+Ex[i,dx])%2
@@ -1121,7 +1088,7 @@ function buildstrings(dz::Int,dx::Int,nr,pez,Synz,Synx,layout)
             qz=layout[i][2][1]
             qx=layout[i][2][2]
 
-            #if qx==dx
+            if qx==dx
                 #on logical boundary
                 #println(pez)
                 #println(qz)
@@ -1138,24 +1105,24 @@ function buildstrings(dz::Int,dx::Int,nr,pez,Synz,Synx,layout)
                     println("bad news!")
                 end
                 count=count+1
-            #else
+            else
                 #println(pez)
                 #println(qz)
                 #println(qx)
-                #e=pez[qz,qx]%2
+                e=pez[qz,qx]%2
                 #println(e)
                 #e=pez[qz,qx]
-                #if e==0
-                #    push!(outi,"Z+")
-                #    push!(outz,"Z+")
-                #elseif e==1
-                #    push!(outi,"Z-")
-                #    push!(outz,"Z-")
-                #else
-                #    println("bad news!")
-                #end
-                #count=count+1
-            #end
+                if e==0
+                    push!(outi,"Z+")
+                    push!(outz,"Z+")
+                elseif e==1
+                    push!(outi,"Z-")
+                    push!(outz,"Z-")
+                else
+                    println("bad news!")
+                end
+                count=count+1
+            end
 
         elseif typ==1
             #println("hay1")
@@ -1166,19 +1133,23 @@ function buildstrings(dz::Int,dx::Int,nr,pez,Synz,Synx,layout)
                 if Synz[nr,zc]==0
                     #println("hay3")
                     outi=["Z+"]
+                    #outi=["X+"]
                     outz=["Z+"]
                 else
                     #println("hay3")
                     outi=["Z-"]
+                    #outi=["X+"]
                     outz=["Z-"]
                 end
                 count=count+1
             else
                 if Synz[nr,zc]==0
                     push!(outi,"Z+")
+                    #push!(outi,"X+")
                     push!(outz,"Z+")
                 else
                     push!(outi,"Z-")
+                    #push!(outi,"X+")
                     push!(outz,"Z-")
                 end
                 count=count+1
@@ -1196,16 +1167,88 @@ function buildstrings(dz::Int,dx::Int,nr,pez,Synz,Synx,layout)
             end
             count=count+1
         end
+    end
+    return outi,outz
+end
+
+function buildinitstring(dz::Int,dx::Int,nr,pez,layout)
+
+    N=2*dz*dx-1
+    out=[]
+
+    count=0
+
+
+    for i in [1:N;]
+        #println(i)
+        typ=layout[i][1]
+#        println(layout[i])
+        #println(typ)
+        if typ==0
+           #data qubit
+
+            qz=layout[i][2][1]
+            qx=layout[i][2][2]
+
+            #println(pez)
+            #println(qz)
+            #println(qx)
+            e=pez[qz,qx]%2
+            #println(e)
+            #e=pez[qz,qx]
+            if e==0
+                push!(out,"Z+")
+            elseif e==1
+                push!(out,"Z-")
+            else
+                println("bad news!")
+            end
+            count=count+1
+
+        elseif typ==1
+            #println("hay1")
+            #y check ancilla
+            zc=layout[i][2][1]
+            if i==1
+                #println("hay2")
+                #if Synz[nr,zc]==0
+                    #println("hay3")
+                out=["Z+"]
+                #else
+                    #println("hay3")
+                #    out=["Z+"]
+                #end
+                count=count+1
+            else
+                #if Synz[nr,zc]==0
+                push!(out,"Z+")
+                #else
+                #    push!(out,"Z+")
+                #end
+                count=count+1
+            end
+
+        elseif typ==2
+            #x check ancilla
+            xc=layout[i][2][1]
+            #if Synx[nr,xc]==0
+            push!(out,"Z+")
+            #else
+            #    push!(out,"Z+")
+            #end
+            count=count+1
+        end
 
     end
+    #println(out)
     #println(outi)
     #println(outz)
-    return outi,outz
+    return out
 
 end
 
 
-function buildinitstring(dz::Int,dx::Int,nr,layout)
+function buildinitstringold(dz::Int,dx::Int,nr,layout)
 
     N=2*dz*dx-1
     out=[]
@@ -1300,36 +1343,61 @@ function YStabs(dy,dx)
     return stabsout
 end
 
+function buildinitstate(dz,dx,nr,zsch,xsch,bsch,layout,ystab)
+
+    pez=ystab[1]
+    #println(pez)
+    #first=productstate(2*dz*dx-1)
+    #@show first
+    #println("hellow")
+    stringi=buildinitstring(dz,dx,nr,pez,layout)
+    mps1=productstate(2*dz*dx-1,stringi)
+    mpsi=productstate(2*dz*dx-1,stringi)
+    #@show mpsi
+    for i in [2:2^(dz+1);]
+
+        #pez=ystab[i]
+        #println(pez)
+        stringi=buildinitstring(dz,dx,nr,ystab[i],layout)
+        mpsy=productstate(siteinds(mpsi),stringi)
+        #@show mpsy
+        mpsi=mpsi+mpsy
+        #@show mpsi
+    end
+    #@test all(isapprox.(PastaQ.array(mpsi), PastaQ.array(mps1), rtol = 0.01))
+    #@show PastaQ.array(mpsi)
+    #@show PastaQ.array(mps1)
+    return mpsi
+end
 
 function MLError(TNin,dz,dx,nr,PEZ,PEX,Synz,Synx,zsch,xsch,bsch,layout,ystab)
     #plitot=0
     #plztot=0
     #for i in [1:2^(dz+1);]
-    PEZY=PEZ
+    #PEZY=PEZ+ystab[i]
     #@show PEZ
     #@show ystab[i]
     #@show PEZY
-    stringi,stringz=buildstrings(dz,dx,nr,PEZY,Synz,Synx,layout)
+    #println("HELLO")
+    stringi,stringz=buildstrings(dz,dx,nr,PEZ,Synz,Synx,layout)
     mpsi=productstate(siteinds(TNin),stringi)
     mpsz=productstate(siteinds(TNin),stringz)
 
     #compute "probability" that this pure error and meas outcomes occurred, and no logical z
     pli=inner(TNin,mpsi)
-    #println(pli)
+    println("tots are")
+    println(pli)
     #plitot=plitot+pli
     #println(plitot)
     #compute "probability" that this pure error and meas outcomes occurred, as well as logical z
     plz=inner(TNin,mpsz)
-    #println(plz)
+    println(plz)
     #plztot=plztot+plz
     #println(plztot)
     #println(pli)
     #println(plz)
     #end
-    #println("tots are")
-    #println(plitot)
-    #println(plztot)
-    if pli>plz
+    if pli > plz
         #if it was more likely that no logical z occurred, decoder does nothing
         ml=0
     else
@@ -1342,7 +1410,7 @@ function MLError(TNin,dz,dx,nr,PEZ,PEX,Synz,Synx,zsch,xsch,bsch,layout,ystab)
 
 end
 
-function SurfCirc(dz,dx,nr,PEZ,PEX,Synz,Synx,zsch,xsch,bsch,layout,ql,zl,xl,p,al2,tmeas,k2,nth,pmz,pmx,acc,bd)
+function SurfCirc(dz,dx,nr,instate,PEZ,PEX,Synz,Synx,zsch,xsch,bsch,layout,ql,zl,xl,p,al2,tmeas,k2,nth,pmz,pmx,acc,bd)
 
     #First initialize all hardware noise parameters and failure rates. Note that p=k1/k2
 
@@ -1482,7 +1550,7 @@ function SurfCirc(dz,dx,nr,PEZ,PEX,Synz,Synx,zsch,xsch,bsch,layout,ql,zl,xl,p,al
 
                 elseif typ==1
 
-                    #y check ancilla qubit, identifies x errors, data is target, ancilla is control
+                    #y check ancilla qubit, identifies x/z errors, data is target, ancilla is control
 
                     zc=layout[q][2][1] #which y check it is in the list of y check schedules
                     partner=zsch[zc][cnt]
@@ -1544,27 +1612,128 @@ function SurfCirc(dz,dx,nr,PEZ,PEX,Synz,Synx,zsch,xsch,bsch,layout,ql,zl,xl,p,al
     end
 
 
-    istr=buildinitstring(dz,dx,nr,layout)
-    T=productstate(nq) #all zeros initial state sets initial error configuration to be trivial
-    TI=productstate(siteinds(T),istr)
+    #istr=buildinitstringold(dz,dx,nr,layout)
+    #T=productstate(nq) #all zeros initial state sets initial error configuration to be trivial
+    #TI=productstate(siteinds(T),istr)
     #display(T)
-    TOut=runcircuit(TI,gates,cutoff=acc,maxdim=bd)
+    TOut=runcircuit(instate,gates,cutoff=acc,maxdim=bd)
 
     return TOut #return the MPS, whose physical indices are as described at top of function
 end
 
-function Zparity(dy,dx,Ez)
+function single(TNin,dz,dx,nr,PEZ,PEX,Synz,Synx,zsch,xsch,bsch,layout,ystab)
 
-    sum=0
-    for i in [1:dy;]
-        for j in [1:dx;]
-            sum=(sum+Ez[i,j])%2
-        end
-    end
-    return sum
+    stringi,stringz=buildstrings(dz,dx,nr,PEZ,Synz,Synx,layout)
+    mpsi=productstate(siteinds(TNin),stringi)
+
+    pli=inner(TNin,mpsi)
+
+    println(pli)
+
+    return pli
+
 end
 
 
+function dumbsum(TNin,dz,dx,nr,PEZ,PEX,Synz,Synx,zsch,xsch,bsch,layout,ystab)
+    plitot=0
+    for i in [1:2^(dz+1);]
+        PEZY=PEZ+ystab[i]
+        stringi,stringz=buildstrings(dz,dx,nr,PEZY,Synz,Synx,layout)
+        mpsi=productstate(siteinds(TNin),stringi)
+        pli=inner(TNin,mpsi)
+        println(i)
+        println(pli)
+        plitot=plitot+pli
+    end
+    println("total is")
+    println(plitot)
+    return
+
+end
+
+function sumtest(dz,dx,nr,p,al2,tmeas,k2,nth,acc,bd,err,nt)
+
+    #Random.seed!(1234)
+    pmz=exp(-1.5-0.9*al2)
+    if p==1e-5
+        pmx=1.85e-5
+    elseif p==2e-5
+        pmx=1.9e-5
+    elseif p==3e-5
+        pmx=1.95e-5
+    elseif p==4e-5
+        pmx=2.05e-5
+    elseif p==5e-5
+        pmx=2.1e-5
+    elseif p==6e-5
+        pmx=2.15e-5
+    elseif p==7e-5
+        pmx=2.2e-5
+    elseif p==8e-5
+        pmx=2.25e-5
+    elseif p==9e-5
+        pmx=2.3e-5
+    elseif p==1e-4
+        pmx=2.4e-5
+    elseif p==2e-4
+        pmx=3.1e-5
+    elseif p==3e-4
+        pmx=3.95e-5
+    elseif p==4e-4
+        pmx=5.05e-5
+    elseif p==5e-4
+        pmx=6.6e-5
+    elseif p==6e-4
+        pmx=8.15e-5
+    elseif p==7e-4
+        pmx=9.7e-5
+    elseif p==8e-4
+        pmx=11.7e-5
+    elseif p==9e-4
+        pmx=14.25e-5
+    elseif p==1e-3
+        pmx=16.8e-5
+    else
+        println("bad mmnt error rate!")
+    end
+    ystab=YStabs(dz,dx)
+    zsch,xsch=schedulemaker(dz,dx)
+    xsch=xreorder(xsch,dz,dx)
+    bsch=bdrysched(dz,dx)
+    nzc=size(zsch)[1]
+    nxc=size(xsch)[1]
+    layout=SurfLayout(dz,dx,zsch,xsch)
+    layout=optlayout(layout,dz,dx)
+    ql,zl,xl=linemaps(layout,dz,dx,nzc,nxc)
+    #println(zsch)
+    #println(xsch)
+    Lz,Lx=SurfLogs(dz,dx)
+    #display(Lz)
+    #display(Lx)
+    Synz=zeros(Int,nr,nzc)
+    @show Synz
+    Synx=zeros(Int,nr,nxc)
+    @show Synx
+    PE=zeros(Int,dz,dx)
+    #instate=buildinitstate(dz,dx,nr,zsch,xsch,bsch,layout,ystab)
+    stri=buildinitstring(dz,dx,nr,PE,layout)
+    TI=productstate(2*dz*dx-1,stri) #all zeros initial state sets initial error configuration to be trivial
+    #TI=productstate(siteinds(T),stri)
+    MPS=SurfCirc(dz,dx,nr,TI,PE,PE,Synz,Synx,zsch,xsch,bsch,layout,ql,zl,xl,p,al2,tmeas,k2,nth,pmz,pmx,acc,bd)
+    dumbsum(MPS,dz,dx,nr,PE,PE,Synz,Synx,zsch,xsch,bsch,layout,ystab)
+    sum=0
+    for ii in [1:2^(dz+1);]
+        stri=buildinitstring(dz,dx,nr,ystab[ii],layout)
+        TI=productstate(2*dz*dx-1,stri) #all zeros initial state sets initial error configuration to be trivial
+        #TI=productstate(siteinds(T),stri)
+        MPS=SurfCirc(dz,dx,nr,TI,PE,PE,Synz,Synx,zsch,xsch,bsch,layout,ql,zl,xl,p,al2,tmeas,k2,nth,pmz,pmx,acc,bd)
+        pl=single(MPS,dz,dx,nr,PE,PE,Synz,Synx,zsch,xsch,bsch,layout,ystab)
+        sum=sum+pl
+    end
+    println(sum)
+end
+sumtest(3,3,1,7e-5,8,500e-9,1e7,0,1e-30,10000,0,1)
 
 function SurfMC(dz,dx,nr,p,al2,tmeas,k2,nth,acc,bd,err,nt; sim_id::Int=-1)
 
@@ -1626,11 +1795,8 @@ function SurfMC(dz,dx,nr,p,al2,tmeas,k2,nth,acc,bd,err,nt; sim_id::Int=-1)
     layout=SurfLayout(dz,dx,zsch,xsch)
     layout=optlayout(layout,dz,dx)
     ql,zl,xl=linemaps(layout,dz,dx,nzc,nxc)
-    #println(zsch)
-    #println(xsch)
-    Ly,Lx=SurfLogs(dz,dx)
-    #display(Lz)
-    #display(Lx)
+    Lz,Lx=SurfLogs(dz,dx)
+    instate=buildinitstate(dz,dx,nr,zsch,xsch,bsch,layout,ystab)
     n=0
     f=0
     fx=0
@@ -1647,18 +1813,18 @@ function SurfMC(dz,dx,nr,p,al2,tmeas,k2,nth,acc,bd,err,nt; sim_id::Int=-1)
         #display(Ex)
         #display(Synz)
 
-        PEZ,PEX,L,LZ=getSurfPELog(Ez,Ex,dz,dx)
+        PEZ,PEX=getSurfPE(Ez,Ex,dz,dx)
         #display(PEZ)
         #display(PEX)
-        #L=LogComp(Ez,Ex,dz,dx)
-        LY=L[1]
+        L=LogComp(Ez,Ex,dz,dx)
+        LZ=L[1]
         LX=L[2]
         #display(L)
         #println(PEZ)
         elapsed = @elapsed begin
-          MPS=SurfCirc(dz,dx,nr,PEZ,PEX,Synz,Synx,zsch,xsch,bsch,layout,ql,zl,xl,p,al2,tmeas,k2,nth,pmz,pmx,acc,bd)
+          MPS=SurfCirc(dz,dx,nr,instate,PEZ,PEX,Synz,Synx,zsch,xsch,bsch,layout,ql,zl,xl,p,al2,tmeas,k2,nth,pmz,pmx,acc,bd)
         end
-	#println(elapsed)
+	    #println(elapsed)
         totime=totime+elapsed
 	#MPS
         MLZ=MLError(MPS,dz,dx,nr,PEZ,PEX,Synz,Synx,zsch,xsch,bsch,layout,ystab)
@@ -1731,18 +1897,20 @@ function SurfMC(dz,dx,nr,p,al2,tmeas,k2,nth,acc,bd,err,nt; sim_id::Int=-1)
     return
 end
 
-dzin=parse(Int64,ARGS[1])
-pin=parse(Float64,ARGS[2])
+
+
+#dzin=parse(Int64,ARGS[1])
+#pin=parse(Float64,ARGS[2])
 #println(pin)
-ntin=parse(Int64,ARGS[3])
-cutin=parse(Float64,ARGS[4])
-bdin=parse(Int64,ARGS[5])
-if length(ARGS)==6
-    sidin=parse(Int64,ARGS[6])
-    SurfMC(dzin,3,dzin,pin,8,500e-9,1e7,0,cutin,bdin,0.1,ntin,sim_id = sidin)
-else
-    SurfMC(dzin,3,dzin,pin,8,500e-9,1e7,0,cutin,bdin,0.1,ntin)
-end
+#ntin=parse(Int64,ARGS[3])
+#cutin=parse(Float64,ARGS[4])
+#bdin=parse(Int64,ARGS[5])
+#if length(ARGS)==6
+#    sidin=parse(Int64,ARGS[6])
+#    SurfMC(dzin,3,dzin,pin,8,500e-9,1e7,0,cutin,bdin,0.1,ntin,sim_id = sidin)
+#else
+#    SurfMC(dzin,3,dzin,pin,8,500e-9,1e7,0,cutin,bdin,0.1,ntin)
+#end
 
 #@show YStabs(3,3)
 

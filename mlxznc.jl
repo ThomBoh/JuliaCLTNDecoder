@@ -636,6 +636,7 @@ function CNOTfail(r,p,al2,tmeas,k2,nth,pmz,pmx)
     return zout,xout
 end
 
+#produce a controlled-Y fault
 
 function CYfail(r,p,al2,tmeas,k2,nth,pmz,pmx)
 
@@ -722,15 +723,13 @@ function CYfail(r,p,al2,tmeas,k2,nth,pmz,pmx)
     elseif (r>(CYpz1+CYpz2+CYpz1z2+CYpx1+CYpx2+CYpx1x2+CYpz1x2+CYpy1+CYpy1x2+CYpy2+CYpy1z2+CYpx1z2+CYpz1y2+CYpy1y2)) && (r<(CYpz1+CYpz2+CYpz1z2+CYpx1+CYpx2+CYpx1x2+CYpz1x2+CYpy1+CYpy1x2+CYpy2+CYpy1z2+CYpx1z2+CYpz1y2+CYpy1y2+CYpx1y2))
         zout=[0,1]
         xout=[1,1]
-    else 
+    else
         zout=[0,0]
         xout=[0,0]
-    end  
+    end
     return zout,xout
 end
 
-
-#obtain a single circuit error sample
 #obtain a single circuit error sample
 
 function SurfMCError(dy,dx,nr,zsched,xsched,bsch,p,al2,tmeas,k2,nth,pmz,pmx)
@@ -785,7 +784,7 @@ function SurfMCError(dy,dx,nr,zsched,xsched,bsch,p,al2,tmeas,k2,nth,pmz,pmx)
             #elseif (r>pzip) && (r<(pzip+pxip))
                 #z check ancilla gets x error
             #    zancx[zc]=(zancx[zc]+1)%2
-            
+
             #elseif (r>(pzip)) && (r<(pzip+pxip))
                 #y check ancilla gets y error
                 #yancz[yc]=(yancz[yc]+1)%2
@@ -1205,7 +1204,7 @@ function buildinitstring(dz::Int,dx::Int,nr,layout)
 
         elseif typ==1
             #println("hay1")
-            #y check ancilla
+            #z check ancilla
 
             if i==1
                 out=["X+"]
@@ -1235,7 +1234,7 @@ function YStabs(dy,dx)
     stabgens=[]
     #stabgens = Array{Array{Int,(dy,dx)}}(dy+1)
     for i in [0:dy;]
-    
+
          stab=zeros(Int,dy,dx)
          if i==0
              stab[1,2]=1
@@ -1271,30 +1270,17 @@ function YStabs(dy,dx)
 end
 
 function MLError(TNin,dz,dx,nr,PEZ,PEX,Synz,Synx,zsch,xsch,bsch,layout)#,ystab)
-    #plitot=0
-    #plztot=0
-    #for i in [1:2^(dz+1);]
-    #PEZY=PEZ+ystab[i]
-    #@show PEZ
-    #@show ystab[i]
-    #@show PEZY
+
     stringi,stringz=buildstrings(dz,dx,nr,PEZ,Synz,Synx,layout)
     mpsi=productstate(siteinds(TNin),stringi)
     mpsz=productstate(siteinds(TNin),stringz)
 
     #compute "probability" that this pure error and meas outcomes occurred, and no logical z
     pli=inner(TNin,mpsi)
-    #println(pli)
-    #plitot=plitot+pli
-    #println(plitot)
+
     #compute "probability" that this pure error and meas outcomes occurred, as well as logical z
     plz=inner(TNin,mpsz)
-    #println(plz)
-    #plztot=plztot+plz
-    #println(plztot)
-    #println(pli)
-    #println(plz)
-    #end
+
     if pli>plz
         #if it was more likely that no logical z occurred, decoder does nothing
         ml=0
@@ -1302,7 +1288,6 @@ function MLError(TNin,dz,dx,nr,PEZ,PEX,Synz,Synx,zsch,xsch,bsch,layout)#,ystab)
         #if it was more likely that logical z occurred, decoder applies logical z
         ml=1
     end
-    #println(ml)
 
     return ml
 
@@ -1520,7 +1505,7 @@ function SurfCirc(dz,dx,nr,PEZ,PEX,Synz,Synx,zsch,xsch,bsch,layout,ql,zl,xl,p,al
 end
 
 function SurfMC(dz,dx,nr,p,al2,tmeas,k2,nth,acc,bd,err,nt; sim_id::Int=-1)
-    
+
     if sim_id < 0
       fname = "experiment_dz$(dz)_dx$(dx)_p$(p).txt"
     else
@@ -1680,7 +1665,7 @@ function SurfMC(dz,dx,nr,p,al2,tmeas,k2,nth,acc,bd,err,nt; sim_id::Int=-1)
     println(fx)
     println(n)
     println((f+fx)/n)
-    
+
     return
 end
 

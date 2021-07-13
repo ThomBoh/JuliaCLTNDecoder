@@ -1007,82 +1007,40 @@ end
 
 #returns the pure error components of the accumulated errors, up to stabilizer
 
-function getSurfPELog(Ez,Ex,dz,dx)
-    Lz=ones(Int,dz,dx)
-    Lzc=Zparity(dz,dx,Ez)
-    Ly,Lx=SurfLogs(dz,dx)
-    Ey=zeros(Int,dz,dx)
+function getSurfPE(Ez,Ex,dz,dx)
 
-    for i in [1:dz;]
-        for j in [1:dx;]
-            if Ez[i,j]==1 && Ex[i,j]==1
-                Ey[i,j]=1
-            end
+    Lz,Lx=SurfLogs(dz,dx)
+    LC=LogComp(Ez,Ex,dz,dx)
 
-        end
-    end
-    #println(Ez)
-    #println(Ey)
-    #println(Ex)
-    LC=LogComp(Ey,Ex,dz,dx)
-
-    PEY=LC[1]*Ly + Ey
+    PEZ=LC[1]*Lz + Ez
     PEX=LC[2]*Lx + Ex
 
     for i in [1:dz;]
         for j in [1:dx;]
 
-            PEY[i,j]=PEY[i,j]%2
+            PEZ[i,j]=PEZ[i,j]%2
             PEX[i,j]=PEX[i,j]%2
 
         end
     end
 
-    if Lzc==1
-
-        PEZ=Ez+Lz
-
-        for i in [1:dz;]
-            for j in [1:dx;]
-
-                PEZ[i,j]=PEZ[i,j]%2
-
-            end
-        end
-
-    else
-
-        PEZ=Ez
-
-    end
-
-    if (Lzc==1) && (LC[1]+LC[2]==2)
-        Lzc=Lzc
-    elseif (Lzc==0) && (LC[1]+LC[2]<2)
-        Lzc=Lzc
-    else
-        println("LOGICAL ERROR INCONSISTENCY")
-        println(Lzc)
-        println(LC)
-    end
-
-    return PEZ,PEX,LC,Lzc
+    return PEZ,PEX
 end
 
 #returns the logical components of the accumulated errors
 
-function LogComp(Ey,Ex,dz,dx)
+function LogComp(Ez,Ex,dz,dx)
 
     LC=[0,0]
 
     if dx%2==0
         println("shouldn't see this!!")
-        LC[1]=Ey[dz,dx]
+        LC[1]=Ez[dz,dx]
         LC[2]=Ex[dz,dx]
 
     else
         for i in [1:dx;]
-            LC[1]=(LC[1]+Ey[1,i])%2
+            LC[1]=(LC[1]+Ez[1,i])%2
         end
         for i in [1:dz;]
             LC[2]=(LC[2]+Ex[i,dx])%2
@@ -1121,7 +1079,7 @@ function buildstrings(dz::Int,dx::Int,nr,pez,Synz,Synx,layout)
             qz=layout[i][2][1]
             qx=layout[i][2][2]
 
-            #if qx==dx
+            if qx==dx
                 #on logical boundary
                 #println(pez)
                 #println(qz)
@@ -1138,24 +1096,24 @@ function buildstrings(dz::Int,dx::Int,nr,pez,Synz,Synx,layout)
                     println("bad news!")
                 end
                 count=count+1
-            #else
+            else
                 #println(pez)
                 #println(qz)
                 #println(qx)
-                #e=pez[qz,qx]%2
+                e=pez[qz,qx]%2
                 #println(e)
                 #e=pez[qz,qx]
-                #if e==0
-                #    push!(outi,"Z+")
-                #    push!(outz,"Z+")
-                #elseif e==1
-                #    push!(outi,"Z-")
-                #    push!(outz,"Z-")
-                #else
-                #    println("bad news!")
-                #end
-                #count=count+1
-            #end
+                if e==0
+                    push!(outi,"Z+")
+                    push!(outz,"Z+")
+                elseif e==1
+                    push!(outi,"Z-")
+                    push!(outz,"Z-")
+                else
+                    println("bad news!")
+                end
+                count=count+1
+            end
 
         elseif typ==1
             #println("hay1")
@@ -1302,10 +1260,10 @@ end
 
 
 function MLError(TNin,dz,dx,nr,PEZ,PEX,Synz,Synx,zsch,xsch,bsch,layout,ystab)
-    #plitot=0
-    #plztot=0
-    #for i in [1:2^(dz+1);]
-    PEZY=PEZ
+    plitot=0
+    plztot=0
+    for i in [1:2^(dz+1);]
+    PEZY=PEZ+ystab[i]
     #@show PEZ
     #@show ystab[i]
     #@show PEZY
@@ -1315,21 +1273,21 @@ function MLError(TNin,dz,dx,nr,PEZ,PEX,Synz,Synx,zsch,xsch,bsch,layout,ystab)
 
     #compute "probability" that this pure error and meas outcomes occurred, and no logical z
     pli=inner(TNin,mpsi)
-    #println(pli)
-    #plitot=plitot+pli
+    println(pli)
+    plitot=plitot+pli
     #println(plitot)
     #compute "probability" that this pure error and meas outcomes occurred, as well as logical z
     plz=inner(TNin,mpsz)
-    #println(plz)
-    #plztot=plztot+plz
+    println(plz)
+    plztot=plztot+plz
     #println(plztot)
     #println(pli)
     #println(plz)
-    #end
-    #println("tots are")
-    #println(plitot)
-    #println(plztot)
-    if pli>plz
+    end
+    println("tots are")
+    println(plitot)
+    println(plztot)
+    if plitot>plztot
         #if it was more likely that no logical z occurred, decoder does nothing
         ml=0
     else
@@ -1553,19 +1511,6 @@ function SurfCirc(dz,dx,nr,PEZ,PEX,Synz,Synx,zsch,xsch,bsch,layout,ql,zl,xl,p,al
     return TOut #return the MPS, whose physical indices are as described at top of function
 end
 
-function Zparity(dy,dx,Ez)
-
-    sum=0
-    for i in [1:dy;]
-        for j in [1:dx;]
-            sum=(sum+Ez[i,j])%2
-        end
-    end
-    return sum
-end
-
-
-
 function SurfMC(dz,dx,nr,p,al2,tmeas,k2,nth,acc,bd,err,nt; sim_id::Int=-1)
 
     if sim_id < 0
@@ -1628,7 +1573,7 @@ function SurfMC(dz,dx,nr,p,al2,tmeas,k2,nth,acc,bd,err,nt; sim_id::Int=-1)
     ql,zl,xl=linemaps(layout,dz,dx,nzc,nxc)
     #println(zsch)
     #println(xsch)
-    Ly,Lx=SurfLogs(dz,dx)
+    Lz,Lx=SurfLogs(dz,dx)
     #display(Lz)
     #display(Lx)
     n=0
@@ -1647,11 +1592,11 @@ function SurfMC(dz,dx,nr,p,al2,tmeas,k2,nth,acc,bd,err,nt; sim_id::Int=-1)
         #display(Ex)
         #display(Synz)
 
-        PEZ,PEX,L,LZ=getSurfPELog(Ez,Ex,dz,dx)
+        PEZ,PEX=getSurfPE(Ez,Ex,dz,dx)
         #display(PEZ)
         #display(PEX)
-        #L=LogComp(Ez,Ex,dz,dx)
-        LY=L[1]
+        L=LogComp(Ez,Ex,dz,dx)
+        LZ=L[1]
         LX=L[2]
         #display(L)
         #println(PEZ)
