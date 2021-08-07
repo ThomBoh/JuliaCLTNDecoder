@@ -56,27 +56,27 @@ end
 
 #create schedules of CNOTs between ancilla qubits and data
 
-function schedulemaker(dz::Integer,dx::Integer)
+function schedulemaker(dy::Integer,dx::Integer)
 
-    #figure out how many z checks per row
+    #figure out how many y checks per row
 
-    zcounts=zeros(Int,dz+1)
-    for i in [1:(dz+1);]
+    ycounts=zeros(Int,dy+1)
+    for i in [1:(dy+1);]
         if i%2==1
-            zcounts[i]=floor((dx-1)/2)
+            ycounts[i]=floor((dx-1)/2)
         else
-            zcounts[i]=floor((dx)/2)
+            ycounts[i]=floor((dx)/2)
         end
     end
 
-    #build z ancilla qubit schedule
+    #build y ancilla qubit schedule
 
-    zsched=[]
+    ysched=[]
 
     #i indexes which row of checks
-    for i in [1:size(zcounts)[1];]
+    for i in [1:size(ycounts)[1];]
         #j indexes which check in row i
-        for j in [1:zcounts[i];]
+        for j in [1:ycounts[i];]
 
             if i==1
 
@@ -87,13 +87,13 @@ function schedulemaker(dz::Integer,dx::Integer)
                 push!(sch,[1,2*(j-1)+2])
                 push!(sch,[1,2*(j-1)+3])
 
-                push!(zsched,sch)
+                push!(ysched,sch)
 
             elseif i%2==0
 
                 sch=[]
 
-                if i==(size(zcounts)[1])
+                if i==(size(ycounts)[1])
 
                     push!(sch,[i-1,2*(j-1)+1])
                     push!(sch,[i-1,2*(j-1)+2])
@@ -108,13 +108,13 @@ function schedulemaker(dz::Integer,dx::Integer)
                     push!(sch,[i,2*(j-1)+2])
                 end
 
-                push!(zsched,sch)
+                push!(ysched,sch)
 
             elseif i%2==1
 
                 sch=[]
 
-                if i==(size(zcounts)[1])
+                if i==(size(ycounts)[1])
 
                     push!(sch,[i-1,2*(j-1)+2])
                     push!(sch,[i-1,2*(j-1)+3])
@@ -129,7 +129,7 @@ function schedulemaker(dz::Integer,dx::Integer)
                     push!(sch,[i,2*(j-1)+3])
                 end
 
-                push!(zsched,sch)
+                push!(ysched,sch)
             end
         end
     end
@@ -138,9 +138,9 @@ function schedulemaker(dz::Integer,dx::Integer)
     xcounts=zeros(Int,dx+1)
     for i in [1:(dx+1);]
         if i%2==1
-            xcounts[i]=floor(dz/2)
+            xcounts[i]=floor(dy/2)
         else
-            xcounts[i]=floor((dz-1)/2)
+            xcounts[i]=floor((dy-1)/2)
         end
     end
 
@@ -210,105 +210,105 @@ function schedulemaker(dz::Integer,dx::Integer)
     end
 
 
-    return zsched, xsched
+    return ysched, xsched
 end
 
 #create schedule of when data qubits on the boundary have wait locations instead of CNOTs
 
-function bdrysched(dz::Integer,dx::Integer)
+function bdrysched(dy::Integer,dx::Integer)
 
-    bsch=zeros(Int,4,dz,dx)
+    bsch=zeros(Int,4,dy,dx)
 
-    for iz in [1:dz;]
+    for iy in [1:dy;]
 
         for ix in [1:dx;]
 
-            if (iz==1) && (ix==1)
+            if (iy==1) && (ix==1)
 
-                bsch[4,iz,ix]=1
-                bsch[3,iz,ix]=1
+                bsch[4,iy,ix]=1
+                bsch[3,iy,ix]=1
 
-            elseif iz==(dz) && (ix==1)
+            elseif iz==(dy) && (ix==1)
 
-                if dz%2==0
-                    bsch[1,iz,ix]=1
-                    bsch[2,iz,ix]=1
+                if dy%2==0
+                    bsch[1,iy,ix]=1
+                    bsch[2,iy,ix]=1
                 else
-                    bsch[2,iz,ix]=1
-                    bsch[4,iz,ix]=1
+                    bsch[2,iy,ix]=1
+                    bsch[4,iy,ix]=1
                 end
 
-            elseif (ix==(dx)) && (iz==1)
+            elseif (ix==(dx)) && (iy==1)
 
                 if dx%2==0
 
-                    bsch[4,iz,ix]=1
-                    bsch[3,iz,ix]=1
+                    bsch[4,iy,ix]=1
+                    bsch[3,iy,ix]=1
 
                 else
 
-                    bsch[1,iz,ix]=1
-                    bsch[3,iz,ix]=1
+                    bsch[1,iy,ix]=1
+                    bsch[3,iy,ix]=1
                 end
 
-            elseif (ix==dx) && (iz==dz)
+            elseif (ix==dx) && (iy==dy)
 
-                if (dx+dz)%2==0
-                    bsch[1,iz,ix]=1
-                    bsch[2,iz,ix]=1
+                if (dx+dy)%2==0
+                    bsch[1,iy,ix]=1
+                    bsch[2,iy,ix]=1
                 else
-                    bsch[1,iz,ix]=1
-                    bsch[3,iz,ix]=1
+                    bsch[1,iy,ix]=1
+                    bsch[3,iy,ix]=1
                 end
 
-            elseif (iz==1) && ((ix>1) && (ix<dx))
+            elseif (iy==1) && ((ix>1) && (ix<dx))
 
                 if ix%2==1
-                    bsch[3,iz,ix]=1
+                    bsch[3,iy,ix]=1
                 else
-                    bsch[4,iz,ix]=1
+                    bsch[4,iy,ix]=1
                 end
 
-            elseif (ix==1) && ((iz>1) && (iz<dz))
+            elseif (ix==1) && ((iy>1) && (iy<dy))
 
-                if iz%2==1
-                    bsch[4,iz,ix]=1
+                if iy%2==1
+                    bsch[4,iy,ix]=1
                 else
-                    bsch[2,iz,ix]=1
+                    bsch[2,iy,ix]=1
                 end
 
 
-            elseif (iz==dz) && ((ix>1) && (ix<dx))
+            elseif (iy==dy) && ((ix>1) && (ix<dx))
 
-                if dz%2==0
+                if dy%2==0
 
                     if ix%2==1
-                        bsch[1,iz,ix]=1
+                        bsch[1,iy,ix]=1
                     else
-                        bsch[2,iz,ix]=1
+                        bsch[2,iy,ix]=1
                     end
                 else
                     if ix%2==1
-                        bsch[2,iz,ix]=1
+                        bsch[2,iy,ix]=1
                     else
-                        bsch[1,iz,ix]=1
+                        bsch[1,iy,ix]=1
                     end
                 end
 
-            elseif (ix==dx) && ((iz>1) && (iz<dz))
+            elseif (ix==dx) && ((iy>1) && (iy<dy))
 
                 if dx%2==0
 
-                    if iz%2==1
-                        bsch[3,iz,ix]=1
+                    if iy%2==1
+                        bsch[3,iy,ix]=1
                     else
-                        bsch[1,iz,ix]=1
+                        bsch[1,iy,ix]=1
                     end
                 else
-                    if iz%2==1
-                        bsch[1,iz,ix]=1
+                    if iy%2==1
+                        bsch[1,iy,ix]=1
                     else
-                        bsch[3,iz,ix]=1
+                        bsch[3,iy,ix]=1
                     end
                 end
             end
@@ -320,12 +320,12 @@ end
 
 #reorder the x ancilla qubits for easier 1D layout
 
-function xreorder(xsch,dz,dx)
-    #assume dz,dx both odd
+function xreorder(xsch,dy,dx)
+    #assume dy,dx both odd
     #then there are dx+1 "columns" of (dz-1)/2 x checks each
     #and dz-1 "rows" of (dx+1)/2 x checks each
     nxc=size(xsch)[1]
-    cpc=(dz-1)/2
+    cpc=(dy-1)/2
     cpr=(dx+1)/2
     neworder=zeros(Int,nxc)
     for i in [1:nxc;]
@@ -371,30 +371,30 @@ end
 
 #create 1D layout of data and ancilla qubits, this uses a simple "back and forth" layout
 
-function SurfLayout(dz::Integer,dx::Integer,zsch,xsch)
+function SurfLayout(dy::Integer,dx::Integer,ysch,xsch)
 
 
-    nzc=size(zsch)[1]
+    nzc=size(ysch)[1]
     nxc=size(xsch)[1]
-    zcpr=(dx-1)/2
-    xcpr=(dz+1)/2
-    qtot=2*dz*dx-1
+    ycpr=(dx-1)/2
+    xcpr=(dy+1)/2
+    qtot=2*dy*dx-1
 
 
     count=0
     mode=0
-    zc=1
+    yc=1
     xc=1
     drow=1
     layout=[]
-    while count<(2*dz*dx-1)
+    while count<(2*dy*dx-1)
 
         if mode==0
-            #first/last row of z checks, type 1
-            for i in [1:zcpr;]
+            #first/last row of y checks, type 1
+            for i in [1:ycpr;]
 
-                push!(layout,[1,[zc,zc]])
-                zc=zc+1
+                push!(layout,[1,[yc,yc]])
+                yc=yc+1
                 count=count+1
             end
             mode=1
@@ -407,7 +407,7 @@ function SurfLayout(dz::Integer,dx::Integer,zsch,xsch)
                 count=count+1
             end
             drow=drow+1
-            if drow>dz
+            if drow>dy
                 mode=0
             else
                 mode=2
@@ -421,8 +421,8 @@ function SurfLayout(dz::Integer,dx::Integer,zsch,xsch)
                     xc=xc+1
                     count=count+1
                 else
-                    push!(layout,[1,[zc,zc]])
-                    zc=zc+1
+                    push!(layout,[1,[yc,yc]])
+                    yc=yc+1
                     count=count+1
                 end
             end
@@ -436,7 +436,7 @@ end
 
 #optimize the "back and forth" layout slightly
 
-function optlayout(layout,dz,dx)
+function optlayout(layout,dy,dx)
 
     nrows=2*dz+1
     rowcount=0
@@ -526,12 +526,12 @@ end
 
 #figure out mappings of where each data and ancilla qubit end up in the 1D linear layout
 
-function linemaps(layout,dz,dx,nzc,nxc)
+function linemaps(layout,dy,dx,nyc,nxc)
 
-    qlinemap=zeros(Int,dz,dx)
-    zlinemap=zeros(Int,nzc)
+    qlinemap=zeros(Int,dy,dx)
+    ylinemap=zeros(Int,nyc)
     xlinemap=zeros(Int,nxc)
-    N=2*dx*dz-1
+    N=2*dx*dy-1
     for i in [1:N;]
 
         typ=layout[i][1]
@@ -539,16 +539,16 @@ function linemaps(layout,dz,dx,nzc,nxc)
         if typ==0
             #data qubit
             addr=layout[i][2]
-            zad=addr[1]
+            yad=addr[1]
             xad=addr[2]
 
-            qlinemap[zad,xad]=i
+            qlinemap[yad,xad]=i
 
         elseif typ==1
-            #z check qubit
+            #y check qubit
             addr=layout[i][2][1]
 
-            zlinemap[addr]=i
+            ylinemap[addr]=i
 
         elseif typ==2
             #x check qubit
@@ -560,7 +560,7 @@ function linemaps(layout,dz,dx,nzc,nxc)
 
     end
 
-    return qlinemap,zlinemap,xlinemap
+    return qlinemap,ylinemap,xlinemap
 end
 
 #simulate a CNOT failure location
@@ -1119,21 +1119,23 @@ function MLError(B,dz,dx,nr,PEZ,PEX,Synz,Synx,zsch,xsch,bsch,layout,p,al2,tmeas,
     psi=productstate(B)
     #@show psi
     #println("noprime")
-    MPS=noprime(*(B,psi; method = contraction_method, cutoff=1e-15,maxdim=bd))
+    println("noprime")
+    @time MPS=noprime(*(B,psi; method = contraction_method, cutoff=1e-15,maxdim=bd))
     #@show MPS
 
     for re in [1:(nr-1);]
-        #println("glue")
-        MPS=glue(MPS,dz,dx,nr,re,PEZ,PEX,Synx,zsch,xsch,bsch,layout,p,al2,tmeas,k2,nth,pmz,pmx,acc,bd)
-        #println("noprime")
-        MPS=noprime(*(B,MPS; method = contraction_method, cutoff=1e-15,maxdim=bd))
+        println("glue")
+        @time MPS=glue(MPS,dz,dx,nr,re,PEZ,PEX,Synx,zsch,xsch,bsch,layout,p,al2,tmeas,k2,nth,pmz,pmx,acc,bd)
+        println("noprime")
+        @time MPS=noprime(*(B,MPS; method = contraction_method, cutoff=1e-15,maxdim=bd))
 
     end
-    #println("glue")
+    println("glue")
     MPS=gluefinal(MPS,dz,dx,nr,nr,PEZ,PEX,Synx,zsch,xsch,bsch,layout,p,al2,tmeas,k2,nth,pmz,pmx,acc,bd)
 
     stringi,stringz=buildstrings(dz,dx,nr,PEZ,Synz,Synx,layout)
-    mpsi=productstate(siteinds(MPS),stringi)
+    println("ip")
+    @time mpsi=productstate(siteinds(MPS),stringi)
     mpsz=productstate(siteinds(MPS),stringz)
 
     #compute "probability" that this pure error and meas outcomes occurred, and no logical z
@@ -1676,7 +1678,7 @@ function SurfCirc(dz,dx,nr,PEZ,PEX,Synz,Synx,zsch,xsch,bsch,layout,ql,zl,xl,p,al
     return TOut #return the MPS, whose physical indices are as described at top of function
 end
 
-function SurfMC(dz,dx,nr,p,al2,tmeas,k2,nth,acc,bd,err)
+function SurfMC(dz,dx,nr,p,al2,tmeas,k2,nth,acc,bd,nt)
 
 
     pmz=exp(-1.5-0.9*al2)
@@ -1742,7 +1744,25 @@ function SurfMC(dz,dx,nr,p,al2,tmeas,k2,nth,acc,bd,err)
     pct=0
     #println("buildblock")
     B=buildblock(dz,dx,nr,zsch,xsch,bsch,layout,ql,zl,xl,p,al2,tmeas,k2,nth,pmz,pmx,acc,bd)
-    for ii in [1:10;]
+
+    Ez,Ex,Synz,Synx=SurfMCError(dz,dx,nr,zsch,xsch,bsch,p,al2,tmeas,k2,nth,pmz,pmx)
+    #display(Ez)
+    #display(Synx)
+    #display(Ex)
+    #display(Synz)
+
+    PEZ,PEX=getSurfPE(Ez,Ex,dz,dx)
+    #display(PEZ)
+    #display(PEX)
+    L=LogComp(Ez,Ex,dz,dx)
+    LZ=L[1]
+    LX=L[2]
+    #display(L)
+    #println(PEZ)
+
+    MLZ=MLError(B,dz,dx,nr,PEZ,PEX,Synz,Synx,zsch,xsch,bsch,layout,p,al2,tmeas,k2,nth,pmz,pmx,acc,bd)
+    totime=0
+    for ii in [1:nt;]
         #breakflag=1
         #println("pspsps")
         Ez,Ex,Synz,Synx=SurfMCError(dz,dx,nr,zsch,xsch,bsch,p,al2,tmeas,k2,nth,pmz,pmx)
@@ -1760,71 +1780,30 @@ function SurfMC(dz,dx,nr,p,al2,tmeas,k2,nth,acc,bd,err)
         #display(L)
         #println(PEZ)
 
-        @time MLZ=MLError(B,dz,dx,nr,PEZ,PEX,Synz,Synx,zsch,xsch,bsch,layout,p,al2,tmeas,k2,nth,pmz,pmx,acc,bd)
-        #PEZ[1,1]=(PEZ[1,1]+1)%2
-        #PEZ[1,2]=(PEZ[1,2]+1)%2
-        #PEZ[2,1]=(PEZ[2,1]+1)%2
-        #PEZ[2,2]=(PEZ[2,2]+1)%2
-        #MLZ=MLError(B,dz,dx,nr,PEZ,PEX,Synz,Synx,zsch,xsch,bsch,layout,p,al2,tmeas,k2,nth,pmz,pmx)
-        #println(PEZ)
-        #MPS=SurfCirc(dz,dx,nr,PEZ,PEX,Synz,Synx,zsch,xsch,bsch,layout,ql,zl,xl,p,al2,tmeas,k2,nth,pmz,pmx,acc,bd)
-        #MPS
-        #MLZ=MLError(MPS,dz,dx,nr,PEZ,PEX,Synz,Synx,zsch,xsch,bsch,layout)
-        #display(MLZ)
-        #MLZ=MLL[1]
-        #print(L)
-        #print(MLL)
-        #println(L)
-        #println(MLZ)
-        resz=(LZ+MLZ)%2
-        if resz==1
-            f=f+1
-        elseif LX==1
-            fx=fx+1
+        elapsed = @elapsed begin
+            MLZ=MLError(B,dz,dx,nr,PEZ,PEX,Synz,Synx,zsch,xsch,bsch,layout,p,al2,tmeas,k2,nth,pmz,pmx,acc,bd)
         end
+        totime=totime+elapsed
 
-        n=n+1
-        pct=pct+1
-        mu=f/n
-        #println(mu)
-        if (n>1)&&(f>4)
-            stdev=sqrt((f*(1-mu)*(1-mu) + (n-f)*(mu)*(mu))/(n-1))
-            stderr=stdev/sqrt(n)
-            if stderr<(err*mu)
-                breakflag=1
-            end
-        end
-        #if pct>5
-        #    breakflag=1
-        #end
-        if (pct>199)
-            pct=0
-            println("mu is")
-            println(mu)
-            #println(nfail/ntr)
-            println("number of trials is")
-            println(n)
-            println("number of Z or Y failures is")
-            println(f)
-            println("number of X failures is")
-            println(fx)
-            if f>4
-                println("stderr is")
-                println(stderr)
-                println("target is")
-                println(err*mu)
-            end
-        end
     end
-    println(f)
-    println(fx)
-    println(n)
-    println((f+fx)/n)
-
+    println(dz)
+    println(totime/nt)
     return
 end
 
-SurfMC(3,3,3,7e-5,8,500e-9,1e7,0,1e-15,10,0)
-SurfMC(5,3,5,7e-5,8,500e-9,1e7,0,1e-15,10,0)
-SurfMC(7,3,7,7e-5,8,500e-9,1e7,0,1e-15,10,0)
-SurfMC(9,3,9,7e-5,8,500e-9,1e7,0,1e-15,10,0)
+for j in [3:2:11;]
+
+    SurfMC(j,3,j,7e-5,8,500e-9,1e7,0,1e-15,10,10)
+
+end
+#SurfMC(5,3,5,7e-5,8,500e-9,1e7,0,1e-15,10,50)
+#SurfMC(7,3,7,7e-5,8,500e-9,1e7,0,1e-15,10,50)
+#SurfMC(9,3,9,7e-5,8,500e-9,1e7,0,1e-15,10,50)
+#SurfMC(11,3,11,7e-5,8,500e-9,1e7,0,1e-15,10,50)
+#SurfMC(13,3,13,7e-5,8,500e-9,1e7,0,1e-15,10,50)
+#SurfMC(15,3,15,7e-5,8,500e-9,1e7,0,1e-15,10,50)
+#SurfMC(17,3,17,7e-5,8,500e-9,1e7,0,1e-15,10,50)
+#SurfMC(19,3,19,7e-5,8,500e-9,1e7,0,1e-15,10,50)
+#SurfMC(21,3,21,7e-5,8,500e-9,1e7,0,1e-15,10,50)
+#SurfMC(23,3,23,7e-5,8,500e-9,1e7,0,1e-15,10,50)
+#SurfMC(25,3,25,7e-5,8,500e-9,1e7,0,1e-15,10,50)

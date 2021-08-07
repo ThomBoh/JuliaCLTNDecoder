@@ -5,10 +5,8 @@ function comb()
 
 dx = 3
 dz = 3
-p = "0.0001"
-
-sstart=1
-send=10
+p = "1.0e-5"
+num_sim = 2
 
 nfails = []
 ntrials = []
@@ -19,8 +17,8 @@ failtot=0
 trialtot=0
 
 
-for sim_id in sstart:send
-  fname = "experiment_dz$(dz)_dx$(dx)_p$(p)_bd$(bd)_cutoff$(acc)_id$(sim_id).txt"
+for sim_id in 1:num_sim
+  fname = "experiment_dz$(dz)_dx$(dx)_p$(p)_id$(sim_id).txt"
   fin = open(fname,"r")
   data = readdlm(fin)
   n = Int(data[1])
@@ -31,7 +29,7 @@ for sim_id in sstart:send
   close(fin)
 end
 
-fname="combdata_dz$(dz)_dx$(dx)_p$(p)_bd$(bd)_cutoff$(acc)_id.txt"
+fname="combdata_dz$(dz)_dx$(dx)_p$(p)_id.txt"
 fout=open(fname,"w")
 writedlm(fout,[failtot,trialtot,failtot/trialtot])
 close(fout)
@@ -42,3 +40,4 @@ comb()
 
 #@show mean(failure_rate)
 #@show sem(failure rate
+

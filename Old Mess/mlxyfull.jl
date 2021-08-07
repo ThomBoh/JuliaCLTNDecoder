@@ -16,6 +16,25 @@ function gate(::GateName"pz"; p::Number)
   return [1-p  p
           p    1-p]
 end
+pz1=0.91*((p)^(0.5))#+3*0.93*((p)^(0.5))*exp(-2*al2)
+pz2=0.15*((p)^(0.5))#+3*0.28*p*exp(-2*al2)
+pz1z2=0.15*((p)^(0.5))#+3*0.28*p*exp(-2*al2)
+px1=0.93*((p)^(0.5))*exp(-2*al2)
+px2=0.93*((p)^(0.5))*exp(-2*al2)
+px1x2=0.93*((p)^(0.5))*exp(-2*al2)
+pz1x2=0.93*((p)^(0.5))*exp(-2*al2)
+py1=0.93*((p)^(0.5))*exp(-2*al2)
+py1x2=0.93*((p)^(0.5))*exp(-2*al2)
+py2=0.28*p*exp(-2*al2)
+py1z2=0.28*p*exp(-2*al2)
+px1z2=0.28*p*exp(-2*al2)
+pz1y2=0.28*p*exp(-2*al2)
+py1y2=0.28*p*exp(-2*al2)
+px1y2=0.28*p*exp(-2*al2)
+#Controlled gate failure model -- qubit addressing goes X_control Y_control X_target Y_target
+
+function gate(::GateName"CXY"; pz1::Number, pz2::Number, pz1z2::Number,)
+
 
 # CNOT gate failure -- first qubit is control, second qubit is target
 function gate(::GateName"CNOT"; pz1::Number, pz2::Number, pz12::Number)
@@ -57,27 +76,27 @@ end
 
 #create schedules of CNOTs between ancilla qubits and data
 
-function schedulemaker(dz::Integer,dx::Integer)
+function schedulemaker(dy::Integer,dx::Integer)
 
-    #figure out how many z checks per row
+    #figure out how many y checks per row
 
-    zcounts=zeros(Int,dz+1)
-    for i in [1:(dz+1);]
+    ycounts=zeros(Int,dy+1)
+    for i in [1:(dy+1);]
         if i%2==1
-            zcounts[i]=floor((dx-1)/2)
+            ycounts[i]=floor((dx-1)/2)
         else
-            zcounts[i]=floor((dx)/2)
+            ycounts[i]=floor((dx)/2)
         end
     end
 
-    #build z ancilla qubit schedule
+    #build y ancilla qubit schedule
 
-    zsched=[]
+    ysched=[]
 
     #i indexes which row of checks
-    for i in [1:size(zcounts)[1];]
+    for i in [1:size(ycounts)[1];]
         #j indexes which check in row i
-        for j in [1:zcounts[i];]
+        for j in [1:ycounts[i];]
 
             if i==1
 
@@ -88,13 +107,13 @@ function schedulemaker(dz::Integer,dx::Integer)
                 push!(sch,[1,2*(j-1)+2])
                 push!(sch,[1,2*(j-1)+3])
 
-                push!(zsched,sch)
+                push!(ysched,sch)
 
             elseif i%2==0
 
                 sch=[]
 
-                if i==(size(zcounts)[1])
+                if i==(size(ycounts)[1])
 
                     push!(sch,[i-1,2*(j-1)+1])
                     push!(sch,[i-1,2*(j-1)+2])
@@ -109,13 +128,13 @@ function schedulemaker(dz::Integer,dx::Integer)
                     push!(sch,[i,2*(j-1)+2])
                 end
 
-                push!(zsched,sch)
+                push!(ysched,sch)
 
             elseif i%2==1
 
                 sch=[]
 
-                if i==(size(zcounts)[1])
+                if i==(size(ycounts)[1])
 
                     push!(sch,[i-1,2*(j-1)+2])
                     push!(sch,[i-1,2*(j-1)+3])
@@ -130,7 +149,7 @@ function schedulemaker(dz::Integer,dx::Integer)
                     push!(sch,[i,2*(j-1)+3])
                 end
 
-                push!(zsched,sch)
+                push!(ysched,sch)
             end
         end
     end
@@ -139,9 +158,9 @@ function schedulemaker(dz::Integer,dx::Integer)
     xcounts=zeros(Int,dx+1)
     for i in [1:(dx+1);]
         if i%2==1
-            xcounts[i]=floor(dz/2)
+            xcounts[i]=floor(dy/2)
         else
-            xcounts[i]=floor((dz-1)/2)
+            xcounts[i]=floor((dy-1)/2)
         end
     end
 
@@ -211,105 +230,105 @@ function schedulemaker(dz::Integer,dx::Integer)
     end
 
 
-    return zsched, xsched
+    return ysched, xsched
 end
 
 #create schedule of when data qubits on the boundary have wait locations instead of CNOTs
 
-function bdrysched(dz::Integer,dx::Integer)
+function bdrysched(dy::Integer,dx::Integer)
 
-    bsch=zeros(Int,4,dz,dx)
+    bsch=zeros(Int,4,dy,dx)
 
-    for iz in [1:dz;]
+    for iy in [1:dy;]
 
         for ix in [1:dx;]
 
-            if (iz==1) && (ix==1)
+            if (iy==1) && (ix==1)
 
-                bsch[4,iz,ix]=1
-                bsch[3,iz,ix]=1
+                bsch[4,iy,ix]=1
+                bsch[3,iy,ix]=1
 
-            elseif iz==(dz) && (ix==1)
+            elseif iz==(dy) && (ix==1)
 
-                if dz%2==0
-                    bsch[1,iz,ix]=1
-                    bsch[2,iz,ix]=1
+                if dy%2==0
+                    bsch[1,iy,ix]=1
+                    bsch[2,iy,ix]=1
                 else
-                    bsch[2,iz,ix]=1
-                    bsch[4,iz,ix]=1
+                    bsch[2,iy,ix]=1
+                    bsch[4,iy,ix]=1
                 end
 
-            elseif (ix==(dx)) && (iz==1)
+            elseif (ix==(dx)) && (iy==1)
 
                 if dx%2==0
 
-                    bsch[4,iz,ix]=1
-                    bsch[3,iz,ix]=1
+                    bsch[4,iy,ix]=1
+                    bsch[3,iy,ix]=1
 
                 else
 
-                    bsch[1,iz,ix]=1
-                    bsch[3,iz,ix]=1
+                    bsch[1,iy,ix]=1
+                    bsch[3,iy,ix]=1
                 end
 
-            elseif (ix==dx) && (iz==dz)
+            elseif (ix==dx) && (iy==dy)
 
-                if (dx+dz)%2==0
-                    bsch[1,iz,ix]=1
-                    bsch[2,iz,ix]=1
+                if (dx+dy)%2==0
+                    bsch[1,iy,ix]=1
+                    bsch[2,iy,ix]=1
                 else
-                    bsch[1,iz,ix]=1
-                    bsch[3,iz,ix]=1
+                    bsch[1,iy,ix]=1
+                    bsch[3,iy,ix]=1
                 end
 
-            elseif (iz==1) && ((ix>1) && (ix<dx))
+            elseif (iy==1) && ((ix>1) && (ix<dx))
 
                 if ix%2==1
-                    bsch[3,iz,ix]=1
+                    bsch[3,iy,ix]=1
                 else
-                    bsch[4,iz,ix]=1
+                    bsch[4,iy,ix]=1
                 end
 
-            elseif (ix==1) && ((iz>1) && (iz<dz))
+            elseif (ix==1) && ((iy>1) && (iy<dy))
 
-                if iz%2==1
-                    bsch[4,iz,ix]=1
+                if iy%2==1
+                    bsch[4,iy,ix]=1
                 else
-                    bsch[2,iz,ix]=1
+                    bsch[2,iy,ix]=1
                 end
 
 
-            elseif (iz==dz) && ((ix>1) && (ix<dx))
+            elseif (iy==dy) && ((ix>1) && (ix<dx))
 
-                if dz%2==0
+                if dy%2==0
 
                     if ix%2==1
-                        bsch[1,iz,ix]=1
+                        bsch[1,iy,ix]=1
                     else
-                        bsch[2,iz,ix]=1
+                        bsch[2,iy,ix]=1
                     end
                 else
                     if ix%2==1
-                        bsch[2,iz,ix]=1
+                        bsch[2,iy,ix]=1
                     else
-                        bsch[1,iz,ix]=1
+                        bsch[1,iy,ix]=1
                     end
                 end
 
-            elseif (ix==dx) && ((iz>1) && (iz<dz))
+            elseif (ix==dx) && ((iy>1) && (iy<dy))
 
                 if dx%2==0
 
-                    if iz%2==1
-                        bsch[3,iz,ix]=1
+                    if iy%2==1
+                        bsch[3,iy,ix]=1
                     else
-                        bsch[1,iz,ix]=1
+                        bsch[1,iy,ix]=1
                     end
                 else
-                    if iz%2==1
-                        bsch[1,iz,ix]=1
+                    if iy%2==1
+                        bsch[1,iy,ix]=1
                     else
-                        bsch[3,iz,ix]=1
+                        bsch[3,iy,ix]=1
                     end
                 end
             end
@@ -321,12 +340,12 @@ end
 
 #reorder the x ancilla qubits for easier 1D layout
 
-function xreorder(xsch,dz,dx)
-    #assume dz,dx both odd
+function xreorder(xsch,dy,dx)
+    #assume dy,dx both odd
     #then there are dx+1 "columns" of (dz-1)/2 x checks each
     #and dz-1 "rows" of (dx+1)/2 x checks each
     nxc=size(xsch)[1]
-    cpc=(dz-1)/2
+    cpc=(dy-1)/2
     cpr=(dx+1)/2
     neworder=zeros(Int,nxc)
     for i in [1:nxc;]
@@ -372,30 +391,30 @@ end
 
 #create 1D layout of data and ancilla qubits, this uses a simple "back and forth" layout
 
-function SurfLayout(dz::Integer,dx::Integer,zsch,xsch)
+function SurfLayout(dy::Integer,dx::Integer,ysch,xsch)
 
 
-    nzc=size(zsch)[1]
+    nzc=size(ysch)[1]
     nxc=size(xsch)[1]
-    zcpr=(dx-1)/2
-    xcpr=(dz+1)/2
-    qtot=2*dz*dx-1
+    ycpr=(dx-1)/2
+    xcpr=(dy+1)/2
+    qtot=2*dy*dx-1
 
 
     count=0
     mode=0
-    zc=1
+    yc=1
     xc=1
     drow=1
     layout=[]
-    while count<(2*dz*dx-1)
+    while count<(2*dy*dx-1)
 
         if mode==0
-            #first/last row of z checks, type 1
-            for i in [1:zcpr;]
+            #first/last row of y checks, type 1
+            for i in [1:ycpr;]
 
-                push!(layout,[1,[zc,zc]])
-                zc=zc+1
+                push!(layout,[1,[yc,yc]])
+                yc=yc+1
                 count=count+1
             end
             mode=1
@@ -408,7 +427,7 @@ function SurfLayout(dz::Integer,dx::Integer,zsch,xsch)
                 count=count+1
             end
             drow=drow+1
-            if drow>dz
+            if drow>dy
                 mode=0
             else
                 mode=2
@@ -422,8 +441,8 @@ function SurfLayout(dz::Integer,dx::Integer,zsch,xsch)
                     xc=xc+1
                     count=count+1
                 else
-                    push!(layout,[1,[zc,zc]])
-                    zc=zc+1
+                    push!(layout,[1,[yc,yc]])
+                    yc=yc+1
                     count=count+1
                 end
             end
@@ -437,7 +456,7 @@ end
 
 #optimize the "back and forth" layout slightly
 
-function optlayout(layout,dz,dx)
+function optlayout(layout,dy,dx)
 
     nrows=2*dz+1
     rowcount=0
@@ -527,12 +546,12 @@ end
 
 #figure out mappings of where each data and ancilla qubit end up in the 1D linear layout
 
-function linemaps(layout,dz,dx,nzc,nxc)
+function linemaps(layout,dy,dx,nyc,nxc)
 
-    qlinemap=zeros(Int,dz,dx)
-    zlinemap=zeros(Int,nzc)
+    qlinemap=zeros(Int,dy,dx)
+    ylinemap=zeros(Int,nyc)
     xlinemap=zeros(Int,nxc)
-    N=2*dx*dz-1
+    N=2*dx*dy-1
     for i in [1:N;]
 
         typ=layout[i][1]
@@ -540,16 +559,16 @@ function linemaps(layout,dz,dx,nzc,nxc)
         if typ==0
             #data qubit
             addr=layout[i][2]
-            zad=addr[1]
+            yad=addr[1]
             xad=addr[2]
 
-            qlinemap[zad,xad]=i
+            qlinemap[yad,xad]=i
 
         elseif typ==1
-            #z check qubit
+            #y check qubit
             addr=layout[i][2][1]
 
-            zlinemap[addr]=i
+            ylinemap[addr]=i
 
         elseif typ==2
             #x check qubit
@@ -561,7 +580,7 @@ function linemaps(layout,dz,dx,nzc,nxc)
 
     end
 
-    return qlinemap,zlinemap,xlinemap
+    return qlinemap,ylinemap,xlinemap
 end
 
 #simulate a CNOT failure location
@@ -730,7 +749,6 @@ function CYfail(r,p,al2,tmeas,k2,nth,pmz,pmx)
 end
 
 
-#obtain a single circuit error sample
 #obtain a single circuit error sample
 
 function SurfMCError(dy,dx,nr,zsched,xsched,bsch,p,al2,tmeas,k2,nth,pmz,pmx)
