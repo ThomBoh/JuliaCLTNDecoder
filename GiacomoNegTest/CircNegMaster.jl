@@ -1507,92 +1507,49 @@ function buildinitstring(dz::Int,dx::Int,nr,layout)
     end
     #println(outi)
     #println(outz)
+    println(out)
     return out
 
 end
 
-function YStabs(dy,dx)
 
-    stabgens=[]
-    #stabgens = Array{Array{Int,(dy,dx)}}(dy+1)
-    for i in [0:dy;]
+function MLErrorGiac(dz,dx,nr,PEZ,PEX,Synz,Synx,zsch,xsch,bsch,layout,ql,zl,xl,p,al2,tmeas,k2,nth,pmz,pmx,acc,bd)
+    A=buildCircGiac(1,dz,dx,nr,zsch,xsch,bsch,layout,ql,zl,xl,p,al2,tmeas,k2,nth,pmz,pmx,acc,bd)
+    #@show B
+    #phi=productstate(B1)
+    #instring=buildinitstring(dz,dx,nr,layout)
+    #psi=productstate(siteinds(phi),instring)
+    #psi=productstate(B)
+    #@show psi
+    #println("noprime")
+    #psi=yfilter(psi,dz,dx,zsch,xsch,layout,acc,bd)8
+    #A=noprime(*(B1,psi;cutoff=acc,maxdim=bd))
+    #@show MPS
+    #println(norm(A))
 
-         stab=zeros(Int,dy,dx)
-         if i==0
-             stab[1,2]=1
-             stab[1,3]=1
-         elseif i==dy
-             stab[i,1]=1
-             stab[i,2]=1
-         elseif i%2==1
-             stab[i,1]=1
-             stab[i,2]=1
-             stab[i+1,2]=1
-             stab[i+1,1]=1
-         elseif i%2==0
-             stab[i,2]=1
-             stab[i,3]=1
-             stab[i+1,2]=1
-             stab[i+1,3]=1
-         end
-         push!(stabgens,stab)
-    end
-    stabsout=[]
-    #stabsout = Array{Array{Int,(dy,dx)}}(2^(dy+1))
-    for i in [0:(2^(dy+1)-1);]
-        bi=digits(i,base=2,pad=dy+1)
-        stab=zeros(Int,dy,dx)
-        for j in [1:(dy+1);]
-            stab=stab+bi[j]*stabgens[j]
-        end
-        display(stab)
-        println("\n")
-        push!(stabsout,stab)
-        #stabsout[i]=stab
-    end
-    return stabsout
-end
+    #A=gluefinal(A,dz,dx,nr,nr,PEZ,PEX,Synz,Synx,zsch,xsch,bsch,layout,p,al2,tmeas,k2,nth,pmz,pmx,acc,bd)
 
-function XStabs(dy,dx)
+    stringi,stringz,stringy,stringx=buildstrings(dz,dx,nr,PEZ,PEX,Synz,Synx,layout)
+    mpsi=productstate(siteinds(A),stringi)
+    mpsz=productstate(siteinds(A),stringz)
+    mpsy=productstate(siteinds(A),stringy)
+    mpsx=productstate(siteinds(A),stringx)
 
-    stabgens=[]
-    #stabgens = Array{Array{Int,(dy,dx)}}(dy+1)
-    for i in [0:dy;]
+    #compute "probability" that this pure error and meas outcomes occurred, and no logical z
+    pli=inner(A,mpsi)
 
-         stab=zeros(Int,dy,dx)
-         if i==0
-             stab[1,1]=1
-             stab[2,1]=1
-         elseif i==dx
-             stab[2,i]=1
-             stab[3,i]=1
-         elseif i%2==1
-             stab[i,2]=1
-             stab[i,3]=1
-             stab[i+1,2]=1
-             stab[i+1,3]=1
-         elseif i%2==0
-             stab[i,1]=1
-             stab[i,2]=1
-             stab[i+1,1]=1
-             stab[i+1,2]=1
-         end
-         push!(stabgens,stab)
-    end
-    stabsout=[]
-    #stabsout = Array{Array{Int,(dy,dx)}}(2^(dy+1))
-    for i in [0:(2^(dy+1)-1);]
-        bi=digits(i,base=2,pad=dy+1)
-        stab=zeros(Int,dy,dx)
-        for j in [1:(dy+1);]
-            stab=stab+bi[j]*stabgens[j]
-        end
-        display(stab)
-        println("\n")
-        push!(stabsout,stab)
-        #stabsout[i]=stab
-    end
-    return stabsout
+    #compute "probability" that this pure error and meas outcomes occurred, as well as logical z
+    plz=inner(A,mpsz)
+    ply=inner(A,mpsy)
+    plx=inner(A,mpsx)
+    #println(pli)
+    #println(plz)
+    #println(ply)
+    #println(plx)
+    #println(ml)
+
+    return pli,plz,ply,plx
+
 end
 
 function MLError(dz,dx,nr,PEZ,PEX,Synz,Synx,zsch,xsch,bsch,layout,ql,zl,xl,p,al2,tmeas,k2,nth,pmz,pmx,acc,bd)
@@ -1838,7 +1795,7 @@ function buildblock(b,dz,dx,nr,zsch,xsch,bsch,layout,ql,zl,xl,p,al2,tmeas,k2,nth
 
     pzim=k2*p*al2*(tmeas)*(1+2*nth)#*(1+exp(-4*al2))#+(10/(k2*al2))
     pxim=0
-    pyim=k2*p*al2*(tmeas )*exp(-4*al2)#+(10/(k2*al2))
+    pyim=k2*p*al2*(tmeas)*exp(-4*al2)#+(10/(k2*al2))
 
     CXpz1=0.91*((p)^(0.5))#+3*0.93*((p)^(0.5))*exp(-2*al2)
     CXpz2=0.15*((p)^(0.5))#+3*0.28*p*exp(-2*al2)
@@ -1995,6 +1952,198 @@ function buildblock(b,dz,dx,nr,zsch,xsch,bsch,layout,ql,zl,xl,p,al2,tmeas,k2,nth
     TOut=runcircuit(gates,cutoff=acc,maxdim=bd; process =  true)
 
     return TOut #return the MPS, whose physical indices are as described at top of function
+end
+
+function buildCircGiac(b,dz,dx,nr,zsch,xsch,bsch,layout,ql,zl,xl,p,al2,tmeas,k2,nth,pmz,pmx,acc,bd)
+
+    #First initialize all hardware noise parameters and failure rates. Note that p=k1/k2
+
+    ppaxz=(15/2)*p
+    ppaxy=0#(15/2)*p
+
+    ppazx=0.39*exp(-4*al2)
+    ppazy=0.39*exp(-4*al2)
+
+    if b==2
+
+        pzip=10*p#*(1+exp(-4*al2))
+        pxip=0
+        pyip=10*p*exp(-4*al2)
+
+    else
+        pzip=0
+        pxip=0
+        pyip=0
+
+    end
+
+    pzic=0.31*((p)^(0.5))#*(1+exp(-4*al2))
+    pxic=0
+    pyic=0.31*((p)^(0.5))*exp(-4*al2)
+
+    pzim=k2*p*al2*(tmeas)*(1+2*nth)#*(1+exp(-4*al2))#+(10/(k2*al2))
+    pxim=0
+    pyim=k2*p*al2*(tmeas )*exp(-4*al2)#+(10/(k2*al2))
+
+    CXpz1=0.91*((p)^(0.5))#+3*0.93*((p)^(0.5))*exp(-2*al2)
+    CXpz2=0.15*((p)^(0.5))#+3*0.28*p*exp(-2*al2)
+    CXpz1z2=0.15*((p)^(0.5))#+3*0.28*p*exp(-2*al2)
+    CXpx1=0.93*((p)^(0.5))*exp(-2*al2)
+    CXpx2=0.93*((p)^(0.5))*exp(-2*al2)
+    CXpx1x2=0.93*((p)^(0.5))*exp(-2*al2)
+    CXpz1x2=0.93*((p)^(0.5))*exp(-2*al2)
+    CXpy1=0.93*((p)^(0.5))*exp(-2*al2)
+    CXpy1x2=0.93*((p)^(0.5))*exp(-2*al2)
+    CXpy2=0.28*p*exp(-2*al2)
+    CXpy1z2=0.28*p*exp(-2*al2)
+    CXpx1z2=0.28*p*exp(-2*al2)
+    CXpz1y2=0.28*p*exp(-2*al2)
+    CXpy1y2=0.28*p*exp(-2*al2)
+    CXpx1y2=0.28*p*exp(-2*al2)
+
+    #cxm=buildCX(px2,pz2,py2,px1,px1x2,px1z2,px1y2,pz1,pz1x2,pz1z2,pz1y2,py1,py1x2,py1z2,py1y2)
+
+    CYpz1=(1.01 + 0.77/al2)*(p^(0.5)) #+0.42*exp(-2*al2)*(p^(0.5)) +0.86*exp(-2*al2)*(p^(0.5)) +1.14*exp(-2*al2)*(p^(0.5))
+    CYpz2=(0.32 + 1.05/al2)*(p^(0.5)) #+1.67*exp(-2*al2)*(p^(0.5)) +1.32*exp(-2*al2)*(p^(0.5)) +exp(-2*al2)*(p^(0.5))
+    CYpz1z2=(0.32 + 1.05/al2)*(p^(0.5)) #+1.35*exp(-2*al2)*(p^(0.5)) +1.06*exp(-2*al2)*(p^(0.5)) +0.76*exp(-2*al2)*(p^(0.5))
+
+    CYpx1=1.17*exp(-2*al2)*(p^(0.5))
+    CYpx2=0.35*exp(-2*al2)*(p^(0.5))
+    CYpx1x2=1.13*exp(-2*al2)*(p^(0.5))
+    CYpz1x2=0.42*exp(-2*al2)*(p^(0.5))
+    CYpy1=0.86*exp(-2*al2)*(p^(0.5))
+    CYpy1x2=1.14*exp(-2*al2)*(p^(0.5))
+    CYpy2=1.67*exp(-2*al2)*(p^(0.5))
+    CYpy1z2=1.35*exp(-2*al2)*(p^(0.5))
+    CYpx1z2=1.32*exp(-2*al2)*(p^(0.5))
+    CYpz1y2=1.06*exp(-2*al2)*(p^(0.5))
+    CYpy1y2=0.76*exp(-2*al2)*(p^(0.5))
+    CYpx1y2=exp(-2*al2)*(p^(0.5))
+
+    #cym=buildCY(CYpx2,CYpz2,CYpy2,CYpx1,CYpx1x2,CYpx1z2,CYpx1y2,CYpz1,CYpz1x2,CYpz1z2,CYpz1y2,CYpy1,CYpy1x2,CYpy1z2,CYpy1y2)
+
+    gates=Tuple[]
+
+    #build the circuit out of gates
+    #each measurement round consists of four time steps
+
+
+    nzc=size(zsch)[1]
+    nxc=size(xsch)[1]
+
+    nq=size(layout)[1]
+
+    for rep in [1:1;]
+        for q in [1:nq;]
+
+
+            #first time step -- initialization/idling
+            typ=layout[q][1]
+
+
+            if typ==0
+                #data qubit
+                push!(gates,("idle",(2*q-1,2*q),(pz=pzip,px=pxip,py=pyip)))
+
+            elseif typ==1
+                #y check ancilla qubit
+                push!(gates,("idle",(2*q-1,2*q),(pz=ppaxz,px=0,py=ppaxy)))
+
+            elseif typ==2
+                #x check ancilla qubit
+                push!(gates,("idle",(2*q-1,2*q),(pz=ppaxz,px=0,py=ppaxy)))
+
+            end
+
+
+        end
+
+        for cnt in [1:4;]
+
+            for q in [1:nq;]
+
+                typ=layout[q][1]
+
+                if typ==0
+                    #data qubit, need to see if this is a wait location
+                    addr=layout[q][2]
+                    wait=bsch[cnt,addr[1],addr[2]]
+                    if wait==1
+
+                        push!(gates,("idle",(2*q-1,2*q),(pz=pzic,px=pxic,py=pyic)))
+
+                    end
+
+                elseif typ==1
+
+                    #Y check ancilla qubit, identifies Z errors, data is target, ancilla is control
+
+                    zc=layout[q][2][1] #which z check it is in the list of z check schedules
+                    partner=zsch[zc][cnt]
+
+                    if partner==[-1,-1]
+                        #wait location for this ancilla
+                        push!(gates,("idle",(2*q-1,2*q),(pz=pzic,px=pxic,py=pyic)))
+                    else
+                        pzad=partner[1]
+                        pxad=partner[2]
+                        q2=ql[pzad,pxad]
+                        push!(gates,("CYT",(2*q-1,2*q,2*q2-1,2*q2),(px2=CYpx2,pz2=CYpz2,py2=CYpy2,px1=CYpx1,px1x2=CYpx1x2,px1z2=CYpx1z2,px1y2=CYpx1y2,pz1=CYpz1,pz1x2=CYpz1x2,pz1z2=CYpz1z2,pz1y2=CYpz1y2,py1=CYpy1,py1x2=CYpy1x2,py1z2=CYpy1z2,py1y2=CYpy1y2)))
+                    end
+
+                elseif typ==2
+
+                    #x check ancilla qubit, identifies z errors, data is target, ancilla is control
+
+                    xc=layout[q][2][1] #which x check it is in the list of x check schedules
+                    partner=xsch[xc][cnt]
+
+                    if partner[1]==-1
+                        #wait location for this ancilla
+                        push!(gates,("idle",(2*q-1,2*q),(pz=pzic,px=pxic,py=pyic)))
+                    else
+                        pzad=partner[1]
+                        pxad=partner[2]
+                        q2=ql[pzad,pxad]
+                        push!(gates,("CXT",(2*q-1,2*q,2*q2-1,2*q2),(px2=CXpx2,pz2=CXpz2,py2=CXpy2,px1=CXpx1,px1x2=CXpx1x2,px1z2=CXpx1z2,px1y2=CXpx1y2,pz1=CXpz1,pz1x2=CXpz1x2,pz1z2=CXpz1z2,pz1y2=CXpz1y2,py1=CXpy1,py1x2=CXpy1x2,py1z2=CXpy1z2,py1y2=CXpy1y2)))
+                    end
+
+                end
+
+            end
+        end
+
+
+        for q in [1:nq;]
+
+
+            #final time step -- idling/measurement
+            typ=layout[q][1]
+
+            if typ==0
+                #data qubit
+                push!(gates,("idle",(2*q-1,2*q),(pz=pzim,px=pxim,py=pyim)))
+
+            elseif typ==1
+                #y check ancilla qubit
+                push!(gates,("idle",(2*q-1,2*q),(pz=pmx,px=0,py=0)))
+
+            elseif typ==2
+                #x check ancilla qubit
+                push!(gates,("idle",(2*q-1,2*q),(pz=pmx,px=0,py=0)))
+
+            end
+
+        end
+    end
+    istr=buildinitstring(dz,dx,nr,layout)
+    #println(istr)
+    T=productstate(2*nq) #all zeros initial state sets initial error configuration to be trivial
+    TI=productstate(siteinds(T),istr)
+    #display(T)
+    TOut=runcircuit(TI,gates,cutoff=acc,maxdim=bd)
+
+    return TOut#,gates #return the MPS, whose physical indices are as described at top of function
 end
 
 function buildCirc(b,dz,dx,nr,zsch,xsch,bsch,layout,ql,zl,xl,p,al2,tmeas,k2,nth,pmz,pmx,acc,bd)
@@ -2249,7 +2398,8 @@ end
 function getSurfPE(Ey,Ex,dy,dx)
 
     Ly,Lx=SurfLogs(dy,dx)
-    LC=LogComp(Ey,Ex,dy,dx)
+    LC=[0,0]
+    #LC=LogComp(Ey,Ex,dy,dx)
 
     PEY=LC[1]*Ly + Ey
     PEX=LC[2]*Lx + Ex
@@ -2268,110 +2418,6 @@ function getSurfPE(Ey,Ex,dy,dx)
     return PEY,PEX
 end
 
-#returns the logical components of the accumulated errors
-
-function LogComp(Ey,Ex,dy,dx)
-
-    LC=[0,0]
-
-    if dx%2==0
-        println("shouldn't see this!!")
-        LC[1]=Ey[dy,dx]
-        LC[2]=Ex[dy,dx]
-
-    else
-        for i in [1:dx;]
-            LC[1]=(LC[1]+Ey[1,i])%2
-        end
-        for i in [1:dy;]
-            LC[2]=(LC[2]+Ex[i,dx])%2
-        end
-    end
-
-    return LC
-end
-
-
-function traceblock2(U,layout)
-
-    sites = firstsiteinds(U)
-
-    M = ITensor[]
-    j=1
-    for ix in 1:length(U)
-        if ix%2==1
-            i=Int((ix+1)/2)
-        else
-            i=Int(ix/2)
-        end
-        typ=layout[i][1]
-        if (typ > 0) && (ix%2==0)
-            tracetensor = ITensor([1,1], sites[ix])
-            initensor = ITensor([1,0], sites[ix])
-            T = U[ix] * initensor
-            T = T * tracetensor'
-            M[ix-j] = M[ix-j] * T
-            j=j+1
-        else
-            push!(M, U[ix])
-        end
-    end
-    out=MPO(M)
-
-    #println(typeof(B))
-    #println(typeof(M))
-    #println(typeof(out))
-    #M=0
-    #GC.gc()
-    return out
-
-end
-
-function traceblock1(U,layout)
-
-    sites = firstsiteinds(U)
-
-    M = ITensor[]
-    j=1
-    for ix in 1:length(U)
-        if ix%2==1
-            i=Int((ix+1)/2)
-        else
-            i=Int(ix/2)
-        end
-        typ=layout[i][1]
-        if (typ > 0) && (ix%2==0)
-            tracetensor = ITensor([1,1], sites[ix])
-            T = U[ix] * tracetensor
-            T = T * tracetensor'
-            M[ix-j] = M[ix-j] * T
-            j=j+1
-        else
-            push!(M, U[ix])
-        end
-    end
-    out=MPO(M)
-
-    #println(typeof(B))
-    #println(typeof(M))
-    #println(typeof(out))
-    #M=0
-    #GC.gc()
-    return out
-
-end
-
-function simpleblocks(dz,dx,nr,zsch,xsch,bsch,layout,ql,zl,xl,p,al2,tmeas,k2,nth,pmz,pmx,acc,bd)
-
-    #B1=buildblock(1,dz,dx,nr,zsch,xsch,bsch,layout,ql,zl,xl,p,al2,tmeas,k2,nth,pmz,pmx,acc,bd)
-    B2=buildblock(2,dz,dx,nr,zsch,xsch,bsch,layout,ql,zl,xl,p,al2,tmeas,k2,nth,pmz,pmx,acc,bd)
-    C=traceblock1(B2,layout)
-    D=traceblock2(B2,layout)
-    #println(C)
-    #println(D)
-    return C,D
-
-end
 
 function MLEs(pli,plz,ply,plx)
     plin,plzn,plyn,plxn=pli,plz,ply,plx
@@ -2425,14 +2471,9 @@ function MLEs(pli,plz,ply,plx)
 
 end
 
-function SurfMC(dz,dx,nr,p,al2,tmeas,k2,nth,acc,bd,err,nt; sim_id::Int=-1)
+function SurfMC(dz,dx,nr,p,al2,tmeas,k2,nth,acc,bd,err,nt)
 
-    if sim_id < 0
-      fname = "XY_dy$(dz)_dx$(dx)_p$(p)_bd$(bd)_cutoff$(acc).txt"
-    else
-      fname = "XY_dy$(dz)_dx$(dx)_p$(p)_bd$(bd)_cutoff$(acc)_id$(sim_id).txt"
-    end
-    Random.seed!(1234 * (sim_id+2))
+
 
     pmz=exp(-1.5-0.9*al2)
     if p==1e-5
@@ -2500,36 +2541,22 @@ function SurfMC(dz,dx,nr,p,al2,tmeas,k2,nth,acc,bd,err,nt; sim_id::Int=-1)
     #println(xl)
     #println(zsch)
     #println(xsch)
-    Lz,Lx=SurfLogs(dz,dx)
     #display(Lz)
     #display(Lx)
     n=0
-    f=0
-    fx=0
-    fy=0
-    fz=0
-    fn=0
-    fxn=0
-    fyn=0
-    fzn=0
-    pct=0
-    totime=0
-    difn=0
-    diff=0
-    difdm=0
-    distot=0
     #B1,B2=simpleblocks(dz,dx,nr,zsch,xsch2,bsch,layout,ql,zl,xl,p,al2,tmeas,k2,nth,pmz,pmx,acc,bd)
     #C=traceblock(B,layout)
     breakflag=0
-    while n<nt
+    while n<1
+        n=n+1
         #breakflag=1
         #println("pspsps")
-        EZzx=[0 0 0;0 0 0; 0 1 0]
-        EXzx=[0 0 0;0 0 0; 0 0 0]
+        PEZzx=[0 0 0;0 0 0; 0 1 0]
+        PEXzx=[0 0 0;0 0 0; 0 0 0]
         Syny=[0 0 0 0]
         Synx=[0 0 0 1]
         #EZzx,EXzx,Syny,Synx=SurfMCError(dz,dx,nr,zsch,xsch2,bsch,p,al2,tmeas,k2,nth,pmz,pmx)
-        EYyx,EXyx=ZXtoYX(dz,dx,EZzx,EXzx)
+        #EYyx,EXyx=ZXtoYX(dz,dx,EZzx,EXzx)
         #display(EZzx)
         #display(Syny)
         #display(EXzx)
@@ -2537,128 +2564,66 @@ function SurfMC(dz,dx,nr,p,al2,tmeas,k2,nth,acc,bd,err,nt; sim_id::Int=-1)
         #display(EYyx)
         #display(EZzx)
         #display(Ey)
-        PEYyx,PEXyx=getSurfPE(EYyx,EXyx,dz,dx)
+        #PEYyx,PEXyx=getSurfPE(EYyx,EXyx,dz,dx)
         #display(PEYyx)
         #display(PEXyx)
         #display(PEY)
-        L=LogComp(EYyx,EXyx,dz,dx)
-        LY=L[1]
-        LX=L[2]
+        #L=LogComp(EYyx,EXyx,dz,dx)
+        #L=[0,0]
+        #LY=L[1]
+        #LX=L[2]
         #display(L)
         #println(PEZ)
 
-        PEZzx,PEXzx=ZXtoYX(dz,dx,PEYyx,PEXyx)
-        #display(PEZzx)
-        #display(PEXzx)
+        #PEZzx,PEXzx=ZXtoYX(dz,dx,PEYyx,PEXyx)
+        display(PEZzx)
+        display(PEXzx)
         pli,plz,ply,plx=MLError(dz,dx,nr,PEZzx,PEXzx,Syny,Synx,zsch,xsch2,bsch,layout,ql,zl,xl,p,al2,tmeas,k2,nth,pmz,pmx,acc,bd)
-        ML,MLN,nfl=MLEs(pli,plz,ply,plx)
+        println(pli)
+        println(plz)
+        println(ply)
+        println(plx)
 
-        if (ML[1]==MLN[1]) && (ML[2]==MLN[2])
-            dis=0
-        else
-            dis=1
-            distot=distot+1
-        end
-
-
-        resy=(ML[1]+L[1])%2
-        resx=(ML[2]+L[2])%2
-        resyn=(MLN[1]+L[1])%2
-        resxn=(MLN[2]+L[2])%2
-        #display(resy)
-        #display(resx)
-        le=0
-        if resx==1 && resy==0
-            le=1
-            #println("!!!!!!!!!!!!LOGICAL X FAILURE!!!!!!!!!!!!!!")
-            fx=fx+1
-            f=f+1
-        elseif resx==0 && resy==1
-            le=1
-            #println("!!!!!!!!!!!!LOGICAL Y FAILURE!!!!!!!!!!!!!!")
-            fy=fy+1
-            f=f+1
-        elseif resx==1 && resy==1
-            le=1
-            #println("!!!!!!!!!!!!LOGICAL Z FAILURE!!!!!!!!!!!!!!")
-            fz=fz+1
-            f=f+1
-        end
-        len=0
-        if resxn==1 && resyn==0
-            len=1
-            #println("!!!!!!!!!!!!LOGICAL X FAILURE!!!!!!!!!!!!!!")
-            fxn=fxn+1
-            fn=fn+1
-        elseif resxn==0 && resyn==1
-            len=1
-            #println("!!!!!!!!!!!!LOGICAL Y FAILURE!!!!!!!!!!!!!!")
-            fyn=fyn+1
-            fn=fn+1
-        elseif resxn==1 && resyn==1
-            len=1
-            #println("!!!!!!!!!!!!LOGICAL Z FAILURE!!!!!!!!!!!!!!")
-            fzn=fzn+1
-            fn=fn+1
-        end
-
-        if dis==1
-            if le==1 && len==0
-                println("Negating helped!!")
-                println(pli)
-                println(plz)
-                println(ply)
-                println(plx)
-                println(EZzx)
-                println(EXzx)
-                println(Syny)
-                println(Synx)
-                difn=difn+1
-            elseif le==0 && len==1
-                diff=diff+1
-            else
-                difdm=difdm+1
-            end
-        end
+        pli,plz,ply,plx=MLErrorGiac(dz,dx,nr,PEZzx,PEXzx,Syny,Synx,zsch,xsch2,bsch,layout,ql,zl,xl,p,al2,tmeas,k2,nth,pmz,pmx,acc,bd)
+        println(pli)
+        println(plz)
+        println(ply)
+        println(plx)
 
 
-        #if le==1
-        #    println("Here's logical Y and X error components")
-        #    println(L)
-        #    println("probability of no error")
-        #    println(pli)
-        #    println("probability of Z error")
-        #    println(plz)
-        #    println("probability of Y error")
-        #    println(ply)
-        #    println("probability of X error")
-        #    println(plx)
-        #end
+        #fuck around and find out
+        println("fuck")
+        A=buildCirc(1,dz,dx,nr,zsch,xsch,bsch,layout,ql,zl,xl,p,al2,tmeas,k2,nth,pmz,pmx,acc,bd)
+        PEZ=[0 0 0; 0 0 0; 0 1 0]
+        PEX=[0 0 0; 0 0 0; 0 0 0]
+        Syny=[0 0 0 0]
+        Synx=[0 0 0 1]
+        stringi,stringz,stringy,stringx=buildstrings(dz,dx,nr,PEZ,PEX,Syny,Synx,layout)
+        println(stringi)
+        println(stringz)
+        println(stringy)
+        println(stringx)
+        mpsi=productstate(siteinds(A),stringi)
+        mpsz=productstate(siteinds(A),stringz)
+        mpsy=productstate(siteinds(A),stringy)
+        mpsx=productstate(siteinds(A),stringx)
 
-        n=n+1
-        pct=pct+1
-        mu=f/n
-        mun=fn/n
+        #compute "probability" that this pure error and meas outcomes occurred, and no logical z
+        pli=inner(A,mpsi)
+
+        #compute "probability" that this pure error and meas outcomes occurred, as well as logical z
+        plz=inner(A,mpsz)
+        ply=inner(A,mpsy)
+        plx=inner(A,mpsx)
+        println(pli)
+        println(plz)
+        println(ply)
+        println(plx)
+
     end
 
     return
 end
 
 
-dzin=parse(Int64,ARGS[1])
-pin=parse(Float64,ARGS[2])
-#println(pin)
-ntin=parse(Int64,ARGS[3])
-cutin=parse(Float64,ARGS[4])
-bdin=parse(Int64,ARGS[5])
-#compin=parse(Int64,ARGS[6])
-repin=parse(Int64,ARGS[6])
-if length(ARGS)==7
-    sidin=parse(Int64,ARGS[7])
-    SurfMC(dzin,3,repin,pin,8,550e-9,1e7,0,cutin,bdin,0.1,ntin,sim_id = sidin)
-    #SurfMCStabInv(dzin,3,repin,pin,8,550e-9,1e7,0,cutin,bdin,0.1,ntin,sim_id = sidin)
-else
-    #fourgatecheck(pin,8,500e-9,1e7,0,0.001,0.001,1e-15,10000)
-    SurfMC(dzin,3,repin,pin,8,550e-9,1e7,0,cutin,bdin,0.1,ntin)
-    #SurfMCStabInv(dzin,3,repin,pin,8,550e-9,1e7,0,cutin,bdin,0.1,ntin)
-end
+SurfMC(3,3,1,1e-4,8,550e-9,1e7,0,1e-15,40,0.1,0)

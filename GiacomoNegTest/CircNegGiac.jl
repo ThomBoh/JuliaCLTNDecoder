@@ -20,21 +20,6 @@ function gate(::GateName"idle"; pz::Number, px::Number, py::Number)
             py         pz          px          1-px-py-pz]
 end
 
-function gate(::GateName"Ystab"; pz::Number)
-    return [1   0   0   0
-            0   1   0   0
-            0   0   0   1
-            0   0   1   0]
-end
-
-#function gate(::GateName"pz"; p::Number)
-#  return [1-p  p
-#          p    1-p]
-#end
-
-# CNOT gate failure -- first qubit is control, second qubit is target
-
-
 function bin2dec(bin)
 
     l=length(bin)
@@ -165,12 +150,6 @@ function buildCY(px2::Number,pz2::Number,py2::Number,px1::Number,px1x2::Number,p
 end
 
 
-#  return [1-pz1-pz2-pz12  pz12            pz1             pz2
-#          pz2             pz1             pz12            1-pz1-pz2-pz12
-#          pz1             pz2             1-pz1-pz2-pz12  pz12
-#          pz12            1-pz1-pz2-pz12  pz2             pz1]
-#end
-
 function gate(::GateName"pz"; p::Number)
   return [ 1-p p
            p   1-p]
@@ -188,28 +167,6 @@ function gate(::GateName"pi1"; p::Number)
   return [ 0   1-p
            0   p]
 end
-
-function gate(::GateName"Xres"; p::Number)
-  return [ 1   1
-           0   0]
-end
-
-#This gate "resets" Z-type stabilizer anicllae after measurement. In the biased
-#error models that we're simulating, we're only actually interested in phase-flip
-#noise and therefore results of X-type stabilizer measurements. So, this gate
-#essentially traces out the the degrees of freedom for the Z-type stabilizer measurement
-#outcomes that we don't care about.
-
-function gate(::GateName"pizres"; p::Number)
-  return [ 1-p 1-p
-           p   p]
-end
-
-function gate(::GateName"pizresfinal"; p::Number)
-  return [ 1 1
-           1 1]
-end
-
 
 #create schedules of CNOTs between ancilla qubits and data
 
@@ -501,7 +458,6 @@ function xreorder(xsch,dy,dx)
             r=2*j-1 #is the row it lives in
             inew=(r-1)*cpr+c
 
-
         else
             #it's in the second column
             r=2*(j-cpc) #is the row it lives in
@@ -723,7 +679,6 @@ function linemaps(layout,dy,dx,nyc,nxc)
 
     return qlinemap,ylinemap,xlinemap
 end
-
 
 
 function buildstrings(dy::Int,dx::Int,nr,pez,pex,Syny,Synx,layout)
@@ -1205,10 +1160,8 @@ function buildCirc(b,dz,dx,nr,zsch,xsch,bsch,layout,ql,zl,xl,p,al2,tmeas,k2,nth,
     return TOut,gates #return the MPS, whose physical indices are as described at top of function
 end
 
-function NegCirc(dz,dx,nr,p,al2,tmeas,k2,nth,acc,bd,err,nt; sim_id::Int=-1)
+function NegCirc(dz,dx,nr,p,al2,tmeas,k2,nth,acc,bd,err,nt)#; sim_id::Int=-1)
 
-
-    Random.seed!(1234 * (sim_id+2))
 
     pmz=exp(-1.5-0.9*al2)
     if p==1e-5
@@ -1259,16 +1212,15 @@ function NegCirc(dz,dx,nr,p,al2,tmeas,k2,nth,acc,bd,err,nt; sim_id::Int=-1)
 
     bsch=bdrysched(dz,dx)
 
-    nzc=size(zsch)[1]
-    nxc=size(xsch)[1]
     layout=SurfLayout(dz,dx,zsch,xsch2)
 
     layout=optlayout(layout,dz,dx)
-
+    nzc=size(zsch)[1]
+    nxc=size(xsch)[1]
     ql,zl,xl=linemaps(layout,dz,dx,nzc,nxc)
-    CircMPS,gates=buildCirc(1,dz,dx,nr,zsch,xsch,bsch,layout,ql,zl,xl,p,al2,tmeas,k2,nth,pmz,pmx,acc,bd)
+    A,gates=buildCirc(1,dz,dx,nr,zsch,xsch2,bsch,layout,ql,zl,xl,p,al2,tmeas,k2,nth,pmz,pmx,acc,bd)
 
-    return CircMPS,gates
+    return A,gates
 end
 
 #Calling this function returns an MPS created by runcircuit and the circuit used by
@@ -1279,4 +1231,52 @@ end
 #This MPS has many negative entries whose positive versions will hopefully tell us
 #what's going on
 
-CircMPS,gates=NegCirc(3,3,1,1e-4,8,550e-9,1e7,0,1e-15,40,0.1,0,sim_id =1)
+CircMPS,gates=NegCirc(3,3,1,1e-4,8,550e-9,1e7,0,1e-15,40,0.1,0)
+
+
+#Let's see an example of a negative coset probability that negatively affects the decoding outcome
+
+#first call helper functions that give us the 1D qubit layout
+
+zsch,xsch=schedulemaker(3,3)
+
+xsch2=xreorder(xsch,3,3)
+
+layout=SurfLayout(3,3,zsch,xsch2)
+
+layout=optlayout(layout,3,3)
+
+#Now, here's an example error pattern that causes an issue with negative numbers
+
+EZ=[0 0 0; 0 0 0; 0 1 0] #Z errors on data qubits
+EX=[0 0 0; 0 0 0; 0 0 0] #X errors on data qubits
+Syny=[0 0 0 0] #Y-type stabilizer measuremnt outcomes
+Synx=[0 0 0 1] #X-type stabilizer measurement outcomes
+
+#the function "buildstrings" takes this error pattern and turns it into descriptions of the product states
+#that we can use to access the desired logical coset probabilities for this error pattern
+
+stringi,stringz,stringy,stringx=buildstrings(3,3,1,EZ,EX,Syny,Synx,layout)
+
+#now we build MPS out of these strings
+
+mpsi=productstate(siteinds(CircMPS),stringi)
+mpsz=productstate(siteinds(CircMPS),stringz)
+mpsy=productstate(siteinds(CircMPS),stringy)
+mpsx=productstate(siteinds(CircMPS),stringx)
+
+#finally, calculate the coset probabilities
+
+pli=inner(CircMPS,mpsi)
+plz=inner(CircMPS,mpsz)
+ply=inner(CircMPS,mpsy)
+plx=inner(CircMPS,mpsx)
+
+println(stringi)
+println(pli)
+println(stringz)
+println(plz)
+println(stringy)
+println(ply)
+println(stringx)
+println(plx)
